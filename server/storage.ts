@@ -2,14 +2,23 @@ import {
   users,
   factChecks,
   trendingFacts,
+  categories,
+  tags,
+  factCheckTags,
   type User,
   type UpsertUser,
   type FactCheck,
   type InsertFactCheck,
-  type TrendingFact
+  type TrendingFact,
+  type Category,
+  type InsertCategory,
+  type Tag,
+  type InsertTag,
+  type FactCheckTag,
+  type InsertFactCheckTag
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, inArray } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -24,6 +33,25 @@ export interface IStorage {
   getSavedFactChecksByUser(userId: string): Promise<FactCheck[]>;
   updateFactCheck(id: number, saved: boolean): Promise<FactCheck | undefined>;
   deleteFactCheck(id: number): Promise<boolean>;
+  
+  // Category operations
+  getCategories(): Promise<Category[]>;
+  getCategory(id: number): Promise<Category | undefined>;
+  createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, category: InsertCategory): Promise<Category | undefined>;
+  deleteCategory(id: number): Promise<boolean>;
+  getFactChecksByCategory(categoryId: number, limit?: number): Promise<FactCheck[]>;
+  
+  // Tag operations
+  getTags(): Promise<Tag[]>;
+  getTag(id: number): Promise<Tag | undefined>;
+  createTag(tag: InsertTag): Promise<Tag>;
+  updateTag(id: number, tag: InsertTag): Promise<Tag | undefined>;
+  deleteTag(id: number): Promise<boolean>;
+  addTagToFactCheck(factCheckId: number, tagId: number): Promise<FactCheckTag>;
+  removeTagFromFactCheck(factCheckId: number, tagId: number): Promise<boolean>;
+  getTagsByFactCheck(factCheckId: number): Promise<Tag[]>;
+  getFactChecksByTag(tagId: number, limit?: number): Promise<FactCheck[]>;
   
   // Trending facts operations
   getTrendingFacts(limit?: number): Promise<FactCheck[]>;
