@@ -6,6 +6,7 @@ import { z } from "zod";
 import { insertFactCheckSchema, sourceSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { perplexityService } from "./services/perplexityService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
