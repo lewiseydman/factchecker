@@ -102,9 +102,9 @@ const FactResult = ({
         <div className="mt-4">
           <h4 className="text-sm font-medium text-gray-700 mb-1">Sources:</h4>
           <ul className="text-sm text-gray-600 space-y-1 ml-5 list-disc">
-            {sources.map((source, index) => (
+            {sources.slice(0, 3).map((source, index) => (
               <li key={index}>
-                {source.name}: <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{new URL(source.url).hostname}</a>
+                <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{source.url}</a>
               </li>
             ))}
           </ul>
