@@ -65,7 +65,8 @@ export class PerplexityService {
           ],
           temperature: 0.2,
           top_p: 0.9,
-          search_domain_filter: ["*"],
+          // Use specific domains or leave empty for unrestricted search
+          search_domain_filter: ["perplexity.ai", "wikipedia.org", "bbc.com", "nytimes.com", "reuters.com"],
           return_images: false,
           return_related_questions: false,
           max_tokens: 800,
