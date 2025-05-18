@@ -86,6 +86,10 @@ export class DatabaseStorage implements IStorage {
       .insert(factChecks)
       .values(factCheckData)
       .returning();
+    
+    // Increment trending count
+    await this.incrementChecksCount(factCheck.id);
+    
     return factCheck;
   }
 
@@ -127,10 +131,191 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteFactCheck(id: number): Promise<boolean> {
+    // First delete any associated tags
+    await db
+      .delete(factCheckTags)
+      .where(eq(factCheckTags.factCheckId, id));
+    
+    // Then delete the fact check
     const result = await db
       .delete(factChecks)
       .where(eq(factChecks.id, id));
     return !!result;
+  }
+  
+  // Category operations
+  async getCategories(): Promise<Category[]> {
+    return db
+      .select()
+      .from(categories)
+      .orderBy(categories.name);
+  }
+
+  async getCategory(id: number): Promise<Category | undefined> {
+    const [category] = await db
+      .select()
+      .from(categories)
+      .where(eq(categories.id, id));
+    return category;
+  }
+
+  async createCategory(categoryData: InsertCategory): Promise<Category> {
+    const [category] = await db
+      .insert(categories)
+      .values(categoryData)
+      .returning();
+    return category;
+  }
+
+  async updateCategory(id: number, categoryData: InsertCategory): Promise<Category | undefined> {
+    const [category] = await db
+      .update(categories)
+      .set(categoryData)
+      .where(eq(categories.id, id))
+      .returning();
+    return category;
+  }
+
+  async deleteCategory(id: number): Promise<boolean> {
+    // Update any fact checks that use this category to have null category
+    await db
+      .update(factChecks)
+      .set({ categoryId: null })
+      .where(eq(factChecks.categoryId, id));
+    
+    // Delete the category
+    const result = await db
+      .delete(categories)
+      .where(eq(categories.id, id));
+    
+    return !!result;
+  }
+
+  async getFactChecksByCategory(categoryId: number, limit = 10): Promise<FactCheck[]> {
+    return db
+      .select()
+      .from(factChecks)
+      .where(eq(factChecks.categoryId, categoryId))
+      .orderBy(desc(factChecks.checkedAt))
+      .limit(limit);
+  }
+  
+  // Tag operations
+  async getTags(): Promise<Tag[]> {
+    return db
+      .select()
+      .from(tags)
+      .orderBy(tags.name);
+  }
+
+  async getTag(id: number): Promise<Tag | undefined> {
+    const [tag] = await db
+      .select()
+      .from(tags)
+      .where(eq(tags.id, id));
+    return tag;
+  }
+
+  async createTag(tagData: InsertTag): Promise<Tag> {
+    const [tag] = await db
+      .insert(tags)
+      .values(tagData)
+      .returning();
+    return tag;
+  }
+
+  async updateTag(id: number, tagData: InsertTag): Promise<Tag | undefined> {
+    const [tag] = await db
+      .update(tags)
+      .set(tagData)
+      .where(eq(tags.id, id))
+      .returning();
+    return tag;
+  }
+
+  async deleteTag(id: number): Promise<boolean> {
+    // First remove tag associations
+    await db
+      .delete(factCheckTags)
+      .where(eq(factCheckTags.tagId, id));
+    
+    // Then delete the tag
+    const result = await db
+      .delete(tags)
+      .where(eq(tags.id, id));
+    
+    return !!result;
+  }
+
+  async addTagToFactCheck(factCheckId: number, tagId: number): Promise<FactCheckTag> {
+    // Check if association already exists
+    const [existing] = await db
+      .select()
+      .from(factCheckTags)
+      .where(and(
+        eq(factCheckTags.factCheckId, factCheckId),
+        eq(factCheckTags.tagId, tagId)
+      ));
+    
+    if (existing) {
+      return existing;
+    }
+    
+    // Create new association
+    const [association] = await db
+      .insert(factCheckTags)
+      .values({ factCheckId, tagId })
+      .returning();
+    
+    return association;
+  }
+
+  async removeTagFromFactCheck(factCheckId: number, tagId: number): Promise<boolean> {
+    const result = await db
+      .delete(factCheckTags)
+      .where(and(
+        eq(factCheckTags.factCheckId, factCheckId),
+        eq(factCheckTags.tagId, tagId)
+      ));
+    
+    return !!result;
+  }
+
+  async getTagsByFactCheck(factCheckId: number): Promise<Tag[]> {
+    const result = await db
+      .select({
+        id: tags.id,
+        name: tags.name,
+        createdAt: tags.createdAt
+      })
+      .from(factCheckTags)
+      .innerJoin(tags, eq(factCheckTags.tagId, tags.id))
+      .where(eq(factCheckTags.factCheckId, factCheckId));
+    
+    return result;
+  }
+
+  async getFactChecksByTag(tagId: number, limit = 10): Promise<FactCheck[]> {
+    const result = await db
+      .select({
+        id: factChecks.id,
+        userId: factChecks.userId,
+        statement: factChecks.statement,
+        isTrue: factChecks.isTrue,
+        explanation: factChecks.explanation,
+        historicalContext: factChecks.historicalContext,
+        sources: factChecks.sources,
+        savedByUser: factChecks.savedByUser,
+        checkedAt: factChecks.checkedAt,
+        categoryId: factChecks.categoryId
+      })
+      .from(factCheckTags)
+      .innerJoin(factChecks, eq(factCheckTags.factCheckId, factChecks.id))
+      .where(eq(factCheckTags.tagId, tagId))
+      .orderBy(desc(factChecks.checkedAt))
+      .limit(limit);
+    
+    return result;
   }
 
   // Trending facts operations
@@ -142,10 +327,11 @@ export class DatabaseStorage implements IStorage {
         statement: factChecks.statement,
         isTrue: factChecks.isTrue,
         explanation: factChecks.explanation,
+        historicalContext: factChecks.historicalContext,
         sources: factChecks.sources,
         savedByUser: factChecks.savedByUser,
         checkedAt: factChecks.checkedAt,
-        checksCount: trendingFacts.checksCount
+        categoryId: factChecks.categoryId
       })
       .from(factChecks)
       .innerJoin(trendingFacts, eq(factChecks.id, trendingFacts.factCheckId))

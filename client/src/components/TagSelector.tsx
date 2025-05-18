@@ -36,13 +36,13 @@ const TagSelector = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch all tags
-  const { data: allTags = [], isLoading } = useQuery({
+  const { data: allTags = [], isLoading } = useQuery<Tag[]>({
     queryKey: ['/api/tags'],
     retry: false,
   });
 
   // Fetch tags for a specific fact check
-  const { data: factCheckTags = [], isLoading: isLoadingFactCheckTags } = useQuery({
+  const { data: factCheckTags = [], isLoading: isLoadingFactCheckTags } = useQuery<Tag[]>({
     queryKey: ['/api/fact-checks', factCheckId, 'tags'],
     enabled: !!factCheckId,
     retry: false,
@@ -150,7 +150,7 @@ const TagSelector = ({
     }
   };
 
-  const filteredTags = allTags.filter((tag: Tag) => 
+  const filteredTags = allTags?.filter((tag: Tag) => 
     tag.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

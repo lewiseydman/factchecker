@@ -33,7 +33,7 @@ const CategorySelector = ({
   const [newCategoryDescription, setNewCategoryDescription] = useState("");
 
   // Fetch categories
-  const { data: categories = [], isLoading } = useQuery({
+  const { data: categories = [], isLoading } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
     retry: false,
   });
@@ -95,7 +95,7 @@ const CategorySelector = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">None</SelectItem>
-              {categories.map((category: Category) => (
+              {categories?.map((category: Category) => (
                 <SelectItem key={category.id} value={category.id.toString()}>
                   {category.name}
                 </SelectItem>
@@ -160,7 +160,7 @@ const CategorySelector = ({
       
       {selectedCategoryId && (
         <div className="text-sm text-gray-500">
-          {categories.find((c: Category) => c.id === selectedCategoryId)?.description}
+          {categories?.find((c: Category) => c.id === selectedCategoryId)?.description}
         </div>
       )}
     </div>
