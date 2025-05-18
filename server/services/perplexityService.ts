@@ -120,7 +120,7 @@ export class PerplexityService {
         // If no citations in the API response, try to parse from the text
         if (sources.length === 0) {
           const sourcesList = sourcesText.split('\n');
-          sourcesList.forEach(sourceText => {
+          sourcesList.forEach((sourceText: string) => {
             const match = sourceText.match(/(?:"([^"]+)"|([^,]+))(?:,\s*|\s+)(?:URL:)?\s*(\bhttps?:\/\/\S+\b)/i);
             if (match) {
               const name = (match[1] || match[2]).trim();

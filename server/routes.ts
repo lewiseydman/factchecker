@@ -25,36 +25,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Fact check routes
-  app.post('/api/fact-check', isAuthenticated, async (req: any, res) => {
+  app.post('/api/fact-check', async (req: Request, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const { statement } = req.body;
       
-      // Validate request body
-      const factCheckData = insertFactCheckSchema.parse({
-        ...req.body,
-        userId
+      if (!statement || typeof statement !== 'string') {
+        return res.status(400).json({ message: "Statement is required and must be a string" });
+      }
+      
+      // Use Perplexity API to check the fact
+      const factResult = await perplexityService.checkFact(statement);
+      
+      // If user is authenticated, save the fact check
+      if (req.isAuthenticated() && (req as any).user) {
+        const userId = (req as any).user.claims.sub;
+        
+        const factCheckData = {
+          userId,
+          statement,
+          isTrue: factResult.isTrue,
+          explanation: factResult.explanation,
+          sources: factResult.sources,
+          savedByUser: false
+        };
+        
+        // Validate data before saving
+        try {
+          const validatedData = insertFactCheckSchema.parse(factCheckData);
+          
+          // Create fact check in database
+          const factCheck = await storage.createFactCheck(validatedData);
+          
+          // Add to trending
+          await storage.incrementChecksCount(factCheck.id);
+          
+          return res.status(201).json(factCheck);
+        } catch (validationError) {
+          if (validationError instanceof ZodError) {
+            const readableError = fromZodError(validationError);
+            console.error("Validation error:", readableError.message);
+          }
+          // If validation fails, still return the API result but don't save it
+        }
+      }
+      
+      // For unauthenticated users or if database save fails, return the API result directly
+      res.json({
+        id: 0, // Temporary ID for unauthenticated users
+        statement,
+        isTrue: factResult.isTrue,
+        explanation: factResult.explanation,
+        sources: factResult.sources,
+        savedByUser: false,
+        checkedAt: new Date().toISOString()
       });
-      
-      // Validate sources if provided
-      if (factCheckData.sources) {
-        const sourcesArray = z.array(sourceSchema).parse(factCheckData.sources);
-        factCheckData.sources = sourcesArray;
-      }
-      
-      // Create fact check
-      const factCheck = await storage.createFactCheck(factCheckData);
-      
-      // Add to trending
-      await storage.incrementChecksCount(factCheck.id);
-      
-      res.status(201).json(factCheck);
     } catch (error) {
-      if (error instanceof ZodError) {
-        const validationError = fromZodError(error);
-        return res.status(400).json({ message: validationError.message });
-      }
-      console.error("Error creating fact check:", error);
-      res.status(500).json({ message: "Failed to create fact check" });
+      console.error("Error checking fact:", error);
+      res.status(500).json({ 
+        message: "Failed to check fact", 
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 

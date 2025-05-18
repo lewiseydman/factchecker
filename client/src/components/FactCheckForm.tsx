@@ -46,43 +46,9 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
 
   const checkFactMutation = useMutation({
     mutationFn: async () => {
-      // This would typically call a real fact-checking API
-      // For this demo, we'll simulate a response
-      const isTrue = Math.random() > 0.5; // Random true/false for demo
-      
-      // Simulate fetch to external API for fact checking
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const factCheckData = {
-        statement,
-        isTrue,
-        explanation: isTrue 
-          ? `The statement "${statement}" is verified as true based on available evidence.` 
-          : `The statement "${statement}" is determined to be false based on available evidence.`,
-        sources: [
-          {
-            name: "Verified Sources Database",
-            url: "https://example.com/sources"
-          },
-          {
-            name: "Academic Research",
-            url: "https://example.com/research"
-          }
-        ]
-      };
-      
-      // Only send to backend if authenticated
-      if (isAuthenticated) {
-        const response = await apiRequest("POST", "/api/fact-check", factCheckData);
-        return await response.json();
-      }
-      
-      // Return simulated data if not authenticated
-      return {
-        id: Date.now(),
-        ...factCheckData,
-        checkedAt: new Date().toISOString()
-      };
+      // Call the actual backend API that uses Perplexity for fact checking
+      const response = await apiRequest("POST", "/api/fact-check", { statement });
+      return await response.json();
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/fact-checks/recent'] });
