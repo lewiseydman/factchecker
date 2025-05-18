@@ -91,8 +91,35 @@ const SavedFacts = () => {
     }
   });
   
+  const deleteFactCheckMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/fact-checks/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/fact-checks/saved'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/fact-checks/recent'] });
+      toast({
+        title: "Fact check deleted",
+        description: "The fact check has been permanently removed"
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to delete fact check",
+        variant: "destructive"
+      });
+    }
+  });
+  
   const handleUnsave = (id: number) => {
     unsaveMutation.mutate(id);
+  };
+  
+  const handleDelete = (id: number) => {
+    if (confirm("Are you sure you want to delete this fact check? This action cannot be undone.")) {
+      deleteFactCheckMutation.mutate(id);
+    }
   };
 
   return (
@@ -142,13 +169,22 @@ const SavedFacts = () => {
                     </div>
                     <p className="text-gray-600 text-sm">{item.explanation}</p>
                   </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-4">
+                  <div className="mt-3 sm:mt-0 sm:ml-4 flex space-x-3">
                     <button 
                       className="text-primary hover:text-blue-600"
                       onClick={() => handleUnsave(item.id)}
                       disabled={unsaveMutation.isPending}
+                      title="Remove from saved"
                     >
                       <span className="material-icons">bookmark</span>
+                    </button>
+                    <button 
+                      className="text-gray-500 hover:text-red-500"
+                      onClick={() => handleDelete(item.id)}
+                      disabled={deleteFactCheckMutation.isPending}
+                      title="Delete fact check"
+                    >
+                      <span className="material-icons">delete_outline</span>
                     </button>
                   </div>
                 </div>

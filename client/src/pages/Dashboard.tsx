@@ -52,6 +52,7 @@ const Dashboard = () => {
             statement={currentFactCheck.statement}
             isTrue={currentFactCheck.isTrue}
             explanation={currentFactCheck.explanation}
+            historicalContext={currentFactCheck.historicalContext}
             sources={currentFactCheck.sources}
             savedByUser={currentFactCheck.savedByUser}
             checkedAt={currentFactCheck.checkedAt}
