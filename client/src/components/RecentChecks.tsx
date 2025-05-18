@@ -85,8 +85,8 @@ const RecentChecks = () => {
           {isAuthenticated ? 'Your Recent Checks' : 'Example Fact Checks'}
         </h3>
         {isAuthenticated && (
-          <Link href="/history">
-            <a className="text-primary hover:text-blue-600 text-sm font-medium">View All</a>
+          <Link to="/history" className="text-primary hover:text-blue-600 text-sm font-medium">
+            View All
           </Link>
         )}
       </div>
