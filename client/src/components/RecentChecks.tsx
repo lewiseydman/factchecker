@@ -56,8 +56,8 @@ const RecentChecks = () => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-gray-800">Your Recent Checks</h3>
-          <Link href="/history">
-            <a className="text-primary hover:text-blue-600 text-sm font-medium">View All</a>
+          <Link to="/history" className="text-primary hover:text-blue-600 text-sm font-medium">
+            View All
           </Link>
         </div>
         

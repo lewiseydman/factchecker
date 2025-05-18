@@ -13,6 +13,7 @@ type FactCheckResponse = {
   statement: string; 
   isTrue: boolean;
   explanation: string;
+  historicalContext?: string;
   sources: Array<{
     name: string;
     url: string;
