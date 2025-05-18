@@ -19,11 +19,12 @@ export class PerplexityService {
   /**
    * Check if a statement is factually correct
    * @param statement The statement to check
-   * @returns Object with verdict, explanation and sources
+   * @returns Object with verdict, explanation, historical context, and sources
    */
   async checkFact(statement: string): Promise<{
     isTrue: boolean;
     explanation: string;
+    historicalContext: string;
     sources: Source[];
   }> {
     try {
@@ -34,12 +35,14 @@ export class PerplexityService {
         1. Search for accurate, up-to-date information from credible sources
         2. Provide a clear verdict (TRUE or FALSE)
         3. Give a detailed explanation of your reasoning
-        4. List all sources consulted with name and URL
-        5. Be objective and thorough
-        6. If the statement is partially true, determine if it's more TRUE or FALSE overall
-        7. Format your response exactly as follows:
+        4. Provide historical context for the statement, especially if it relates to complex topics, events, or claims
+        5. List all sources consulted with name and URL
+        6. Be objective and thorough
+        7. If the statement is partially true, determine if it's more TRUE or FALSE overall
+        8. Format your response exactly as follows:
           VERDICT: [TRUE or FALSE]
           EXPLANATION: [detailed explanation]
+          HISTORICAL CONTEXT: [relevant historical background that helps understand the statement]
           SOURCES: [list of sources]
       `;
 
@@ -90,7 +93,8 @@ export class PerplexityService {
 
       // Parse the response format
       const verdictMatch = content.match(/VERDICT:\s*(TRUE|FALSE)/i);
-      const explanationMatch = content.match(/EXPLANATION:\s*([\s\S]*?)(?=SOURCES:|$)/i);
+      const explanationMatch = content.match(/EXPLANATION:\s*([\s\S]*?)(?=HISTORICAL CONTEXT:|SOURCES:|$)/i);
+      const contextMatch = content.match(/HISTORICAL CONTEXT:\s*([\s\S]*?)(?=SOURCES:|$)/i);
       
       // Extract sources from the content
       const sources: Source[] = [];
@@ -133,6 +137,7 @@ export class PerplexityService {
       return {
         isTrue: verdictMatch ? verdictMatch[1].toUpperCase() === 'TRUE' : false,
         explanation: explanationMatch ? explanationMatch[1].trim() : 'No explanation provided',
+        historicalContext: contextMatch ? contextMatch[1].trim() : 'No historical context available for this statement',
         sources: sources.length > 0 ? sources : []
       };
     } catch (error) {

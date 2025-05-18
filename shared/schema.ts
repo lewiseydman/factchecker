@@ -57,6 +57,7 @@ export const factChecks = pgTable("fact_checks", {
   statement: text("statement").notNull(),
   isTrue: boolean("is_true").notNull(),
   explanation: text("explanation").notNull(),
+  historicalContext: text("historical_context"),
   sources: jsonb("sources"),
   savedByUser: boolean("saved_by_user").default(false),
   categoryId: integer("category_id").references(() => categories.id),
