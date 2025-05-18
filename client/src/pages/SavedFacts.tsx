@@ -22,55 +22,33 @@ interface TabNavigationProps {
 }
 
 export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
-  const [, setLocation] = useLocation();
-  
-  const handleTabClick = (path: string) => {
-    setLocation(path);
-  };
-  
   return (
     <div className="border-b border-gray-200 mb-6">
       <nav className="-mb-px flex space-x-8">
-        <a 
-          href="#" 
-          onClick={(e) => {
-            e.preventDefault();
-            handleTabClick("/");
-          }}
+        <Link 
+          to="/"
           className={`${activeTab === "dashboard" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
         >
           Dashboard
-        </a>
-        <a 
-          href="#" 
-          onClick={(e) => {
-            e.preventDefault();
-            handleTabClick("/history");
-          }}
+        </Link>
+        <Link 
+          to="/history"
           className={`${activeTab === "history" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
         >
           My History
-        </a>
-        <a 
-          href="#" 
-          onClick={(e) => {
-            e.preventDefault();
-            handleTabClick("/saved");
-          }}
+        </Link>
+        <Link 
+          to="/saved"
           className={`${activeTab === "saved" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
         >
           Saved Facts
-        </a>
-        <a 
-          href="#" 
-          onClick={(e) => {
-            e.preventDefault();
-            handleTabClick("/trending");
-          }}
+        </Link>
+        <Link 
+          to="/trending"
           className={`${activeTab === "trending" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
         >
           Trending
-        </a>
+        </Link>
       </nav>
     </div>
   );
@@ -180,10 +158,8 @@ const SavedFacts = () => {
               <span className="material-icons text-gray-400 text-4xl mb-2">bookmark_border</span>
               <p className="text-gray-700 font-medium">No saved facts yet</p>
               <p className="text-gray-500 mt-1">Save interesting fact checks to refer back to them later</p>
-              <Link href="/">
-                <a className="mt-4 inline-block text-primary hover:text-blue-600">
-                  Check some facts now
-                </a>
+              <Link to="/" className="mt-4 inline-block text-primary hover:text-blue-600">
+                Check some facts now
               </Link>
             </div>
           )}
