@@ -137,16 +137,17 @@ export class DatabaseStorage implements IStorage {
         .delete(factCheckTags)
         .where(eq(factCheckTags.factCheckId, id));
       
-      // Delete related trending facts entry
+      // Delete related trending facts entry - using factCheckId which is the correct column
       await db
         .delete(trendingFacts)
-        .where(eq(trendingFacts.id, id));
+        .where(eq(trendingFacts.factCheckId, id));
       
-      // Then delete the fact check
+      // Then delete the fact check itself
       const result = await db
         .delete(factChecks)
         .where(eq(factChecks.id, id));
-      return !!result;
+      
+      return result.rowCount > 0;
     } catch (error) {
       console.error("Error in deleteFactCheck:", error);
       throw error;
