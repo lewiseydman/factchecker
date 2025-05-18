@@ -12,6 +12,7 @@ type FactCheck = {
   statement: string;
   isTrue: boolean;
   explanation: string;
+  historicalContext?: string;
   sources?: Array<{ name: string; url: string }>;
   savedByUser: boolean;
   checkedAt: string;

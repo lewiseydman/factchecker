@@ -16,6 +16,7 @@ type FactCheckResult = {
   statement: string;
   isTrue: boolean;
   explanation: string;
+  historicalContext?: string;
   sources: Source[];
   savedByUser?: boolean;
   checkedAt: string;

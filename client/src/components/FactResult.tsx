@@ -16,9 +16,11 @@ interface FactResultProps {
   statement: string;
   isTrue: boolean;
   explanation: string;
+  historicalContext?: string;
   sources: Source[];
   savedByUser?: boolean;
   checkedAt: string;
+  onDelete?: (id: number) => void;
 }
 
 const FactResult = ({
@@ -26,9 +28,11 @@ const FactResult = ({
   statement,
   isTrue,
   explanation,
+  historicalContext,
   sources,
   savedByUser = false,
-  checkedAt
+  checkedAt,
+  onDelete
 }: FactResultProps) => {
   const [isSaved, setIsSaved] = useState(savedByUser);
   const { toast } = useToast();
@@ -111,9 +115,37 @@ const FactResult = ({
         </div>
       )}
       
+      {historicalContext && (
+        <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
+          <h4 className="text-sm font-medium text-blue-700 mb-1 flex items-center">
+            <span className="material-icons text-sm mr-1">history</span>
+            Historical Context
+          </h4>
+          <div className="text-sm text-gray-700">
+            {historicalContext}
+          </div>
+        </div>
+      )}
+      
       <div className="mt-4 text-sm text-gray-700">
         {explanation}
       </div>
+
+      {isAuthenticated && onDelete && (
+        <div className="mt-4 flex justify-end">
+          <button 
+            className="text-gray-500 hover:text-red-500 flex items-center text-xs"
+            onClick={() => {
+              if (confirm("Are you sure you want to delete this fact check? This action cannot be undone.")) {
+                onDelete(id);
+              }
+            }}
+          >
+            <span className="material-icons text-sm mr-1">delete_outline</span>
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };
