@@ -131,21 +131,26 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteFactCheck(id: number): Promise<boolean> {
-    // First delete any associated tags
-    await db
-      .delete(factCheckTags)
-      .where(eq(factCheckTags.factCheckId, id));
-    
-    // Delete related trending facts entry
-    await db
-      .delete(trendingFacts)
-      .where(eq(trendingFacts.factCheckId, id));
-    
-    // Then delete the fact check
-    const result = await db
-      .delete(factChecks)
-      .where(eq(factChecks.id, id));
-    return !!result;
+    try {
+      // First delete any associated tags
+      await db
+        .delete(factCheckTags)
+        .where(eq(factCheckTags.factCheckId, id));
+      
+      // Delete related trending facts entry
+      await db
+        .delete(trendingFacts)
+        .where(eq(trendingFacts.id, id));
+      
+      // Then delete the fact check
+      const result = await db
+        .delete(factChecks)
+        .where(eq(factChecks.id, id));
+      return !!result;
+    } catch (error) {
+      console.error("Error in deleteFactCheck:", error);
+      throw error;
+    }
   }
   
   // Category operations
