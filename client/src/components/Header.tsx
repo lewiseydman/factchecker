@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ApiKeyManager } from "@/components/ApiKeyManager";
 import { 
   DropdownMenu,
   DropdownMenuContent, 
@@ -58,8 +59,10 @@ const Header = () => {
                 <DropdownMenuItem className="cursor-pointer">
                   Your Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  Settings
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <div className="w-full">
+                    <ApiKeyManager />
+                  </div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">

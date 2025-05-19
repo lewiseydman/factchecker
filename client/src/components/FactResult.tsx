@@ -43,6 +43,7 @@ const FactResult = ({
   serviceBreakdown
 }: FactResultProps) => {
   const [isSaved, setIsSaved] = useState(savedByUser);
+  const [showFullExplanation, setShowFullExplanation] = useState(false);
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   
@@ -84,12 +85,17 @@ const FactResult = ({
     saveMutation.mutate(!isSaved);
   };
 
+  // Prepare a shortened version of explanation if it's very long
+  const shortenedExplanation = explanation?.length > 300 
+    ? explanation.substring(0, 300) + "..." 
+    : explanation;
+
   return (
     <div className={`bg-white border-l-4 ${isTrue ? 'border-true' : 'border-false'} rounded-lg shadow-sm p-6 mb-4`}>
       <div className="flex justify-between items-start">
         <div>
           <p className="text-gray-800 font-medium mb-2">{statement}</p>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <span className={`flex items-center ${isTrue ? 'text-true' : 'text-false'} font-bold`}>
               <span className="material-icons mr-1">{isTrue ? 'check_circle' : 'cancel'}</span>
               {isTrue ? 'TRUE' : 'FALSE'}
@@ -119,14 +125,14 @@ const FactResult = ({
         <div className="mt-4 p-3 bg-gray-50 rounded-md border border-gray-100">
           <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
             <span className="material-icons text-sm mr-1">analytics</span>
-            Fact-checking Services
+            Multi-AI Verification
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {serviceBreakdown.map((service, index) => (
               <div key={index} className="p-2 border rounded bg-white">
                 <div className="font-medium text-sm">{service.name}</div>
                 <div className="flex justify-between text-sm">
-                  <span className={service.verdict === "True" ? "text-true" : "text-false"}>
+                  <span className={service.verdict === "TRUE" || service.verdict === "True" ? "text-true" : "text-false"}>
                     {service.verdict}
                   </span>
                   <span className="text-gray-500">
@@ -141,7 +147,7 @@ const FactResult = ({
       
       {sources && sources.length > 0 && (
         <div className="mt-4">
-          <h4 className="text-sm font-medium text-gray-700 mb-1">Sources:</h4>
+          <h4 className="text-sm font-medium text-gray-700 mb-1">Top Sources:</h4>
           <ul className="text-sm text-gray-600 space-y-1 ml-5 list-disc">
             {sources.slice(0, 3).map((source, index) => (
               <li key={index}>
@@ -166,8 +172,24 @@ const FactResult = ({
         </div>
       )}
       
-      <div className="mt-4 text-sm text-gray-700">
-        {explanation}
+      <div className="mt-4">
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="text-sm font-medium text-gray-700 flex items-center">
+            <span className="material-icons text-sm mr-1">fact_check</span>
+            Fact Analysis
+          </h4>
+          {explanation?.length > 300 && (
+            <button 
+              onClick={() => setShowFullExplanation(!showFullExplanation)}
+              className="text-xs text-primary hover:underline"
+            >
+              {showFullExplanation ? 'Show Less' : 'Show More'}
+            </button>
+          )}
+        </div>
+        <div className="text-sm text-gray-700 whitespace-pre-line">
+          {showFullExplanation ? explanation : shortenedExplanation}
+        </div>
       </div>
 
       {isAuthenticated && onDelete && (
