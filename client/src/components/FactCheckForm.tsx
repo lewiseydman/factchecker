@@ -19,6 +19,12 @@ type FactCheckResponse = {
     url: string;
   }>;
   checkedAt: string;
+  confidenceScore?: number;
+  serviceBreakdown?: Array<{
+    name: string;
+    verdict: string;
+    confidence: number;
+  }>;
 };
 
 interface FactCheckFormProps {
