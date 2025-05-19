@@ -7,6 +7,7 @@ import { insertFactCheckSchema, sourceSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { perplexityService } from "./services/perplexityService";
+import { aggregatedFactCheckService } from "./services/aggregatedFactCheckService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -33,8 +34,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Statement is required and must be a string" });
       }
       
-      // Use Perplexity API to check the fact
-      const factResult = await perplexityService.checkFact(statement);
+      // Use the aggregated fact checking service that combines multiple sources
+      const factResult = await aggregatedFactCheckService.checkFact(statement);
       
       // If user is authenticated, save the fact check
       if (req.isAuthenticated() && (req as any).user) {
@@ -47,7 +48,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           explanation: factResult.explanation,
           historicalContext: factResult.historicalContext,
           sources: factResult.sources,
-          savedByUser: false
+          savedByUser: false,
+          confidenceScore: factResult.confidenceScore
         };
         
         // Validate data before saving
