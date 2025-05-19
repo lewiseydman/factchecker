@@ -20,6 +20,12 @@ type FactCheckResult = {
   sources: Source[];
   savedByUser?: boolean;
   checkedAt: string;
+  confidenceScore?: number;
+  serviceBreakdown?: Array<{
+    name: string;
+    verdict: string;
+    confidence: number;
+  }>;
 };
 
 // Import TabNavigation component properly
@@ -56,6 +62,8 @@ const Dashboard = () => {
             sources={currentFactCheck.sources}
             savedByUser={currentFactCheck.savedByUser}
             checkedAt={currentFactCheck.checkedAt}
+            confidenceScore={currentFactCheck.confidenceScore}
+            serviceBreakdown={currentFactCheck.serviceBreakdown}
           />
         </div>
       )}

@@ -49,7 +49,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           historicalContext: factResult.historicalContext,
           sources: factResult.sources,
           savedByUser: false,
-          confidenceScore: factResult.confidenceScore
+          confidenceScore: factResult.confidenceScore,
+          serviceBreakdown: factResult.serviceBreakdown
         };
         
         // Validate data before saving
@@ -78,9 +79,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         statement,
         isTrue: factResult.isTrue,
         explanation: factResult.explanation,
+        historicalContext: factResult.historicalContext,
         sources: factResult.sources,
         savedByUser: false,
-        checkedAt: new Date().toISOString()
+        checkedAt: new Date().toISOString(),
+        confidenceScore: factResult.confidenceScore,
+        serviceBreakdown: factResult.serviceBreakdown
       });
     } catch (error) {
       console.error("Error checking fact:", error);
