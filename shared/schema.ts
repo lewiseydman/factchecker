@@ -9,6 +9,7 @@ import {
   serial,
   integer,
   unique,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -62,6 +63,8 @@ export const factChecks = pgTable("fact_checks", {
   savedByUser: boolean("saved_by_user").default(false),
   categoryId: integer("category_id").references(() => categories.id),
   checkedAt: timestamp("checked_at").defaultNow(),
+  confidenceScore: numeric("confidence_score", { precision: 3, scale: 2 }),
+  serviceBreakdown: jsonb("service_breakdown"),
 });
 
 // Many-to-many relationship between fact checks and tags
