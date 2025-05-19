@@ -6,12 +6,15 @@ import { z } from "zod";
 import { insertFactCheckSchema, sourceSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
-import { perplexityService } from "./services/perplexityService";
-import { aggregatedFactCheckService } from "./services/aggregatedFactCheckService";
+import factCheckRoutes from "./routes/factCheckRoutes";
+import { ultimateFactCheckService } from "./services/ultimateFactCheckService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+  
+  // Register fact check routes
+  app.use('/api', factCheckRoutes);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
@@ -25,8 +28,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Fact check routes
-  app.post('/api/fact-check', async (req: Request, res: Response) => {
+  // Legacy fact check route
+  app.post('/api/fact-check-legacy', async (req: Request, res: Response) => {
     try {
       const { statement } = req.body;
       
@@ -34,8 +37,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Statement is required and must be a string" });
       }
       
-      // Use the aggregated fact checking service that combines multiple sources
-      const factResult = await aggregatedFactCheckService.checkFact(statement);
+      // Use the ultimate fact checking service that combines multiple sources
+      const factResult = await ultimateFactCheckService.checkFact(statement);
       
       // If user is authenticated, save the fact check
       if (req.isAuthenticated() && (req as any).user) {
