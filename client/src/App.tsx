@@ -31,6 +31,7 @@ function Router() {
       <Route path="/history" component={isAuthenticated ? History : Dashboard} />
       <Route path="/saved" component={isAuthenticated ? SavedFacts : Dashboard} />
       <Route path="/trending" component={Trending} />
+      <Route path="/methodology" component={Methodology} />
       <Route path="/settings" component={isAuthenticated ? Settings : Dashboard} />
       <Route component={NotFound} />
     </Switch>

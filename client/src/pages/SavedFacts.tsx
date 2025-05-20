@@ -51,6 +51,12 @@ export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
           Trending
         </Link>
         <Link 
+          to="/methodology"
+          className={`${activeTab === "methodology" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
+        >
+          Methodology
+        </Link>
+        <Link 
           to="/settings"
           className={`${activeTab === "settings" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
         >
