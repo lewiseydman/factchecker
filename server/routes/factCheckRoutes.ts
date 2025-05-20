@@ -51,11 +51,15 @@ router.get('/api-keys/status', isAuthenticated, async (req: any, res: Response) 
 // Main fact-check endpoint
 router.post('/fact-check', async (req: Request, res: Response) => {
   try {
-    const { input } = req.body;
+    // Accept either 'input' or 'statement' parameter for backward compatibility
+    const userInput = req.body.input || req.body.statement;
     
-    if (!input || typeof input !== 'string') {
-      return res.status(400).json({ message: "Input is required and must be a string" });
+    if (!userInput || typeof userInput !== 'string') {
+      return res.status(400).json({ message: "Statement is required and must be a string" });
     }
+    
+    // Use a consistent variable name for the rest of the function
+    const input = userInput;
     
     // Use the ultimate fact checking service that processes both questions and statements
     const factResult = await ultimateFactCheckService.processInput(input);
