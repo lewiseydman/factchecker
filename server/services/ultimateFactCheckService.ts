@@ -25,11 +25,95 @@ export class UltimateFactCheckService {
   }
   
   /**
+   * Processes the user input, which could be a question or statement,
+   * and performs comprehensive fact-checking using multiple AI services
+   * and specialized aggregation systems.
+   * 
+   * @param userInput The user's question or statement to fact-check
+   */
+  async processInput(userInput: string): Promise<{
+    isTrue: boolean;
+    explanation: string;
+    historicalContext: string;
+    sources: Source[];
+    confidenceScore: number;
+    serviceBreakdown: Array<{
+      name: string;
+      verdict: string;
+      confidence: number;
+    }>;
+    factualConsensus: number;
+    manipulationScore: number;
+    contradictionIndex: number;
+    // Additional fields for enhanced user experience
+    isQuestion: boolean;
+    transformedStatement?: string;
+    implicitClaims?: string[];
+    domainInfo?: {
+      detectedDomains: Domain[];
+      modelWeights: {
+        claude: number;
+        openai: number;
+        perplexity: number;
+      };
+      explanation: string;
+    };
+  }> {
+    // Check if input is a question
+    const isQuestion = domainDetectionService.isQuestion(userInput);
+    let statement = userInput;
+    let transformedStatement: string | undefined;
+    let implicitClaims: string[] | undefined;
+    
+    // If it's a question, transform it to a statement
+    if (isQuestion) {
+      const transformation = await questionTransformService.transformQuestionToStatement(userInput);
+      statement = transformation.transformedStatement;
+      transformedStatement = transformation.transformedStatement;
+      implicitClaims = transformation.implicitClaims;
+    }
+    
+    // Detect domains in the statement
+    const detectedDomains = domainDetectionService.detectDomains(statement);
+    
+    // Calculate model weights based on domains
+    const modelWeights = domainDetectionService.calculateModelWeights(detectedDomains);
+    
+    // Generate explanation of domain detection and weighting
+    const domainExplanation = domainDetectionService.getWeightExplanation(
+      detectedDomains,
+      modelWeights
+    );
+    
+    // Perform the actual fact check with the statement
+    const factCheckResult = await this.checkFact(statement, modelWeights);
+    
+    // Return enriched result with transformation and domain information
+    return {
+      ...factCheckResult,
+      isQuestion,
+      transformedStatement,
+      implicitClaims,
+      domainInfo: {
+        detectedDomains,
+        modelWeights,
+        explanation: domainExplanation
+      }
+    };
+  }
+
+  /**
    * Performs the ultimate fact check using a two-layer approach:
    * 1. Multiple AI services check the fact (Claude, GPT, Perplexity)
    * 2. Two specialized systems analyze these results (InFact, DEFAME)
+   * 
+   * @param statement The statement to fact-check
+   * @param modelWeights Optional weights to apply to different AI models
    */
-  async checkFact(statement: string): Promise<{
+  async checkFact(
+    statement: string, 
+    modelWeights?: { claude: number; openai: number; perplexity: number }
+  ): Promise<{
     isTrue: boolean;
     explanation: string;
     historicalContext: string;

@@ -51,14 +51,14 @@ router.get('/api-keys/status', isAuthenticated, async (req: any, res: Response) 
 // Main fact-check endpoint
 router.post('/fact-check', async (req: Request, res: Response) => {
   try {
-    const { statement } = req.body;
+    const { input } = req.body;
     
-    if (!statement || typeof statement !== 'string') {
-      return res.status(400).json({ message: "Statement is required and must be a string" });
+    if (!input || typeof input !== 'string') {
+      return res.status(400).json({ message: "Input is required and must be a string" });
     }
     
-    // Use the ultimate fact checking service that combines multiple sources
-    const factResult = await ultimateFactCheckService.checkFact(statement);
+    // Use the ultimate fact checking service that processes both questions and statements
+    const factResult = await ultimateFactCheckService.processInput(input);
     
     // If user is authenticated, save the fact check
     if (req.isAuthenticated() && (req as any).user) {
@@ -66,7 +66,7 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       
       const factCheckData = {
         userId,
-        statement,
+        statement: input, // Use the original input
         isTrue: factResult.isTrue,
         explanation: factResult.explanation,
         historicalContext: factResult.historicalContext,
@@ -104,7 +104,7 @@ router.post('/fact-check', async (req: Request, res: Response) => {
     // For unauthenticated users or if database save fails, return the API result directly
     res.json({
       id: 0, // Temporary ID for unauthenticated users
-      statement,
+      statement: input, // Original user input
       isTrue: factResult.isTrue,
       explanation: factResult.explanation,
       historicalContext: factResult.historicalContext,
@@ -115,7 +115,12 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       serviceBreakdown: factResult.serviceBreakdown,
       factualConsensus: factResult.factualConsensus,
       manipulationScore: factResult.manipulationScore,
-      contradictionIndex: factResult.contradictionIndex
+      contradictionIndex: factResult.contradictionIndex,
+      // Include enhanced information
+      isQuestion: factResult.isQuestion,
+      transformedStatement: factResult.transformedStatement,
+      implicitClaims: factResult.implicitClaims,
+      domainInfo: factResult.domainInfo
     });
   } catch (error) {
     console.error("Error checking fact:", error);

@@ -53,8 +53,8 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
 
   const checkFactMutation = useMutation({
     mutationFn: async () => {
-      // Call the actual backend API that uses Perplexity for fact checking
-      const response = await apiRequest("POST", "/api/fact-check", { statement });
+      // Call the backend API with our input (can be either a question or statement)
+      const response = await apiRequest("POST", "/api/fact-check", { input: statement });
       return await response.json();
     },
     onSuccess: (data) => {
