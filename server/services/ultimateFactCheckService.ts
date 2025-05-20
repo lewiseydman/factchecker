@@ -1,6 +1,8 @@
 import { Source } from "@shared/schema";
 import { enhancedInFactService } from "./enhancedInFactService";
 import { enhancedDEFAMEService } from "./enhancedDEFAMEService";
+import { domainDetectionService, Domain } from "./domainDetectionService";
+import { questionTransformService } from "./questionTransformService";
 
 /**
  * Ultimate Fact Check Service
