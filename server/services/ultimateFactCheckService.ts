@@ -1,37 +1,26 @@
-import { Source } from "@shared/schema";
-import { enhancedInFactService } from "./enhancedInFactService";
-import { enhancedDEFAMEService } from "./enhancedDEFAMEService";
-import { domainDetectionService, Domain } from "./domainDetectionService";
-import { questionTransformService } from "./questionTransformService";
+import { Source } from '@shared/schema';
+import { questionTransformService } from './questionTransformService';
+import { domainDetectionService } from './domainDetectionService';
+import { enhancedPerplexityService } from './enhancedPerplexityService';
+import { claudeService } from './claudeService';
+import { openAIService } from './openAIService';
+import { geminiService } from './geminiService';
+import { mistralService } from './mistralService';
+import { llamaService } from './llamaService';
+import { enhancedInFactService } from './enhancedInFactService';
+import { enhancedDEFAMEService } from './enhancedDEFAMEService';
+import { apiKeyManager } from './apiKeyManager';
 
 /**
- * Ultimate Fact Check Service
- * 
- * This service combines the results from InFact (factual information) and 
- * DEFAME (misinformation detection) to provide the most comprehensive
- * fact-checking result possible.
+ * Unified service that processes both questions and statements
+ * and leverages multiple AI models with domain-specific weighting
  */
 export class UltimateFactCheckService {
-  /**
-   * Initialize the service clients with API keys
-   */
-  initializeServices(apiKeys: {
-    claude?: string;
-    openai?: string;
-    perplexity?: string;
-  }): void {
-    // This method would initialize all the underlying services
-    // when you're ready to add your API keys
-  }
   
   /**
-   * Processes the user input, which could be a question or statement,
-   * and performs comprehensive fact-checking using multiple AI services
-   * and specialized aggregation systems.
-   * 
-   * @param userInput The user's question or statement to fact-check
+   * Process user input (statement or question) and perform fact checking
    */
-  async processInput(userInput: string): Promise<{
+  async processInput(input: string): Promise<{
     isTrue: boolean;
     explanation: string;
     historicalContext: string;
@@ -45,230 +34,177 @@ export class UltimateFactCheckService {
     factualConsensus: number;
     manipulationScore: number;
     contradictionIndex: number;
-    // Additional fields for enhanced user experience
     isQuestion: boolean;
     transformedStatement?: string;
     implicitClaims?: string[];
     domainInfo?: {
-      detectedDomains: Domain[];
-      modelWeights: {
-        claude: number;
-        openai: number;
-        perplexity: number;
-      };
+      detectedDomains: string[];
+      modelWeights: Record<string, number>;
       explanation: string;
     };
   }> {
-    // Check if input is a question
-    const isQuestion = domainDetectionService.isQuestion(userInput);
-    let statement = userInput;
-    let transformedStatement: string | undefined;
-    let implicitClaims: string[] | undefined;
+    console.log("Processing input:", input);
     
-    // If it's a question, transform it to a statement
+    // Step 1: Determine if input is a question
+    const isQuestion = domainDetectionService.isQuestion(input);
+    let statement = input;
+    let implicitClaims: string[] = [];
+    
+    // Step 2: Transform questions into statements if needed
     if (isQuestion) {
-      const transformation = await questionTransformService.transformQuestionToStatement(userInput);
-      statement = transformation.transformedStatement;
-      transformedStatement = transformation.transformedStatement;
+      const transformation = await questionTransformService.transformToStatement(input);
+      statement = transformation.statement;
       implicitClaims = transformation.implicitClaims;
+      console.log("Transformed question to statement:", statement);
     }
     
-    // Detect domains in the statement
+    // Step 3: Detect domains in the statement
     const detectedDomains = domainDetectionService.detectDomains(statement);
+    console.log("Detected domains:", detectedDomains);
     
-    // Calculate model weights based on domains
+    // Step 4: Calculate weights for AI models based on their domain strengths
     const modelWeights = domainDetectionService.calculateModelWeights(detectedDomains);
+    console.log("Model weights:", modelWeights);
     
-    // Generate explanation of domain detection and weighting
-    const domainExplanation = domainDetectionService.getWeightExplanation(
-      detectedDomains,
-      modelWeights
+    // Step 5: Generate weight explanation
+    const weightExplanation = domainDetectionService.getWeightExplanation(detectedDomains, modelWeights);
+    
+    // Step 6: Gather available API keys and prepare services list
+    const availableServices = [];
+    
+    // Always include these services as they can work with simulated data if no API key
+    availableServices.push(
+      {
+        name: "Claude",
+        service: claudeService,
+        weight: modelWeights.claude,
+        hasRealKey: apiKeyManager.hasKey('claude')
+      },
+      {
+        name: "GPT-4",
+        service: openAIService,
+        weight: modelWeights.openai,
+        hasRealKey: apiKeyManager.hasKey('openai')
+      },
+      {
+        name: "Perplexity",
+        service: enhancedPerplexityService,
+        weight: modelWeights.perplexity,
+        hasRealKey: apiKeyManager.hasKey('perplexity')
+      }
     );
     
-    // Perform the actual fact check with the statement
-    const factCheckResult = await this.checkFact(statement, modelWeights);
+    // Add new services if their weights are significant (over 5%)
+    if (modelWeights.gemini > 0.05) {
+      availableServices.push({
+        name: "Gemini",
+        service: geminiService,
+        weight: modelWeights.gemini,
+        hasRealKey: apiKeyManager.hasKey('gemini')
+      });
+    }
     
-    // Return enriched result with transformation and domain information
+    if (modelWeights.mistral > 0.05) {
+      availableServices.push({
+        name: "Mistral",
+        service: mistralService,
+        weight: modelWeights.mistral,
+        hasRealKey: apiKeyManager.hasKey('mistral')
+      });
+    }
+    
+    if (modelWeights.llama > 0.05) {
+      availableServices.push({
+        name: "Llama",
+        service: llamaService,
+        weight: modelWeights.llama,
+        hasRealKey: apiKeyManager.hasKey('llama')
+      });
+    }
+    
+    // Step 7: Run fact-checking in parallel with all available services
+    const serviceResults = await Promise.all(
+      availableServices.map(async ({ name, service, weight, hasRealKey }) => {
+        try {
+          const result = await service.checkFact(statement);
+          return {
+            name,
+            isTrue: result.isTrue,
+            explanation: result.explanation,
+            historicalContext: result.historicalContext,
+            sources: result.sources,
+            confidence: result.confidence,
+            weight,
+            hasRealKey
+          };
+        } catch (error) {
+          console.error(`Error with ${name} service:`, error);
+          // Return fallback result if a service fails
+          return {
+            name,
+            isTrue: false,
+            explanation: `Error: ${name} service could not process this statement.`,
+            historicalContext: "",
+            sources: [],
+            confidence: 0.5,
+            weight,
+            hasRealKey: false
+          };
+        }
+      })
+    );
+    
+    // Step 8: Process results through InFact (factual consensus) layer
+    const inFactResult = await enhancedInFactService.aggregateFactCheckInfo(statement);
+    
+    // Step 9: Process results through DEFAME (misinformation detection) layer
+    const defameResult = await enhancedDEFAMEService.analyzeForMisinformation(statement);
+    
+    // Step 10: Create service breakdown for UI display
+    const serviceBreakdown = serviceResults.map(result => ({
+      name: result.name,
+      verdict: result.isTrue ? "TRUE" : "FALSE",
+      confidence: result.confidence
+    }));
+    
+    // Step 11: Calculate final verdict and confidence by weighted average
+    let weightedTrueScore = 0;
+    let totalWeight = 0;
+    
+    for (const result of serviceResults) {
+      const effectiveWeight = result.weight * (result.hasRealKey ? 1 : 0.7); // Give more weight to services with real API keys
+      weightedTrueScore += (result.isTrue ? 1 : 0) * effectiveWeight;
+      totalWeight += effectiveWeight;
+    }
+    
+    const weightedIsTrue = weightedTrueScore / totalWeight > 0.5;
+    
+    // Combine confidence scores
+    let confidenceScore = 0;
+    for (const result of serviceResults) {
+      confidenceScore += result.confidence * (result.weight / totalWeight);
+    }
+    
+    // Step 12: Return comprehensive results
     return {
-      ...factCheckResult,
+      isTrue: weightedIsTrue,
+      explanation: inFactResult.consolidatedExplanation,
+      historicalContext: inFactResult.bestHistoricalContext,
+      sources: inFactResult.consolidatedSources,
+      confidenceScore,
+      serviceBreakdown,
+      factualConsensus: inFactResult.factualConsensus,
+      manipulationScore: defameResult.manipulationScore,
+      contradictionIndex: defameResult.contradictionIndex,
       isQuestion,
-      transformedStatement,
-      implicitClaims,
+      transformedStatement: isQuestion ? statement : undefined,
+      implicitClaims: implicitClaims.length > 0 ? implicitClaims : undefined,
       domainInfo: {
-        detectedDomains,
+        detectedDomains: detectedDomains,
         modelWeights,
-        explanation: domainExplanation
+        explanation: weightExplanation
       }
     };
-  }
-
-  /**
-   * Performs the ultimate fact check using a two-layer approach:
-   * 1. Multiple AI services check the fact (Claude, GPT, Perplexity)
-   * 2. Two specialized systems analyze these results (InFact, DEFAME)
-   * 
-   * @param statement The statement to fact-check
-   * @param modelWeights Optional weights to apply to different AI models
-   */
-  async checkFact(
-    statement: string, 
-    modelWeights?: { claude: number; openai: number; perplexity: number }
-  ): Promise<{
-    isTrue: boolean;
-    explanation: string;
-    historicalContext: string;
-    sources: Source[];
-    confidenceScore: number;
-    serviceBreakdown: Array<{
-      name: string;
-      verdict: string;
-      confidence: number;
-    }>;
-    factualConsensus: number;
-    manipulationScore: number;
-    contradictionIndex: number;
-  }> {
-    try {
-      // Get results from both specialized systems
-      const [inFactResult, defameResult] = await Promise.all([
-        enhancedInFactService.aggregateFactCheckInfo(statement),
-        enhancedDEFAMEService.analyzeForMisinformation(statement)
-      ]);
-      
-      // Calculate final truth value balancing factual accuracy and manipulation detection
-      // We weigh InFact more heavily for factual determination (60%) and DEFAME for confidence (40%)
-      const weightedTruthValue = (inFactResult.isTrue ? 0.6 : 0) + (defameResult.isTrue ? 0.4 : 0);
-      const finalVerdict = weightedTruthValue >= 0.5;
-      
-      // Calculate final confidence considering both factual confidence and manipulation detection
-      // Lower confidence when manipulation is detected or contradictions are high
-      let finalConfidence = (inFactResult.confidence * 0.6) + (defameResult.confidence * 0.4);
-      // Reduce confidence if high manipulation or contradiction
-      finalConfidence *= (1 - (defameResult.manipulationScore * 0.3));
-      finalConfidence *= (1 - (defameResult.contradictionIndex * 0.3));
-      
-      // Combine explanations to highlight both factual information and potential manipulation
-      const combinedExplanation = this.combineExplanations(
-        inFactResult.explanation, 
-        defameResult.explanation,
-        defameResult.manipulationScore,
-        inFactResult.factualConsensus
-      );
-      
-      // Get the most relevant historical context
-      const historicalContext = this.selectBestContext(
-        inFactResult.historicalContext,
-        defameResult.historicalContext
-      );
-      
-      // Consolidate sources from both systems, prioritizing more credible ones
-      const consolidatedSources = this.prioritizeSources(
-        inFactResult.sources,
-        defameResult.sources
-      );
-      
-      // Create service breakdown for UI display
-      const serviceBreakdown = [
-        {
-          name: "Claude",
-          verdict: inFactResult.serviceSummary["Claude"].verdict,
-          confidence: inFactResult.serviceSummary["Claude"].confidence
-        },
-        {
-          name: "GPT",
-          verdict: inFactResult.serviceSummary["GPT"].verdict,
-          confidence: inFactResult.serviceSummary["GPT"].confidence
-        },
-        {
-          name: "Perplexity",
-          verdict: inFactResult.serviceSummary["Perplexity"].verdict,
-          confidence: inFactResult.serviceSummary["Perplexity"].confidence
-        }
-      ];
-      
-      return {
-        isTrue: finalVerdict,
-        explanation: combinedExplanation,
-        historicalContext,
-        sources: consolidatedSources,
-        confidenceScore: finalConfidence,
-        serviceBreakdown,
-        factualConsensus: inFactResult.factualConsensus,
-        manipulationScore: defameResult.manipulationScore,
-        contradictionIndex: defameResult.contradictionIndex
-      };
-    } catch (error) {
-      console.error('Error in ultimate fact check:', error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Combines explanations from both systems into one comprehensive explanation
-   */
-  private combineExplanations(
-    factualExplanation: string,
-    misinformationExplanation: string,
-    manipulationScore: number,
-    factualConsensus: number
-  ): string {
-    let combined = "## Multi-System Fact Check Result\n\n";
-    
-    // Add factual assessment
-    combined += "### Factual Assessment\n";
-    combined += factualExplanation + "\n\n";
-    
-    // Add manipulation assessment if significant
-    if (manipulationScore > 0.3) {
-      combined += "### Misinformation Analysis\n";
-      combined += misinformationExplanation + "\n\n";
-    }
-    
-    // Add conclusion that weighs both aspects
-    combined += "### Conclusion\n";
-    if (factualConsensus > 0.7 && manipulationScore < 0.3) {
-      combined += "The statement appears to be factually sound with strong agreement across multiple AI systems and no significant manipulative language patterns detected.";
-    } else if (factualConsensus < 0.3 && manipulationScore < 0.3) {
-      combined += "The statement appears to be factually incorrect with strong agreement across multiple AI systems, though no significant manipulative language patterns were detected.";
-    } else if (factualConsensus > 0.7 && manipulationScore > 0.3) {
-      combined += "While the core facts of the statement appear accurate, our analysis detected potentially misleading language patterns that could affect interpretation.";
-    } else if (factualConsensus < 0.3 && manipulationScore > 0.3) {
-      combined += "The statement appears to be factually incorrect and contains potentially misleading language patterns.";
-    } else {
-      combined += "The statement contains mixed factual elements with some disagreement between AI systems. Exercise caution and consult additional sources.";
-    }
-    
-    return combined;
-  }
-  
-  /**
-   * Selects the most relevant historical context
-   */
-  private selectBestContext(context1: string, context2: string): string {
-    // Prioritize longer, more detailed context
-    if (!context1 || context1.length < 20) return context2;
-    if (!context2 || context2.length < 20) return context1;
-    
-    return context1.length > context2.length ? context1 : context2;
-  }
-  
-  /**
-   * Prioritizes sources from both systems, removing duplicates
-   */
-  private prioritizeSources(sources1: Source[], sources2: Source[]): Source[] {
-    // Combine all sources
-    const allSources = [...sources1, ...sources2];
-    
-    // Remove duplicates by URL
-    const uniqueSources = new Map<string, Source>();
-    allSources.forEach(source => {
-      if (source.url && !uniqueSources.has(source.url)) {
-        uniqueSources.set(source.url, source);
-      }
-    });
-    
-    // Return as array (max 5 sources)
-    return Array.from(uniqueSources.values()).slice(0, 5);
   }
 }
 

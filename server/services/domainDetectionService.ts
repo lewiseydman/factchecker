@@ -117,6 +117,42 @@ export class DomainDetectionService {
       sports: 0.8,
       entertainment: 0.8,
       generalKnowledge: 0.7
+    },
+    gemini: {
+      medical: 0.8,
+      scientific: 0.85,
+      historical: 0.75,
+      technical: 0.85,
+      financial: 0.7,
+      political: 0.75,
+      currentEvents: 0.8,
+      sports: 0.7,
+      entertainment: 0.75,
+      generalKnowledge: 0.8
+    },
+    mistral: {
+      medical: 0.75,
+      scientific: 0.8,
+      historical: 0.85,
+      technical: 0.75,
+      financial: 0.7,
+      political: 0.75,
+      currentEvents: 0.65,
+      sports: 0.65,
+      entertainment: 0.7,
+      generalKnowledge: 0.75
+    },
+    llama: {
+      medical: 0.75,
+      scientific: 0.8,
+      historical: 0.8,
+      technical: 0.85,
+      financial: 0.75,
+      political: 0.7,
+      currentEvents: 0.7,
+      sports: 0.85,
+      entertainment: 0.9,
+      generalKnowledge: 0.8
     }
   };
 
@@ -152,26 +188,39 @@ export class DomainDetectionService {
     claude: number;
     openai: number;
     perplexity: number;
+    gemini: number;
+    mistral: number;
+    llama: number;
   } {
     // Default equal weights
     let claudeWeight = 1;
     let openaiWeight = 1;
     let perplexityWeight = 1;
+    let geminiWeight = 1;
+    let mistralWeight = 1;
+    let llamaWeight = 1;
     
     // Adjust weights based on domains
     for (const domain of domains) {
       claudeWeight *= this.aiStrengths.claude[domain] || 0.7;
       openaiWeight *= this.aiStrengths.openai[domain] || 0.7;
       perplexityWeight *= this.aiStrengths.perplexity[domain] || 0.7;
+      geminiWeight *= this.aiStrengths.gemini[domain] || 0.7;
+      mistralWeight *= this.aiStrengths.mistral[domain] || 0.7;
+      llamaWeight *= this.aiStrengths.llama[domain] || 0.7;
     }
     
     // Normalize weights to sum to 1
-    const totalWeight = claudeWeight + openaiWeight + perplexityWeight;
+    const totalWeight = claudeWeight + openaiWeight + perplexityWeight + 
+                       geminiWeight + mistralWeight + llamaWeight;
     
     return {
       claude: claudeWeight / totalWeight,
       openai: openaiWeight / totalWeight,
-      perplexity: perplexityWeight / totalWeight
+      perplexity: perplexityWeight / totalWeight,
+      gemini: geminiWeight / totalWeight,
+      mistral: mistralWeight / totalWeight,
+      llama: llamaWeight / totalWeight
     };
   }
 
@@ -198,6 +247,9 @@ export class DomainDetectionService {
     claude: number;
     openai: number;
     perplexity: number;
+    gemini?: number;
+    mistral?: number;
+    llama?: number;
   }): string {
     // Format domains for display
     const domainDisplay = domains.map(d => 
@@ -209,11 +261,26 @@ export class DomainDetectionService {
     const openaiPercent = Math.round(weights.openai * 100);
     const perplexityPercent = Math.round(weights.perplexity * 100);
     
-    return `This statement was classified in the following domains: ${domainDisplay}. 
+    let explanation = `This statement was classified in the following domains: ${domainDisplay}. 
 Based on these domains, the AI models were weighted as follows:
 - Claude: ${claudePercent}%
 - GPT: ${openaiPercent}%
 - Perplexity: ${perplexityPercent}%`;
+
+    // Add new models if they have weights
+    if (weights.gemini !== undefined) {
+      explanation += `\n- Gemini: ${Math.round(weights.gemini * 100)}%`;
+    }
+    
+    if (weights.mistral !== undefined) {
+      explanation += `\n- Mistral: ${Math.round(weights.mistral * 100)}%`;
+    }
+    
+    if (weights.llama !== undefined) {
+      explanation += `\n- Llama: ${Math.round(weights.llama * 100)}%`;
+    }
+    
+    return explanation;
   }
 }
 
