@@ -107,11 +107,33 @@ export const insertTagSchema = createInsertSchema(tags).omit({
 export type InsertTag = z.infer<typeof insertTagSchema>;
 export type Tag = typeof tags.$inferSelect;
 
-// Fact check types
-export const insertFactCheckSchema = createInsertSchema(factChecks).omit({
-  id: true,
-  checkedAt: true,
+// Define source schema first to avoid circular references
+export const sourceSchema = z.object({
+  name: z.string(),
+  url: z.string(),
 });
+
+export type Source = z.infer<typeof sourceSchema>;
+
+// Service breakdown schema
+export const serviceBreakdownSchema = z.object({
+  name: z.string(),
+  verdict: z.string(),
+  confidence: z.number()
+});
+
+// Fact check types
+export const insertFactCheckSchema = createInsertSchema(factChecks)
+  .omit({
+    id: true,
+    checkedAt: true,
+  })
+  .extend({
+    // Override any fields that need special handling
+    confidenceScore: z.number().transform(val => String(val)), // Convert number to string for the numeric field
+    sources: z.array(sourceSchema),
+    serviceBreakdown: z.array(serviceBreakdownSchema)
+  });
 export type InsertFactCheck = z.infer<typeof insertFactCheckSchema>;
 export type FactCheck = typeof factChecks.$inferSelect;
 
@@ -131,10 +153,4 @@ export const insertTrendingFactSchema = createInsertSchema(trendingFacts).omit({
 export type InsertTrendingFact = z.infer<typeof insertTrendingFactSchema>;
 export type TrendingFact = typeof trendingFacts.$inferSelect;
 
-// Source type for fact checking
-export const sourceSchema = z.object({
-  name: z.string(),
-  url: z.string().url(),
-});
-
-export type Source = z.infer<typeof sourceSchema>;
+// No need for this duplicate definition - it's already defined above

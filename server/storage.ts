@@ -113,7 +113,20 @@ export class DatabaseStorage implements IStorage {
   // Get most recent fact checks, regardless of user
   async getRecentFactChecks(limit = 10): Promise<FactCheck[]> {
     return db
-      .select()
+      .select({
+        id: factChecks.id,
+        userId: factChecks.userId,
+        statement: factChecks.statement,
+        isTrue: factChecks.isTrue,
+        explanation: factChecks.explanation,
+        historicalContext: factChecks.historicalContext,
+        sources: factChecks.sources,
+        savedByUser: factChecks.savedByUser,
+        checkedAt: factChecks.checkedAt,
+        categoryId: factChecks.categoryId,
+        confidenceScore: factChecks.confidenceScore,
+        serviceBreakdown: factChecks.serviceBreakdown
+      })
       .from(factChecks)
       .orderBy(desc(factChecks.checkedAt))
       .limit(limit);
