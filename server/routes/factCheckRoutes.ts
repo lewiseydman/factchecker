@@ -63,78 +63,56 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       });
     }
     
-    // Use a consistent variable name for the rest of the function
-    const input = userInput;
+    // Process the user input through the fact checking service
+    const factResult = await ultimateFactCheckService.processInput(userInput);
     
-    // Use the ultimate fact checking service that processes both questions and statements
-    const factResult = await ultimateFactCheckService.processInput(input);
+    // If user is authenticated, try to save the fact check
+    let savedFactCheck = null;
     
-    // Create fact check data
-    const factCheckData = {
-      // If user is authenticated, save with their userId, otherwise use null
-      userId: req.isAuthenticated() && (req as any).user ? (req as any).user.claims.sub : null,
-      statement: input, // Use the original input
-      isTrue: factResult.isTrue,
-      explanation: factResult.explanation,
-      historicalContext: factResult.historicalContext,
-      sources: factResult.sources,
-      savedByUser: false,
-      confidenceScore: factResult.confidenceScore,
-      serviceBreakdown: factResult.serviceBreakdown
-    };
-    
-    // Validate data before saving
-    try {
-      const validatedData = insertFactCheckSchema.parse(factCheckData);
-      
-      // Create fact check in database
-      const factCheck = await storage.createFactCheck(validatedData);
-      
-      // Add to trending
-      await storage.incrementChecksCount(factCheck.id);
-      
-      return res.status(201).json({
-        ...factCheck,
-        factualConsensus: factResult.factualConsensus,
-        manipulationScore: factResult.manipulationScore,
-        contradictionIndex: factResult.contradictionIndex,
-        isQuestion: factResult.isQuestion,
-        transformedStatement: factResult.transformedStatement,
-        implicitClaims: factResult.implicitClaims,
-        domainInfo: factResult.domainInfo
-      });
-    } catch (validationError) {
-      if (validationError instanceof ZodError) {
-        const readableError = fromZodError(validationError);
-        console.error("Validation error:", readableError.message);
+    if (req.isAuthenticated() && (req as any).user) {
+      try {
+        // Create the fact check data with required fields
+        const factCheckData = {
+          userId: (req as any).user.claims.sub,
+          statement: userInput,
+          isTrue: factResult.isTrue,
+          explanation: factResult.explanation || "No explanation provided",
+          historicalContext: factResult.historicalContext || null,
+          sources: factResult.sources || [],
+          savedByUser: false,
+          // Convert number to string for the database
+          confidenceScore: String(factResult.confidenceScore || 0.5),
+          serviceBreakdown: factResult.serviceBreakdown || []
+        };
+        
+        // Save to database
+        savedFactCheck = await storage.createFactCheck(factCheckData);
+        
+        // Add to trending facts
+        if (savedFactCheck && savedFactCheck.id) {
+          await storage.incrementChecksCount(savedFactCheck.id);
+        }
+      } catch (saveError) {
+        console.error("Error saving fact check:", saveError);
+        // Continue even if save fails
       }
-      // If validation fails, still return the API result but don't save it
     }
     
-    // For unauthenticated users or if database save fails, return the API result directly
-    res.json({
-      id: 0, // Temporary ID for unauthenticated users
-      statement: input, // Original user input
-      isTrue: factResult.isTrue,
-      explanation: factResult.explanation,
-      historicalContext: factResult.historicalContext,
-      sources: factResult.sources,
-      savedByUser: false,
-      checkedAt: new Date().toISOString(),
-      confidenceScore: factResult.confidenceScore,
-      serviceBreakdown: factResult.serviceBreakdown,
+    // Return result to the client
+    return res.status(200).json({
+      ...(savedFactCheck || { id: 0 }),
       factualConsensus: factResult.factualConsensus,
       manipulationScore: factResult.manipulationScore,
       contradictionIndex: factResult.contradictionIndex,
-      // Include enhanced information
       isQuestion: factResult.isQuestion,
       transformedStatement: factResult.transformedStatement,
       implicitClaims: factResult.implicitClaims,
       domainInfo: factResult.domainInfo
     });
+    
   } catch (error) {
     console.error("Error checking fact:", error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       message: "Failed to check fact", 
       error: error instanceof Error ? error.message : String(error)
     });
