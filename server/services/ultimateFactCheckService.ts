@@ -3,7 +3,7 @@ import { questionTransformService } from './questionTransformService';
 import { domainDetectionService } from './domainDetectionService';
 import { enhancedPerplexityService } from './enhancedPerplexityService';
 import { claudeService } from './claudeService';
-import { openAIService } from './openAIService';
+import { openAIService } from './openaiService';
 import { geminiService } from './geminiService';
 import { mistralService } from './mistralService';
 import { llamaService } from './llamaService';
@@ -16,6 +16,25 @@ import { apiKeyManager } from './apiKeyManager';
  * and leverages multiple AI models with domain-specific weighting
  */
 export class UltimateFactCheckService {
+  
+  /**
+   * Initialize all services with provided API keys
+   */
+  initializeServices(apiKeys: {
+    claude?: string | null;
+    openai?: string | null;
+    perplexity?: string | null;
+    gemini?: string | null;
+    mistral?: string | null;
+    llama?: string | null;
+  }): void {
+    if (apiKeys.claude) claudeService.initializeClient(apiKeys.claude);
+    if (apiKeys.openai) openAIService.initializeClient(apiKeys.openai);
+    if (apiKeys.perplexity) enhancedPerplexityService.initializeClient(apiKeys.perplexity);
+    if (apiKeys.gemini) geminiService.initializeClient(apiKeys.gemini);
+    if (apiKeys.mistral) mistralService.initializeClient(apiKeys.mistral);
+    if (apiKeys.llama) llamaService.initializeClient(apiKeys.llama);
+  }
   
   /**
    * Process user input (statement or question) and perform fact checking

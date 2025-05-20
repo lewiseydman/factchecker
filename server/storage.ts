@@ -109,6 +109,15 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(factChecks.checkedAt))
       .limit(limit);
   }
+  
+  // Get most recent fact checks, regardless of user
+  async getRecentFactChecks(limit = 10): Promise<FactCheck[]> {
+    return db
+      .select()
+      .from(factChecks)
+      .orderBy(desc(factChecks.checkedAt))
+      .limit(limit);
+  }
 
   async getSavedFactChecksByUser(userId: string): Promise<FactCheck[]> {
     return db
@@ -342,10 +351,12 @@ export class DatabaseStorage implements IStorage {
         sources: factChecks.sources,
         savedByUser: factChecks.savedByUser,
         checkedAt: factChecks.checkedAt,
-        categoryId: factChecks.categoryId
+        categoryId: factChecks.categoryId,
+        confidenceScore: factChecks.confidenceScore,
+        serviceBreakdown: factChecks.serviceBreakdown
       })
       .from(factChecks)
-      .innerJoin(trendingFacts, eq(factChecks.id, trendingFacts.factCheckId))
+      .leftJoin(trendingFacts, eq(factChecks.id, trendingFacts.factCheckId))
       .orderBy(desc(trendingFacts.checksCount))
       .limit(limit);
       
