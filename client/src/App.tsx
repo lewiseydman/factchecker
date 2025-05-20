@@ -45,14 +45,6 @@ function App() {
           <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <Router />
           </main>
-          <div className="fixed bottom-6 right-6">
-            <a 
-              href="/" 
-              className="bg-primary hover:bg-blue-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-            >
-              <span className="material-icons">add</span>
-            </a>
-          </div>
           <Footer />
           <Toaster />
         </div>
