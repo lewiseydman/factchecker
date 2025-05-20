@@ -10,6 +10,7 @@ import Dashboard from "@/pages/Dashboard";
 import History from "@/pages/History";
 import SavedFacts from "@/pages/SavedFacts";
 import Trending from "@/pages/Trending";
+import Settings from "@/pages/Settings";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/history" component={isAuthenticated ? History : Dashboard} />
       <Route path="/saved" component={isAuthenticated ? SavedFacts : Dashboard} />
       <Route path="/trending" component={Trending} />
+      <Route path="/settings" component={isAuthenticated ? Settings : Dashboard} />
       <Route component={NotFound} />
     </Switch>
   );
