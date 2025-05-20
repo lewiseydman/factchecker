@@ -11,6 +11,7 @@ import History from "@/pages/History";
 import SavedFacts from "@/pages/SavedFacts";
 import Trending from "@/pages/Trending";
 import Settings from "@/pages/Settings";
+import Methodology from "@/pages/Methodology";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
