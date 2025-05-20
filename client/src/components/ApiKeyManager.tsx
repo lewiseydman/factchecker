@@ -34,9 +34,11 @@ export function ApiKeyManager() {
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   
-  const { data: keyStatus = { claude: false, openai: false, perplexity: false } } = useQuery({
+  const { data: keyStatus = { claude: false, openai: false, perplexity: false, gemini: false, mistral: false, llama: false } } = useQuery({
     queryKey: ['/api/api-keys/status'],
-    enabled: isAuthenticated && open,
+    enabled: isAuthenticated,
+    refetchOnWindowFocus: false,
+    staleTime: 30000, // 30 seconds
   });
   
   const form = useForm<ApiKeyFormValues>({
