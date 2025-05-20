@@ -130,8 +130,13 @@ const Trending = () => {
           {/* Scrollable container */}
           <div 
             ref={sliderRef}
-            className="flex overflow-x-auto pb-6 gap-4 pt-2 px-1 scrollbar-hide"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="flex overflow-x-auto pb-6 gap-4 pt-2 px-1 scrollbar-hide mask-fade-edges"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              paddingLeft: '20px',
+              paddingRight: '20px'
+            }}
           >
             {Array.isArray(trendingFacts) && trendingFacts.length > 0 ? (
               trendingFacts.map((fact: TrendingFact) => (

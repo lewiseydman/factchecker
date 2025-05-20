@@ -123,33 +123,43 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
                 ref={inputRef}
                 value={statement}
                 onChange={(e) => setStatement(e.target.value)}
-                placeholder="Enter a statement to verify..."
-                className="rounded-none rounded-r-md p-3"
+                placeholder={isListening ? "Speak now..." : "Enter a statement or question..."}
+                className={`rounded-none ${hasRecognitionSupport ? '' : 'rounded-r-md'} p-3 ${isListening ? 'border-red-300 focus-visible:ring-red-300' : ''}`}
               />
+              {hasRecognitionSupport && (
+                <button
+                  type="button"
+                  onClick={toggleVoiceInput}
+                  className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 rounded-r-md h-10 transition-colors ${
+                    isListening 
+                      ? 'bg-red-50 text-red-500 border-red-300' 
+                      : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="material-icons">{isListening ? 'mic' : 'mic_none'}</span>
+                </button>
+              )}
             </div>
+            {isListening && (
+              <div className="mt-2 text-sm text-red-500 flex items-center">
+                <span className="relative flex h-2.5 w-2.5 mr-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                </span>
+                Listening to your voice input...
+              </div>
+            )}
           </div>
           
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={toggleVoiceInput}
-                className={`inline-flex items-center ${isListening ? 'bg-red-50 text-red-500 border-red-300' : ''}`}
-              >
-                <span className="material-icons mr-2">mic</span>
-                Voice Input
-              </Button>
-              
-              {isListening && (
-                <div className="flex items-center text-red-500">
-                  <span className="relative flex h-3 w-3 mr-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                  </span>
-                  Recording...
-                </div>
-              )}
+              <div className="text-sm text-gray-500">
+                {hasRecognitionSupport ? (
+                  <>Use your voice or type to ask any question or verify a statement</>
+                ) : (
+                  <>Your browser doesn't support voice input, please type your query</>
+                )}
+              </div>
             </div>
             
             <Button 
