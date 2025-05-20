@@ -25,6 +25,9 @@ const apiKeySchema = z.object({
   claude: z.string().optional(),
   openai: z.string().optional(),
   perplexity: z.string().optional(),
+  gemini: z.string().optional(),
+  mistral: z.string().optional(),
+  llama: z.string().optional(),
 });
 
 type ApiKeyFormValues = z.infer<typeof apiKeySchema>;
@@ -47,6 +50,9 @@ export function ApiKeyManager() {
       claude: "",
       openai: "",
       perplexity: "",
+      gemini: "",
+      mistral: "",
+      llama: "",
     },
   });
   
@@ -78,6 +84,9 @@ export function ApiKeyManager() {
     if (data.claude) keysToUpdate.claude = data.claude;
     if (data.openai) keysToUpdate.openai = data.openai;
     if (data.perplexity) keysToUpdate.perplexity = data.perplexity;
+    if (data.gemini) keysToUpdate.gemini = data.gemini;
+    if (data.mistral) keysToUpdate.mistral = data.mistral;
+    if (data.llama) keysToUpdate.llama = data.llama;
     
     saveApiKeysMutation.mutate(keysToUpdate);
   };
@@ -151,13 +160,59 @@ export function ApiKeyManager() {
               />
             </div>
             
-            {(!keyStatus?.claude || !keyStatus?.openai || !keyStatus?.perplexity) && (
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <Label htmlFor="gemini">Google Gemini API Key</Label>
+                {keyStatus?.gemini && (
+                  <span className="text-xs text-green-600">✓ Active</span>
+                )}
+              </div>
+              <Input
+                id="gemini"
+                type="password"
+                placeholder="AIza..."
+                {...form.register("gemini")}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <Label htmlFor="mistral">Mistral API Key</Label>
+                {keyStatus?.mistral && (
+                  <span className="text-xs text-green-600">✓ Active</span>
+                )}
+              </div>
+              <Input
+                id="mistral"
+                type="password"
+                placeholder="..."
+                {...form.register("mistral")}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <Label htmlFor="llama">Meta Llama API Key</Label>
+                {keyStatus?.llama && (
+                  <span className="text-xs text-green-600">✓ Active</span>
+                )}
+              </div>
+              <Input
+                id="llama"
+                type="password"
+                placeholder="..."
+                {...form.register("llama")}
+              />
+            </div>
+            
+            {(!keyStatus?.claude || !keyStatus?.openai || !keyStatus?.perplexity || 
+              !keyStatus?.gemini || !keyStatus?.mistral || !keyStatus?.llama) && (
               <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-700">
                 <AlertTriangle size={18} className="mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium">Missing API Keys</p>
                   <p className="text-xs mt-1">
-                    For the best fact-checking results, we recommend adding all three API keys. Without all keys, some services will use simulated responses.
+                    For the best fact-checking results, we recommend adding all API keys. Without all keys, some services will use simulated responses.
                   </p>
                 </div>
               </div>

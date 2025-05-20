@@ -17,70 +17,7 @@ type FactCheck = {
 const RecentChecks = () => {
   const { isAuthenticated } = useAuth();
   
-  const { data: factChecks, isLoading } = useQuery({
-    queryKey: ['/api/fact-checks/recent'],
-    queryFn: async () => {
-      if (!isAuthenticated) {
-        return [];
-      }
-      return fetch('/api/fact-checks/recent?limit=3')
-        .then(res => res.json());
-    },
-    enabled: isAuthenticated
-  });
-
-  // Sample data for non-authenticated users
-  const sampleChecks = [
-    {
-      id: 1,
-      statement: "Lightning never strikes the same place twice.",
-      isTrue: false,
-      checkedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      id: 2,
-      statement: "Water expands when it freezes.",
-      isTrue: true,
-      checkedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      id: 3,
-      statement: "Adult humans have 32 teeth including wisdom teeth.",
-      isTrue: true,
-      checkedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
-    }
-  ];
-
-  const displayChecks = isAuthenticated ? factChecks : sampleChecks;
-
-  if (isLoading) {
-    return (
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold text-gray-800">Your Recent Checks</h3>
-          <Link to="/history" className="text-primary hover:text-blue-600 text-sm font-medium">
-            View All
-          </Link>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => (
-            <Card key={i}>
-              <CardContent className="p-4">
-                <Skeleton className="h-4 w-full mb-2" />
-                <div className="flex justify-between">
-                  <Skeleton className="h-3 w-16" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // Setup for horizontal slider
+  // Setup for horizontal slider - moved before conditional return
   const sliderRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = useState<boolean>(false);
@@ -107,7 +44,46 @@ const RecentChecks = () => {
     }
   };
   
-  // Set up scroll listeners
+  const { data: factChecks, isLoading } = useQuery({
+    queryKey: ['/api/fact-checks/recent'],
+    queryFn: async () => {
+      if (!isAuthenticated) {
+        return [];
+      }
+      return fetch('/api/fact-checks/recent?limit=5')
+        .then(res => res.json());
+    },
+    enabled: isAuthenticated
+  });
+
+  // Sample data for non-authenticated users
+  const sampleChecks = [
+    {
+      id: 1,
+      statement: "Lightning never strikes the same place twice.",
+      isTrue: false,
+      explanation: "Lightning often strikes the same place repeatedly, especially tall, isolated objects like the Empire State Building.",
+      checkedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 2,
+      statement: "Water expands when it freezes.",
+      isTrue: true,
+      explanation: "Water is one of the few substances that expands when frozen, which is why ice floats on water.",
+      checkedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 3,
+      statement: "Adult humans have 32 teeth including wisdom teeth.",
+      isTrue: true,
+      explanation: "A full set of adult teeth consists of 8 incisors, 4 canines, 8 premolars, and 12 molars, including wisdom teeth.",
+      checkedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+    }
+  ];
+
+  const displayChecks = isAuthenticated ? factChecks : sampleChecks;
+  
+  // Set up scroll listeners - moved after displayChecks definition
   useEffect(() => {
     const slider = sliderRef.current;
     if (slider) {
@@ -116,10 +92,35 @@ const RecentChecks = () => {
       window.addEventListener('resize', checkScrollability);
       return () => {
         slider.removeEventListener('scroll', checkScrollability);
-        window.addEventListener('resize', checkScrollability);
+        window.removeEventListener('resize', checkScrollability);
       };
     }
   }, [displayChecks]);
+
+  if (isLoading) {
+    return (
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <Skeleton className="h-6 w-52" />
+          {isAuthenticated && <Skeleton className="h-4 w-16" />}
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="overflow-hidden">
+              <CardContent className="p-4">
+                <Skeleton className="h-4 w-full mb-2" />
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-8">
