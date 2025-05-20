@@ -54,7 +54,8 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
   const checkFactMutation = useMutation({
     mutationFn: async () => {
       // Call the backend API with our input (can be either a question or statement)
-      const response = await apiRequest("POST", "/api/fact-check", { input: statement });
+      console.log("Sending statement:", { statement });
+      const response = await apiRequest("POST", "/api/fact-check", { statement });
       return await response.json();
     },
     onSuccess: (data) => {
