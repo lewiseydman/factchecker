@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useSpeechRecognition } from "@/lib/speech-recognition";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
+import { Mic, MicOff, Search } from "lucide-react";
 
 type FactCheckResponse = {
   id: number;
@@ -116,7 +117,7 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
             <label htmlFor="fact-input" className="sr-only">Enter a fact to check</label>
             <div className="flex w-full">
               <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
-                <span className="material-icons">search</span>
+                <Search className="h-4 w-4" />
               </span>
               <Input
                 id="fact-input"
@@ -132,11 +133,12 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
                   onClick={toggleVoiceInput}
                   className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 rounded-r-md h-10 transition-colors ${
                     isListening 
-                      ? 'bg-red-50 text-red-500 border-red-300' 
+                      ? 'bg-red-500 text-white border-red-500' 
                       : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
                   }`}
+                  aria-label={isListening ? "Stop listening" : "Start voice input"}
                 >
-                  <span className="material-icons">{isListening ? 'mic' : 'mic_none'}</span>
+                  {isListening ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
                 </button>
               )}
             </div>
