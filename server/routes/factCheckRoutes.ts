@@ -100,11 +100,18 @@ router.post('/fact-check', async (req: Request, res: Response) => {
     // If user is authenticated, try to save the fact check
     let savedFactCheck = null;
     
-    // Get tier name for the badge
+    // Get tier name for the badge - no need to re-fetch if we already have the user's subscription
     let tierName = "Free Tier";
     if (userId) {
-      const subscriptionStatus = await storage.checkUserSubscriptionStatus(userId);
-      tierName = subscriptionStatus.tierName || "Free Tier";
+      // We already have the subscription status from above if the user is authenticated
+      // Otherwise use default Free Tier
+      if (modelCount === 6) {
+        tierName = "Premium Tier";
+      } else if (modelCount === 4) {
+        tierName = "Standard Tier";
+      } else {
+        tierName = "Free Tier";
+      }
     }
     
     if (userId) {
