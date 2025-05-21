@@ -136,7 +136,16 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       }
     }
     
-    // Return result to the client with tier information
+    // Calculate the correct model count based on tier for immediate display 
+    // (not relying on database value which might be incorrect)
+    let displayModelCount = 2; // Default for free tier
+    if (subscriptionTier === "Premium Tier") {
+      displayModelCount = 6;
+    } else if (subscriptionTier === "Standard Tier") {
+      displayModelCount = 4;
+    }
+    
+    // Return result to the client with correct tier information
     return res.status(200).json({
       ...(savedFactCheck || { id: 0 }),
       factualConsensus: factResult.factualConsensus,
@@ -148,7 +157,7 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       domainInfo: factResult.domainInfo,
       // Ensure tier info is included even if database save failed
       tierName: subscriptionTier,
-      modelsUsed: modelCount
+      modelsUsed: displayModelCount
     });
     
   } catch (error) {
