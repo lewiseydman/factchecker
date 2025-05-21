@@ -177,7 +177,9 @@ export const insertFactCheckSchema = createInsertSchema(factChecks)
     // Override any fields that need special handling
     confidenceScore: z.number().transform(val => String(val)), // Convert number to string for the numeric field
     sources: z.array(sourceSchema),
-    serviceBreakdown: z.array(serviceBreakdownSchema)
+    serviceBreakdown: z.array(serviceBreakdownSchema),
+    tierName: z.string().optional(),
+    modelsUsed: z.number().optional()
   });
 export type InsertFactCheck = z.infer<typeof insertFactCheckSchema>;
 export type FactCheck = typeof factChecks.$inferSelect;

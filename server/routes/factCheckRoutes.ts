@@ -139,7 +139,7 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       }
     }
     
-    // Return result to the client
+    // Return result to the client with tier information
     return res.status(200).json({
       ...(savedFactCheck || { id: 0 }),
       factualConsensus: factResult.factualConsensus,
@@ -148,7 +148,10 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       isQuestion: factResult.isQuestion,
       transformedStatement: factResult.transformedStatement,
       implicitClaims: factResult.implicitClaims,
-      domainInfo: factResult.domainInfo
+      domainInfo: factResult.domainInfo,
+      // Ensure tier info is included even if database save failed
+      tierName: tierName,
+      modelsUsed: modelCount
     });
     
   } catch (error) {

@@ -12,6 +12,8 @@ type FactCheck = {
   isTrue: boolean;
   explanation?: string;
   checkedAt: string;
+  tierName?: string;
+  modelsUsed?: number;
 };
 
 const RecentChecks = () => {
