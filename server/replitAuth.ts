@@ -156,9 +156,29 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  // If app is in development mode and no auth available, provide a test user
+  if (process.env.NODE_ENV === 'development' && !req.isAuthenticated()) {
+    // Allow simplified dev flow
+    const demoUserFlag = req.query.demo === 'true';
+    
+    if (demoUserFlag) {
+      // Mock user for testing in development
+      req.user = {
+        claims: {
+          sub: 'test-user-123',
+          email: 'test@example.com',
+          first_name: 'Test',
+          last_name: 'User',
+          profile_image_url: 'https://ui-avatars.com/api/?name=Test+User'
+        }
+      };
+      return next();
+    }
+  }
+
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -178,6 +198,8 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     updateUserSession(user, tokenResponse);
     return next();
   } catch (error) {
+    // Just log this as a simple message to reduce console noise
+    console.log("Auth refresh failed, redirecting to login");
     return res.redirect("/api/login");
   }
 };
