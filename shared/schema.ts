@@ -65,6 +65,8 @@ export const factChecks = pgTable("fact_checks", {
   checkedAt: timestamp("checked_at").defaultNow(),
   confidenceScore: numeric("confidence_score", { precision: 3, scale: 2 }),
   serviceBreakdown: jsonb("service_breakdown"),
+  tierName: varchar("tier_name", { length: 50 }),
+  modelsUsed: integer("models_used"),
 });
 
 // Many-to-many relationship between fact checks and tags

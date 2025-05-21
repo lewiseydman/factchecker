@@ -100,6 +100,13 @@ router.post('/fact-check', async (req: Request, res: Response) => {
     // If user is authenticated, try to save the fact check
     let savedFactCheck = null;
     
+    // Get tier name for the badge
+    let tierName = "Free Tier";
+    if (userId) {
+      const subscriptionStatus = await storage.checkUserSubscriptionStatus(userId);
+      tierName = subscriptionStatus.tierName || "Free Tier";
+    }
+    
     if (userId) {
       try {
         // Create the fact check data with required fields
@@ -113,7 +120,10 @@ router.post('/fact-check', async (req: Request, res: Response) => {
           savedByUser: false,
           // Convert number to string for the database
           confidenceScore: String(factResult.confidenceScore || 0.5),
-          serviceBreakdown: factResult.serviceBreakdown || []
+          serviceBreakdown: factResult.serviceBreakdown || [],
+          // Add tier information
+          tierName: tierName,
+          modelsUsed: modelCount
         };
         
         // Save to database
