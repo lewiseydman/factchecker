@@ -87,6 +87,32 @@ export const trendingFacts = pgTable("trending_facts", {
   addedAt: timestamp("added_at").defaultNow(),
 });
 
+// Subscription tiers table
+export const subscriptionTiers = pgTable("subscription_tiers", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 50 }).notNull().unique(),
+  description: text("description").notNull(),
+  monthlyPriceGBP: numeric("monthly_price_gbp", { precision: 10, scale: 2 }).notNull(),
+  checkerLimit: integer("checker_limit").notNull(),
+  modelCount: integer("model_count").notNull(),
+  features: jsonb("features").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User subscriptions table
+export const userSubscriptions = pgTable("user_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  tierId: integer("tier_id").references(() => subscriptionTiers.id).notNull(),
+  startDate: timestamp("start_date").defaultNow().notNull(),
+  endDate: timestamp("end_date"),
+  isActive: boolean("is_active").default(true),
+  checksRemaining: integer("checks_remaining").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Schema types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -98,6 +124,23 @@ export const insertCategorySchema = createInsertSchema(categories).omit({
 });
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
 export type Category = typeof categories.$inferSelect;
+
+// Subscription types
+export const insertSubscriptionTierSchema = createInsertSchema(subscriptionTiers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertSubscriptionTier = z.infer<typeof insertSubscriptionTierSchema>;
+export type SubscriptionTier = typeof subscriptionTiers.$inferSelect;
+
+export const insertUserSubscriptionSchema = createInsertSchema(userSubscriptions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertUserSubscription = z.infer<typeof insertUserSubscriptionSchema>;
+export type UserSubscription = typeof userSubscriptions.$inferSelect;
 
 // Tag types
 export const insertTagSchema = createInsertSchema(tags).omit({
