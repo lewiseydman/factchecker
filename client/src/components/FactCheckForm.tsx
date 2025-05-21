@@ -26,6 +26,8 @@ type FactCheckResponse = {
     verdict: string;
     confidence: number;
   }>;
+  tierName?: string;
+  modelsUsed?: number;
 };
 
 interface FactCheckFormProps {

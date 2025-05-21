@@ -172,17 +172,18 @@ const FactResult = ({
             <span className="text-gray-500 text-sm">Verified {formattedDate}</span>
             
             {/* Subscription Tier Badge */}
-            {tierName && (
-              <span className={`text-xs py-0.5 px-2 rounded-full font-medium ml-2 ${
-                tierName === "Premium Tier" 
-                  ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
-                  : tierName === "Standard Tier" 
-                    ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white" 
-                    : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
-              }`}>
-                {tierName.replace(" Tier", "")} {modelsUsed ? `(${modelsUsed} models)` : ""}
-              </span>
-            )}
+            <span className={`text-xs py-0.5 px-2 rounded-full font-medium ml-2 ${
+              tierName === "Premium Tier" 
+                ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
+              : tierName === "Standard Tier" 
+                ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white"
+              : tierName === "Basic Tier"
+                ? "bg-gradient-to-r from-teal-500 to-teal-700 text-white"  
+              : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
+            }`}>
+              {tierName ? tierName.replace(" Tier", "") : "Free"} 
+              {modelsUsed ? ` (${modelsUsed} models)` : ""}
+            </span>
           </div>
         </div>
         {isAuthenticated && (
