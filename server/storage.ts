@@ -5,6 +5,8 @@ import {
   categories,
   tags,
   factCheckTags,
+  subscriptionTiers,
+  userSubscriptions,
   type User,
   type UpsertUser,
   type FactCheck,
@@ -15,7 +17,11 @@ import {
   type Tag,
   type InsertTag,
   type FactCheckTag,
-  type InsertFactCheckTag
+  type InsertFactCheckTag,
+  type SubscriptionTier,
+  type InsertSubscriptionTier,
+  type UserSubscription,
+  type InsertUserSubscription
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, inArray } from "drizzle-orm";
@@ -56,6 +62,24 @@ export interface IStorage {
   // Trending facts operations
   getTrendingFacts(limit?: number): Promise<FactCheck[]>;
   incrementChecksCount(factCheckId: number): Promise<void>;
+  
+  // Subscription operations
+  getSubscriptionTiers(): Promise<SubscriptionTier[]>;
+  getSubscriptionTier(id: number): Promise<SubscriptionTier | undefined>;
+  createSubscriptionTier(tier: InsertSubscriptionTier): Promise<SubscriptionTier>;
+  updateSubscriptionTier(id: number, tier: InsertSubscriptionTier): Promise<SubscriptionTier | undefined>;
+  
+  // User subscription operations
+  getUserSubscription(userId: string): Promise<UserSubscription | undefined>;
+  createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription>;
+  updateUserSubscription(id: number, subscription: Partial<InsertUserSubscription>): Promise<UserSubscription | undefined>;
+  decrementRemainingChecks(userId: string): Promise<boolean>;
+  checkUserSubscriptionStatus(userId: string): Promise<{ 
+    canCheck: boolean; 
+    checksRemaining: number; 
+    tierName: string | null;
+    modelCount: number | null;
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -399,6 +423,149 @@ export class DatabaseStorage implements IStorage {
           factCheckId,
           checksCount: 1
         });
+    }
+  }
+
+  // Subscription tier operations
+  async getSubscriptionTiers(): Promise<SubscriptionTier[]> {
+    return await db.select().from(subscriptionTiers).orderBy(subscriptionTiers.monthlyPriceGBP);
+  }
+
+  async getSubscriptionTier(id: number): Promise<SubscriptionTier | undefined> {
+    const [tier] = await db.select().from(subscriptionTiers).where(eq(subscriptionTiers.id, id));
+    return tier;
+  }
+
+  async createSubscriptionTier(tier: InsertSubscriptionTier): Promise<SubscriptionTier> {
+    const [newTier] = await db
+      .insert(subscriptionTiers)
+      .values(tier)
+      .returning();
+    return newTier;
+  }
+
+  async updateSubscriptionTier(id: number, tier: InsertSubscriptionTier): Promise<SubscriptionTier | undefined> {
+    const [updatedTier] = await db
+      .update(subscriptionTiers)
+      .set({ ...tier, updatedAt: new Date() })
+      .where(eq(subscriptionTiers.id, id))
+      .returning();
+    return updatedTier;
+  }
+
+  // User subscription operations
+  async getUserSubscription(userId: string): Promise<UserSubscription | undefined> {
+    const [subscription] = await db
+      .select()
+      .from(userSubscriptions)
+      .where(and(
+        eq(userSubscriptions.userId, userId),
+        eq(userSubscriptions.isActive, true)
+      ));
+    return subscription;
+  }
+
+  async createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription> {
+    const [newSubscription] = await db
+      .insert(userSubscriptions)
+      .values(subscription)
+      .returning();
+    return newSubscription;
+  }
+
+  async updateUserSubscription(
+    id: number, 
+    subscription: Partial<InsertUserSubscription>
+  ): Promise<UserSubscription | undefined> {
+    const [updatedSubscription] = await db
+      .update(userSubscriptions)
+      .set({ ...subscription, updatedAt: new Date() })
+      .where(eq(userSubscriptions.id, id))
+      .returning();
+    return updatedSubscription;
+  }
+
+  async decrementRemainingChecks(userId: string): Promise<boolean> {
+    try {
+      const [subscription] = await db
+        .select()
+        .from(userSubscriptions)
+        .where(and(
+          eq(userSubscriptions.userId, userId),
+          eq(userSubscriptions.isActive, true)
+        ));
+      
+      if (!subscription || subscription.checksRemaining <= 0) {
+        return false;
+      }
+      
+      await db
+        .update(userSubscriptions)
+        .set({ 
+          checksRemaining: subscription.checksRemaining - 1,
+          updatedAt: new Date()
+        })
+        .where(eq(userSubscriptions.id, subscription.id));
+      
+      return true;
+    } catch (error) {
+      console.error("Error decrementing remaining checks:", error);
+      return false;
+    }
+  }
+  
+  async checkUserSubscriptionStatus(userId: string): Promise<{ 
+    canCheck: boolean; 
+    checksRemaining: number; 
+    tierName: string | null;
+    modelCount: number | null;
+  }> {
+    try {
+      // Default return for non-subscribed users - free tier
+      const defaultResponse = {
+        canCheck: true, // Allow a certain number of free checks for everyone
+        checksRemaining: 3, // Default free checks
+        tierName: "Free Tier",
+        modelCount: 2 // Limited to 2 models in free tier
+      };
+      
+      // For non-authenticated users
+      if (!userId) {
+        return defaultResponse;
+      }
+      
+      const [subscription] = await db
+        .select({
+          subscription: userSubscriptions,
+          tier: subscriptionTiers
+        })
+        .from(userSubscriptions)
+        .where(and(
+          eq(userSubscriptions.userId, userId),
+          eq(userSubscriptions.isActive, true)
+        ))
+        .innerJoin(subscriptionTiers, eq(userSubscriptions.tierId, subscriptionTiers.id));
+      
+      // If no active subscription, return free tier status
+      if (!subscription) {
+        return defaultResponse;
+      }
+      
+      return {
+        canCheck: subscription.subscription.checksRemaining > 0,
+        checksRemaining: subscription.subscription.checksRemaining,
+        tierName: subscription.tier.name,
+        modelCount: subscription.tier.modelCount
+      };
+    } catch (error) {
+      console.error("Error checking subscription status:", error);
+      // Return free tier on error for graceful degradation
+      return {
+        canCheck: true,
+        checksRemaining: 3,
+        tierName: "Free Tier",
+        modelCount: 2
+      };
     }
   }
 }

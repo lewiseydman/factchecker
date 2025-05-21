@@ -7,6 +7,7 @@ import { insertFactCheckSchema, sourceSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import factCheckRoutes from "./routes/factCheckRoutes";
+import subscriptionRoutes from "./routes/subscriptionRoutes";
 import { ultimateFactCheckService } from "./services/ultimateFactCheckService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -15,6 +16,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register fact check routes
   app.use('/api', factCheckRoutes);
+  
+  // Register subscription routes
+  app.use('/api/subscriptions', subscriptionRoutes);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
