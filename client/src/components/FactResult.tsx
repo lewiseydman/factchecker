@@ -43,6 +43,9 @@ interface FactResultProps {
   factualConsensus?: number;
   manipulationScore?: number;
   contradictionIndex?: number;
+  // Subscription tier information
+  tierName?: string;
+  modelsUsed?: number;
 }
 
 const FactResult = ({
@@ -63,7 +66,9 @@ const FactResult = ({
   domainInfo,
   factualConsensus,
   manipulationScore,
-  contradictionIndex
+  contradictionIndex,
+  tierName = "Free Tier",
+  modelsUsed = 2
 }: FactResultProps) => {
   const [isSaved, setIsSaved] = useState(savedByUser);
   const [showFullExplanation, setShowFullExplanation] = useState(false);
@@ -165,6 +170,19 @@ const FactResult = ({
               </span>
             )}
             <span className="text-gray-500 text-sm">Verified {formattedDate}</span>
+            
+            {/* Subscription Tier Badge */}
+            {tierName && (
+              <span className={`text-xs py-0.5 px-2 rounded-full font-medium ml-2 ${
+                tierName === "Premium Tier" 
+                  ? "bg-purple-100 text-purple-800" 
+                  : tierName === "Standard Tier" 
+                    ? "bg-blue-100 text-blue-800" 
+                    : "bg-gray-100 text-gray-800"
+              }`}>
+                {tierName} {modelsUsed && `(${modelsUsed} models)`}
+              </span>
+            )}
           </div>
         </div>
         {isAuthenticated && (
