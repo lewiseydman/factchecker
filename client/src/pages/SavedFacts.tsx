@@ -57,6 +57,12 @@ export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
           Methodology
         </Link>
         <Link 
+          to="/subscription"
+          className={`${activeTab === "subscription" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
+        >
+          Pricing
+        </Link>
+        <Link 
           to="/settings"
           className={`${activeTab === "settings" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
         >

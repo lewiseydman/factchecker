@@ -12,6 +12,7 @@ import SavedFacts from "@/pages/SavedFacts";
 import Trending from "@/pages/Trending";
 import Settings from "@/pages/Settings";
 import Methodology from "@/pages/Methodology";
+import Subscription from "@/pages/Subscription";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/saved" component={isAuthenticated ? SavedFacts : Dashboard} />
       <Route path="/trending" component={Trending} />
       <Route path="/methodology" component={Methodology} />
+      <Route path="/subscription" component={Subscription} />
       <Route path="/settings" component={isAuthenticated ? Settings : Dashboard} />
       <Route component={NotFound} />
     </Switch>
