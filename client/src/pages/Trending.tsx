@@ -153,13 +153,28 @@ const Trending = () => {
                       </div>
                     </div>
                     <p className="text-gray-600 text-sm mb-3 line-clamp-3">{fact.explanation}</p>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                       <span className="flex items-center">
                         <span className="material-icons text-gray-400 text-sm mr-1">trending_up</span>
                         {fact.checksCount?.toLocaleString() || 0} checks
                       </span>
                       <span>{formatDistanceToNow(new Date(fact.checkedAt), { addSuffix: true })}</span>
                     </div>
+                    
+                    {/* Subscription Tier Badge */}
+                    {fact.tierName && (
+                      <div className="flex justify-end">
+                        <span className={`text-xs py-0.5 px-2 rounded-full font-medium ${
+                          fact.tierName === "Premium Tier" 
+                            ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
+                            : fact.tierName === "Standard Tier" 
+                              ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white" 
+                              : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
+                        }`}>
+                          {fact.tierName.replace(" Tier", "")} {fact.modelsUsed ? `(${fact.modelsUsed} models)` : ""}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
