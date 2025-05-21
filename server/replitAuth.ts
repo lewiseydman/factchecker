@@ -27,7 +27,7 @@ export function getSession() {
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true, // Make sure the sessions table exists
     ttl: sessionTtl,
     tableName: "sessions",
   });
@@ -39,6 +39,7 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: true,
+      sameSite: 'lax',
       maxAge: sessionTtl,
     },
   });
@@ -68,9 +69,12 @@ async function upsertUser(
 
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
+  // Initialize session with proper settings
   app.use(getSession());
   app.use(passport.initialize());
-  app.use(passport.session());
+  app.use(passport.session({
+    pauseStream: true
+  }));
 
   const config = await getOidcConfig();
 
