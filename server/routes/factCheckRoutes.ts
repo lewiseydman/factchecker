@@ -63,9 +63,12 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       });
     }
     
+    console.log("Processing input:", userInput);
+    
     // Variables for subscription-related functionality
     let modelCount = 2; // Default to 2 models (free tier)
     let userId = null;
+    let subscriptionTier = "Free Tier";
     
     // Check subscription status if user is authenticated
     if (req.isAuthenticated() && (req as any).user) {
@@ -84,9 +87,10 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       
       // Use models based on subscription level
       modelCount = subscriptionStatus.modelCount || 2;
+      subscriptionTier = subscriptionStatus.tierName || "Free Tier";
       
       // Decrement remaining checks for paid users
-      if (subscriptionStatus.tierName !== "Free Tier") {
+      if (subscriptionTier !== "Free Tier") {
         await storage.decrementRemainingChecks(userId);
       }
       
@@ -99,20 +103,6 @@ router.post('/fact-check', async (req: Request, res: Response) => {
     
     // If user is authenticated, try to save the fact check
     let savedFactCheck = null;
-    
-    // Get tier name for the badge - no need to re-fetch if we already have the user's subscription
-    let tierName = "Free Tier";
-    if (userId) {
-      // We already have the subscription status from above if the user is authenticated
-      // Otherwise use default Free Tier
-      if (modelCount === 6) {
-        tierName = "Premium Tier";
-      } else if (modelCount === 4) {
-        tierName = "Standard Tier";
-      } else {
-        tierName = "Free Tier";
-      }
-    }
     
     if (userId) {
       try {
@@ -129,7 +119,7 @@ router.post('/fact-check', async (req: Request, res: Response) => {
           confidenceScore: String(factResult.confidenceScore || 0.5),
           serviceBreakdown: factResult.serviceBreakdown || [],
           // Add tier information
-          tierName: tierName,
+          tierName: subscriptionTier,
           modelsUsed: modelCount
         };
         
@@ -157,7 +147,7 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       implicitClaims: factResult.implicitClaims,
       domainInfo: factResult.domainInfo,
       // Ensure tier info is included even if database save failed
-      tierName: tierName,
+      tierName: subscriptionTier,
       modelsUsed: modelCount
     });
     
