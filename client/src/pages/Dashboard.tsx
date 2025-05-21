@@ -26,6 +26,21 @@ type FactCheckResult = {
     verdict: string;
     confidence: number;
   }>;
+  // Add tier information
+  tierName?: string;
+  modelsUsed?: number;
+  // Add additional fact checking fields
+  isQuestion?: boolean;
+  transformedStatement?: string;
+  implicitClaims?: string[];
+  domainInfo?: {
+    detectedDomains: string[];
+    modelWeights: Record<string, number>;
+    explanation: string;
+  };
+  factualConsensus?: number;
+  manipulationScore?: number;
+  contradictionIndex?: number;
 };
 
 // Import TabNavigation component properly
@@ -64,6 +79,15 @@ const Dashboard = () => {
             checkedAt={currentFactCheck.checkedAt}
             confidenceScore={currentFactCheck.confidenceScore}
             serviceBreakdown={currentFactCheck.serviceBreakdown}
+            tierName={currentFactCheck.tierName}
+            modelsUsed={currentFactCheck.modelsUsed}
+            isQuestion={currentFactCheck.isQuestion}
+            transformedStatement={currentFactCheck.transformedStatement}
+            implicitClaims={currentFactCheck.implicitClaims}
+            domainInfo={currentFactCheck.domainInfo}
+            factualConsensus={currentFactCheck.factualConsensus}
+            manipulationScore={currentFactCheck.manipulationScore}
+            contradictionIndex={currentFactCheck.contradictionIndex}
           />
         </div>
       )}
