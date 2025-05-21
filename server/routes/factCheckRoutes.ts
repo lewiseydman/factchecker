@@ -63,17 +63,51 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       });
     }
     
+    // Variables for subscription-related functionality
+    let modelCount = 2; // Default to 2 models (free tier)
+    let userId = null;
+    
+    // Check subscription status if user is authenticated
+    if (req.isAuthenticated() && (req as any).user) {
+      userId = (req as any).user.claims.sub;
+      const subscriptionStatus = await storage.checkUserSubscriptionStatus(userId);
+      
+      // If user has no more checks remaining
+      if (!subscriptionStatus.canCheck) {
+        return res.status(402).json({ 
+          message: "You've reached your monthly fact check limit. Please upgrade your subscription.",
+          subscriptionRequired: true,
+          checksRemaining: 0,
+          tierName: subscriptionStatus.tierName
+        });
+      }
+      
+      // Use models based on subscription level
+      modelCount = subscriptionStatus.modelCount || 2;
+      
+      // Decrement remaining checks for paid users
+      if (subscriptionStatus.tierName !== "Free Tier") {
+        await storage.decrementRemainingChecks(userId);
+      }
+      
+      console.log(`Processing fact check for user ${userId} using ${modelCount} models. Checks remaining: ${subscriptionStatus.checksRemaining - 1}`);
+    }
+    
     // Process the user input through the fact checking service
+    // Note: We would need to modify the ultimateFactCheckService to accept modelCount
+    // For now, we'll use the existing method and add a comment about future improvements
     const factResult = await ultimateFactCheckService.processInput(userInput);
+    // TODO: Update service to use different number of models based on subscription:
+    // const factResult = await ultimateFactCheckService.processInputWithModels(userInput, modelCount);
     
     // If user is authenticated, try to save the fact check
     let savedFactCheck = null;
     
-    if (req.isAuthenticated() && (req as any).user) {
+    if (userId) {
       try {
         // Create the fact check data with required fields
         const factCheckData = {
-          userId: (req as any).user.claims.sub,
+          userId,
           statement: userInput,
           isTrue: factResult.isTrue,
           explanation: factResult.explanation || "No explanation provided",

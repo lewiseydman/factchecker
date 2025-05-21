@@ -57,7 +57,7 @@ router.get('/status', isAuthenticated, async (req: any, res: Response) => {
   }
 });
 
-// Subscribe to a tier
+// Demo subscribe to a tier (without real payment)
 router.post('/subscribe', isAuthenticated, async (req: any, res: Response) => {
   try {
     const userId = req.user.claims.sub;
@@ -73,14 +73,19 @@ router.post('/subscribe', isAuthenticated, async (req: any, res: Response) => {
       return res.status(404).json({ message: 'Subscription tier not found' });
     }
     
+    // For demo purposes, we'll simulate payment success and directly activate the subscription
+    console.log(`User ${userId} is subscribing to ${tier.name} (ID: ${tier.id})`);
+    
     // Check if user already has an active subscription
     const existingSubscription = await storage.getUserSubscription(userId);
     
+    // Set subscription end date (1 month from now)
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + 1);
+    
     if (existingSubscription) {
+      console.log(`Updating existing subscription (ID: ${existingSubscription.id})`);
       // Update existing subscription
-      const endDate = new Date();
-      endDate.setMonth(endDate.getMonth() + 1); // 1 month subscription
-      
       await storage.updateUserSubscription(existingSubscription.id, {
         tierId,
         checksRemaining: tier.checkerLimit,
@@ -89,10 +94,8 @@ router.post('/subscribe', isAuthenticated, async (req: any, res: Response) => {
         isActive: true
       });
     } else {
+      console.log(`Creating new subscription for user ${userId}`);
       // Create new subscription
-      const endDate = new Date();
-      endDate.setMonth(endDate.getMonth() + 1); // 1 month subscription
-      
       await storage.createUserSubscription({
         userId,
         tierId,
@@ -103,7 +106,19 @@ router.post('/subscribe', isAuthenticated, async (req: any, res: Response) => {
       });
     }
     
-    res.json({ success: true, message: `Successfully subscribed to ${tier.name}` });
+    console.log(`Subscription activated successfully: ${tier.name} with ${tier.checkerLimit} checks`);
+    
+    // Demo: Return success response immediately without payment processing
+    res.json({ 
+      success: true, 
+      message: `Successfully subscribed to ${tier.name}`,
+      subscription: {
+        tier: tier.name,
+        monthlyPrice: `£${tier.monthlyPriceGBP}`,
+        checksRemaining: tier.checkerLimit,
+        expiresAt: endDate
+      }
+    });
   } catch (error) {
     console.error('Error subscribing to tier:', error);
     res.status(500).json({ message: 'Failed to process subscription' });
