@@ -47,9 +47,8 @@ const Subscription = () => {
   // Subscribe to a tier
   const subscribeMutation = useMutation({
     mutationFn: async (tierId: number) => {
-      return await apiRequest('/api/subscriptions/subscribe', {
-        method: 'POST',
-        body: JSON.stringify({ tierId }),
+      return await apiRequest('POST', '/api/subscriptions/subscribe', {
+        tierId
       });
     },
     onSuccess: () => {
