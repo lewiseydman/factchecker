@@ -151,7 +151,7 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
             )}
           </div>
           
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-500">
                 {hasRecognitionSupport ? (
@@ -165,7 +165,7 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
             <Button 
               type="submit" 
               disabled={checkFactMutation.isPending}
-              className="inline-flex items-center"
+              className="inline-flex items-center w-full sm:w-auto"
             >
               {checkFactMutation.isPending ? (
                 <>Processing...</>

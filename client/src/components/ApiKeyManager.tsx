@@ -104,7 +104,7 @@ export function ApiKeyManager() {
       </Button>
       
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[475px]">
+        <DialogContent className="sm:max-w-[475px] max-h-[90vh] overflow-y-auto w-[95vw] sm:w-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Shield size={18} /> API Key Management
