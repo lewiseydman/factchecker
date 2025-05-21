@@ -37,9 +37,71 @@ export class UltimateFactCheckService {
   }
   
   /**
+   * Process user input with a specific number of models based on subscription tier
+   */
+  async processInputWithModels(input: string, modelCount: number = 6): Promise<{
+    isTrue: boolean;
+    explanation: string;
+    historicalContext: string;
+    sources: Source[];
+    confidenceScore: number;
+    serviceBreakdown: Array<{
+      name: string;
+      verdict: string;
+      confidence: number;
+    }>;
+    factualConsensus: number;
+    manipulationScore: number;
+    contradictionIndex: number;
+    isQuestion: boolean;
+    transformedStatement?: string;
+    implicitClaims?: string[];
+    domainInfo?: {
+      detectedDomains: string[];
+      modelWeights: Record<string, number>;
+      explanation: string;
+    };
+  }> {
+    // This internal implementation will be using the specific number of models
+    return this._processInputInternal(input, modelCount);
+  }
+
+  /**
    * Process user input (statement or question) and perform fact checking
+   * Default implementation using all available models
    */
   async processInput(input: string): Promise<{
+    isTrue: boolean;
+    explanation: string;
+    historicalContext: string;
+    sources: Source[];
+    confidenceScore: number;
+    serviceBreakdown: Array<{
+      name: string;
+      verdict: string;
+      confidence: number;
+    }>;
+    factualConsensus: number;
+    manipulationScore: number;
+    contradictionIndex: number;
+    isQuestion: boolean;
+    transformedStatement?: string;
+    implicitClaims?: string[];
+    domainInfo?: {
+      detectedDomains: string[];
+      modelWeights: Record<string, number>;
+      explanation: string;
+    };
+  }> {
+    // Use the internal implementation with all available models (6)
+    return this._processInputInternal(input, 6);
+  }
+
+  /**
+   * Internal method to process input with a specific number of models
+   * This is the core implementation that both public methods use
+   */
+  private async _processInputInternal(input: string, modelCount: number = 6): Promise<{
     isTrue: boolean;
     explanation: string;
     historicalContext: string;
@@ -89,10 +151,7 @@ export class UltimateFactCheckService {
     const weightExplanation = domainDetectionService.getWeightExplanation(detectedDomains, modelWeights);
     
     // Step 6: Gather available API keys and prepare services list
-    const availableServices = [];
-    
-    // Always include these services as they can work with simulated data if no API key
-    availableServices.push(
+    const allPossibleServices = [
       {
         name: "Claude",
         service: claudeService,
@@ -110,36 +169,32 @@ export class UltimateFactCheckService {
         service: enhancedPerplexityService,
         weight: modelWeights.perplexity,
         hasRealKey: apiKeyManager.hasKey('perplexity')
-      }
-    );
-    
-    // Add new services if their weights are significant (over 5%)
-    if (modelWeights.gemini > 0.05) {
-      availableServices.push({
+      },
+      {
         name: "Gemini",
         service: geminiService,
         weight: modelWeights.gemini,
         hasRealKey: apiKeyManager.hasKey('gemini')
-      });
-    }
-    
-    if (modelWeights.mistral > 0.05) {
-      availableServices.push({
+      },
+      {
         name: "Mistral",
         service: mistralService,
         weight: modelWeights.mistral,
         hasRealKey: apiKeyManager.hasKey('mistral')
-      });
-    }
-    
-    if (modelWeights.llama > 0.05) {
-      availableServices.push({
+      },
+      {
         name: "Llama",
         service: llamaService,
         weight: modelWeights.llama,
         hasRealKey: apiKeyManager.hasKey('llama')
-      });
-    }
+      }
+    ];
+    
+    // Sort services by weight to prioritize the most relevant ones
+    allPossibleServices.sort((a, b) => b.weight - a.weight);
+    
+    // Limit to the specified model count (based on subscription tier)
+    const availableServices = allPossibleServices.slice(0, modelCount);
     
     // Step 7: Run fact-checking in parallel with all available services
     const serviceResults = await Promise.all(

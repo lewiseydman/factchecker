@@ -29,43 +29,43 @@ export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
         <nav className="flex space-x-4 sm:space-x-8 whitespace-nowrap min-w-max px-4 sm:px-0 h-12">
           <Link 
             to="/"
-            className={`${activeTab === "dashboard" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[11px] sm:text-sm font-medium`}
+            className={`${activeTab === "dashboard" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
           >
             Dashboard
           </Link>
           <Link 
             to="/history"
-            className={`${activeTab === "history" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[11px] sm:text-sm font-medium`}
+            className={`${activeTab === "history" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
           >
             History
           </Link>
           <Link 
             to="/saved"
-            className={`${activeTab === "saved" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[11px] sm:text-sm font-medium`}
+            className={`${activeTab === "saved" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
           >
             Saved
           </Link>
           <Link 
             to="/trending"
-            className={`${activeTab === "trending" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[11px] sm:text-sm font-medium`}
+            className={`${activeTab === "trending" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
           >
             Trending
           </Link>
           <Link 
             to="/methodology"
-            className={`${activeTab === "methodology" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[11px] sm:text-sm font-medium`}
+            className={`${activeTab === "methodology" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
           >
             Method
           </Link>
           <Link 
             to="/subscription"
-            className={`${activeTab === "subscription" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[11px] sm:text-sm font-medium`}
+            className={`${activeTab === "subscription" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
           >
             Pricing
           </Link>
           <Link 
             to="/settings"
-            className={`${activeTab === "settings" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[11px] sm:text-sm font-medium`}
+            className={`${activeTab === "settings" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
           >
             Settings
           </Link>

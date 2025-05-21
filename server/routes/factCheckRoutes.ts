@@ -93,12 +93,9 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       console.log(`Processing fact check for user ${userId} using ${modelCount} models. Checks remaining: ${subscriptionStatus.checksRemaining - 1}`);
     }
     
-    // Process the user input through the fact checking service
-    // Note: We would need to modify the ultimateFactCheckService to accept modelCount
-    // For now, we'll use the existing method and add a comment about future improvements
-    const factResult = await ultimateFactCheckService.processInput(userInput);
-    // TODO: Update service to use different number of models based on subscription:
-    // const factResult = await ultimateFactCheckService.processInputWithModels(userInput, modelCount);
+    // Process the user input through the fact checking service with 
+    // the appropriate number of models based on subscription tier
+    const factResult = await ultimateFactCheckService.processInputWithModels(userInput, modelCount);
     
     // If user is authenticated, try to save the fact check
     let savedFactCheck = null;
