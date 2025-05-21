@@ -70,7 +70,16 @@ const FactResult = ({
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   
-  const formattedDate = formatDistanceToNow(new Date(checkedAt), { addSuffix: true });
+  // Safely format date or use fallback
+  let formattedDate = "Just now";
+  try {
+    if (checkedAt) {
+      formattedDate = formatDistanceToNow(new Date(checkedAt), { addSuffix: true });
+    }
+  } catch (error) {
+    console.error("Date formatting error:", error);
+    // Keep the default "Just now"
+  }
 
   const saveMutation = useMutation({
     mutationFn: async (saved: boolean) => {
