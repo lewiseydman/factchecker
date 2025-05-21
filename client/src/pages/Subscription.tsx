@@ -224,8 +224,8 @@ const Subscription = () => {
       {/* Features comparison */}
       <div className="mt-12">
         <h2 className="text-2xl font-semibold mb-4">Features Comparison</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <table className="w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

@@ -170,7 +170,7 @@ const RecentChecks = () => {
           {displayChecks?.map((check: FactCheck) => (
             <div 
               key={check.id} 
-              className={`flex-shrink-0 w-[300px] bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 border-l-4 ${check.isTrue ? 'border-l-true' : 'border-l-false'}`}
+              className={`flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 border-l-4 ${check.isTrue ? 'border-l-true' : 'border-l-false'}`}
             >
               <div className="p-5">
                 <p className="text-gray-800 font-medium mb-3 line-clamp-2">{check.statement}</p>

@@ -84,7 +84,7 @@ const Trending = () => {
         <div className="bg-white rounded-lg shadow-sm p-4">
           <div className="flex overflow-x-auto gap-4">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="flex-shrink-0 w-[300px] bg-white rounded-lg border p-4">
+              <div key={i} className="flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white rounded-lg border p-4">
                 <div className="flex">
                   <Skeleton className="h-6 w-6 rounded-full mr-3" />
                   <div className="flex-1">
@@ -140,7 +140,7 @@ const Trending = () => {
           >
             {Array.isArray(trendingFacts) && trendingFacts.length > 0 ? (
               trendingFacts.map((fact: TrendingFact) => (
-                <div key={fact.id} className="flex-shrink-0 w-[300px] bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200">
+                <div key={fact.id} className="flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200">
                   <div className="p-5">
                     <div className="flex items-start mb-3">
                       <div className="flex-shrink-0 mt-1">

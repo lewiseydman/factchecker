@@ -183,7 +183,7 @@ const FactResult = ({
               d.charAt(0).toUpperCase() + d.slice(1)
             ).join(', ')}
           </p>
-          <div className="grid grid-cols-3 gap-1 mb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2">
             {Object.entries(domainInfo.modelWeights).map(([model, weight]) => (
               <div key={model} className="bg-white p-1 rounded border border-blue-50 text-center">
                 <div className="text-xs font-medium">{model.charAt(0).toUpperCase() + model.slice(1)}</div>
@@ -238,7 +238,7 @@ const FactResult = ({
             </div>
             
             {/* Legend for the contribution bar */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2">
               {serviceBreakdown.map((service, index) => {
                 // Sort services by confidence to highlight the most influential
                 const totalConfidence = serviceBreakdown.reduce((sum, s) => sum + s.confidence, 0);
@@ -270,7 +270,7 @@ const FactResult = ({
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             {serviceBreakdown.map((service, index) => {
               // Sort services by confidence to highlight the most influential
               const isHighestConfidence = service.confidence === Math.max(...serviceBreakdown.map(s => s.confidence));
