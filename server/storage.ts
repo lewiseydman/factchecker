@@ -551,11 +551,21 @@ export class DatabaseStorage implements IStorage {
         return defaultResponse;
       }
       
+      // Make sure the model count matches the tier name correctly
+      let actualModelCount = 2; // Default for Basic/Free tier
+      
+      // Set correct model count based on subscription tier
+      if (subscription.tier.name === "Premium Tier") {
+        actualModelCount = 6;
+      } else if (subscription.tier.name === "Standard Tier") {
+        actualModelCount = 4;
+      }
+      
       return {
         canCheck: subscription.subscription.checksRemaining > 0,
         checksRemaining: subscription.subscription.checksRemaining,
         tierName: subscription.tier.name,
-        modelCount: subscription.tier.modelCount
+        modelCount: actualModelCount
       };
     } catch (error) {
       console.error("Error checking subscription status:", error);
