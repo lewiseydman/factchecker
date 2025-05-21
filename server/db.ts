@@ -21,7 +21,7 @@ export const pool = new Pool({
 
 // Add error handling to pool
 pool.on('error', (err) => {
-  console.log('Database pool connection error, will auto-reconnect');
+  // Silent handling to reduce console noise
 });
 
 export const db = drizzle({ client: pool, schema });
