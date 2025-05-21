@@ -190,19 +190,20 @@ const RecentChecks = () => {
                 </div>
                 
                 {/* Subscription Tier Badge */}
-                {check.tierName && (
-                  <div className="flex justify-end">
-                    <span className={`text-xs py-0.5 px-2 rounded-full font-medium ${
-                      check.tierName === "Premium Tier" 
-                        ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
-                        : check.tierName === "Standard Tier" 
-                          ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white" 
-                          : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
-                    }`}>
-                      {check.tierName.replace(" Tier", "")} {check.modelsUsed ? `(${check.modelsUsed} models)` : ""}
-                    </span>
-                  </div>
-                )}
+                <div className="flex justify-end">
+                  <span className={`text-xs py-0.5 px-2 rounded-full font-medium ${
+                    check.tierName === "Premium Tier" 
+                      ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
+                    : check.tierName === "Standard Tier" 
+                      ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white"
+                    : check.tierName === "Basic Tier"
+                      ? "bg-gradient-to-r from-teal-500 to-teal-700 text-white"  
+                    : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
+                  }`}>
+                    {check.tierName ? check.tierName.replace(" Tier", "") : "Free"} 
+                    {check.modelsUsed ? ` (${check.modelsUsed} models)` : ""}
+                  </span>
+                </div>
               </div>
             </div>
           ))}

@@ -19,15 +19,30 @@ export async function setupDefaultTiers() {
       if (existingTiers.length === 0) {
         console.log("Creating default subscription tiers...");
         
+        // Free tier
+        await db.insert(subscriptionTiers).values({
+          name: 'Free Tier',
+          description: 'Perfect for casual users who need occasional fact checks',
+          monthlyPriceGBP: '0.00',
+          checkerLimit: 3,
+          modelCount: 2,
+          features: JSON.parse(JSON.stringify([
+            'Basic verification using 2 AI models',
+            'Limited historical context',
+            'Basic source list',
+            'Save up to 5 fact checks'
+          ]))
+        });
+        
         // Basic tier
         await db.insert(subscriptionTiers).values({
           name: 'Basic Tier',
-          description: 'Perfect for casual users who need occasional fact checks',
+          description: 'For regular users who need basic fact checking',
           monthlyPriceGBP: '7.99',
           checkerLimit: 15,
           modelCount: 2,
           features: JSON.parse(JSON.stringify([
-            'Basic verification using 2 AI models (Perplexity + Llama)',
+            'Basic verification using 2 AI models',
             'Limited historical context',
             'Basic source list',
             'Save up to 10 fact checks'
