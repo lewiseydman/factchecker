@@ -24,51 +24,53 @@ interface TabNavigationProps {
 
 export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
   return (
-    <div className="border-b border-gray-200 mb-6">
-      <nav className="-mb-px flex space-x-8">
-        <Link 
-          to="/"
-          className={`${activeTab === "dashboard" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
-        >
-          Dashboard
-        </Link>
-        <Link 
-          to="/history"
-          className={`${activeTab === "history" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
-        >
-          My History
-        </Link>
-        <Link 
-          to="/saved"
-          className={`${activeTab === "saved" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
-        >
-          Saved Facts
-        </Link>
-        <Link 
-          to="/trending"
-          className={`${activeTab === "trending" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
-        >
-          Trending
-        </Link>
-        <Link 
-          to="/methodology"
-          className={`${activeTab === "methodology" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
-        >
-          Methodology
-        </Link>
-        <Link 
-          to="/subscription"
-          className={`${activeTab === "subscription" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
-        >
-          Pricing
-        </Link>
-        <Link 
-          to="/settings"
-          className={`${activeTab === "settings" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-sm font-medium`}
-        >
-          Settings
-        </Link>
-      </nav>
+    <div className="border-b border-gray-200 mb-6 -mx-4 sm:mx-0">
+      <div className="overflow-x-auto">
+        <nav className="-mb-px flex space-x-3 sm:space-x-6 whitespace-nowrap min-w-max px-4 sm:px-0">
+          <Link 
+            to="/"
+            className={`${activeTab === "dashboard" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-xs sm:text-sm font-medium`}
+          >
+            Dashboard
+          </Link>
+          <Link 
+            to="/history"
+            className={`${activeTab === "history" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-xs sm:text-sm font-medium`}
+          >
+            History
+          </Link>
+          <Link 
+            to="/saved"
+            className={`${activeTab === "saved" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-xs sm:text-sm font-medium`}
+          >
+            Saved
+          </Link>
+          <Link 
+            to="/trending"
+            className={`${activeTab === "trending" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-xs sm:text-sm font-medium`}
+          >
+            Trending
+          </Link>
+          <Link 
+            to="/methodology"
+            className={`${activeTab === "methodology" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-xs sm:text-sm font-medium`}
+          >
+            Method
+          </Link>
+          <Link 
+            to="/subscription"
+            className={`${activeTab === "subscription" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-xs sm:text-sm font-medium`}
+          >
+            Pricing
+          </Link>
+          <Link 
+            to="/settings"
+            className={`${activeTab === "settings" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 py-4 px-1 text-xs sm:text-sm font-medium`}
+          >
+            Settings
+          </Link>
+        </nav>
+      </div>
     </div>
   );
 };
