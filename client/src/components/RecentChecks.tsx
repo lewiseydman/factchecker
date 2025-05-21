@@ -177,7 +177,7 @@ const RecentChecks = () => {
                 {check.explanation && (
                   <p className="text-gray-600 text-sm mb-3 line-clamp-3">{check.explanation}</p>
                 )}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                   <span className={`flex items-center ${check.isTrue ? 'text-true' : 'text-false'} text-sm font-medium`}>
                     <span className="material-icons text-sm mr-1">{check.isTrue ? 'check_circle' : 'cancel'}</span>
                     {check.isTrue ? 'TRUE' : 'FALSE'}
@@ -186,6 +186,21 @@ const RecentChecks = () => {
                     {formatDistanceToNow(new Date(check.checkedAt), { addSuffix: true })}
                   </span>
                 </div>
+                
+                {/* Subscription Tier Badge */}
+                {check.tierName && (
+                  <div className="flex justify-end">
+                    <span className={`text-xs py-0.5 px-2 rounded-full font-medium ${
+                      check.tierName === "Premium Tier" 
+                        ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
+                        : check.tierName === "Standard Tier" 
+                          ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white" 
+                          : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
+                    }`}>
+                      {check.tierName.replace(" Tier", "")} {check.modelsUsed ? `(${check.modelsUsed} models)` : ""}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
