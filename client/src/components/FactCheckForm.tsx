@@ -127,7 +127,7 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
                 value={statement}
                 onChange={(e) => setStatement(e.target.value)}
                 placeholder={isListening ? "Speak now..." : "Enter a statement or question..."}
-                className={`rounded-none ${hasRecognitionSupport ? '' : 'rounded-r-md'} p-3 ${isListening ? 'border-red-300 focus-visible:ring-red-300' : ''}`}
+                className={`rounded-none ${hasRecognitionSupport ? '' : 'rounded-r-md'} p-3 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0 ${isListening ? 'border-red-300' : ''}`}
               />
               {hasRecognitionSupport && (
                 <button
