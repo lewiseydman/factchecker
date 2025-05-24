@@ -406,6 +406,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Contact form endpoint
+  const contactFormSchema = z.object({
+    name: z.string().min(2),
+    email: z.string().email(),
+    subject: z.string().min(5),
+    message: z.string().min(10)
+  });
+
+  app.post('/api/contact', async (req: Request, res: Response) => {
+    try {
+      // Validate request body
+      const validatedData = contactFormSchema.parse(req.body);
+      
+      // Initialize SendGrid
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(500).json({ message: "Email service not configured" });
+      }
+
+      const mailService = new MailService();
+      mailService.setApiKey(process.env.SENDGRID_API_KEY);
+
+      // Send email to lewiseydman@gmail.com
+      const emailData = {
+        to: 'lewiseydman@gmail.com',
+        from: 'noreply@factcheck.com', // This should be a verified sender in SendGrid
+        subject: `Contact Form: ${validatedData.subject}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${validatedData.name}</p>
+          <p><strong>Email:</strong> ${validatedData.email}</p>
+          <p><strong>Subject:</strong> ${validatedData.subject}</p>
+          <h3>Message:</h3>
+          <p>${validatedData.message.replace(/\n/g, '<br>')}</p>
+          <hr>
+          <p><em>This message was sent from the FactCheck contact form.</em></p>
+        `,
+        text: `
+New Contact Form Submission
+
+Name: ${validatedData.name}
+Email: ${validatedData.email}
+Subject: ${validatedData.subject}
+
+Message:
+${validatedData.message}
+
+---
+This message was sent from the FactCheck contact form.
+        `
+      };
+
+      await mailService.send(emailData);
+      
+      res.json({ 
+        success: true, 
+        message: "Message sent successfully" 
+      });
+    } catch (error) {
+      console.error("Contact form error:", error);
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          error: validationError.message 
+        });
+      }
+      res.status(500).json({ 
+        message: "Failed to send message", 
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
