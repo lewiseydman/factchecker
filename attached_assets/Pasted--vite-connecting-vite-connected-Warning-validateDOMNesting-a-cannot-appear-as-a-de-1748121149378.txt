@@ -1,0 +1,38 @@
+[vite] connecting...
+[vite] connected.
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at a
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=e9bcc892:337:18
+    at nav
+    at div
+    at div
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=e9bcc892:42:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JAZVXYPP.js?v=e9bcc892:61:7
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=e9bcc892:79:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=e9bcc892:56:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=e9bcc892:42:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-UDJZONCO.js?v=e9bcc892:29:5
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=e9bcc892:233:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=e9bcc892:156:58
+    at Presence (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-QPPIYHQO.js?v=e9bcc892:78:11)
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=e9bcc892:147:64
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=e9bcc892:79:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=e9bcc892:56:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=e9bcc892:42:13
+    at https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JAZVXYPP.js?v=e9bcc892:260:22
+    at Presence (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-QPPIYHQO.js?v=e9bcc892:78:11)
+    at Provider (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-5AJU3CG7.js?v=e9bcc892:38:15)
+    at DialogPortal (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=e9bcc892:109:11)
+    at _c3 (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/src/components/ui/sheet.tsx:69:12)
+    at Provider (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-5AJU3CG7.js?v=e9bcc892:38:15)
+    at Dialog (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=e9bcc892:50:5)
+    at BurgerMenu (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/src/components/BurgerMenu.tsx:46:31)
+    at div
+    at header
+    at Header
+    at div
+    at Provider (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-5AJU3CG7.js?v=e9bcc892:38:15)
+    at TooltipProvider (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=e9bcc892:58:5)
+    at QueryClientProvider (https://8a028018-6a37-4a2d-9326-bd8ea2364992-00-3badzfi6xdqi6.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=e9bcc892:2805:3)
+    at App

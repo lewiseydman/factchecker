@@ -137,16 +137,16 @@ export const BurgerMenu = () => {
 
               return (
                 <Link key={item.href} href={item.href}>
-                  <a
+                  <div
                     onClick={closeMenu}
-                    className="flex items-center space-x-3 px-3 py-3 text-sm rounded-lg hover:bg-gray-100 transition-colors group"
+                    className="flex items-center space-x-3 px-3 py-3 text-sm rounded-lg hover:bg-gray-100 transition-colors group cursor-pointer"
                   >
                     <Icon className="h-5 w-5 text-gray-400 group-hover:text-gray-600" />
                     <div className="flex-1">
                       <div className="font-medium text-gray-900">{item.label}</div>
                       <div className="text-xs text-gray-500">{item.description}</div>
                     </div>
-                  </a>
+                  </div>
                 </Link>
               );
             })}
