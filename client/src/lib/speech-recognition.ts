@@ -36,6 +36,9 @@ export const useSpeechRecognition = () => {
     const recognitionObj = recognition();
     if (!recognitionObj) return;
     
+    // Don't start if already listening
+    if (isListening) return;
+    
     setTranscript('');
     setIsListening(true);
     
@@ -74,14 +77,19 @@ export const useSpeechRecognition = () => {
       recognitionObj.start();
     } catch (error) {
       console.error('Error starting speech recognition:', error);
+      setIsListening(false);
     }
-  }, [recognition]);
+  }, [recognition, isListening]);
   
   const stopListening = useCallback(() => {
     const recognitionObj = recognition();
     if (!recognitionObj) return;
     
-    recognitionObj.stop();
+    try {
+      recognitionObj.stop();
+    } catch (error) {
+      console.error('Error stopping speech recognition:', error);
+    }
     setIsListening(false);
   }, [recognition]);
   
