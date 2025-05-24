@@ -43,62 +43,6 @@ const TrendingFacts = () => {
         explanation: "They primarily change color to regulate body temperature and communicate with other chameleons, not for camouflage.",
         checksCount: 754,
         checkedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 4,
-        statement: "Lightning never strikes the same place twice.",
-        isTrue: false,
-        explanation: "Lightning frequently strikes the same place multiple times. The Empire State Building is struck about 25 times per year.",
-        checksCount: 632,
-        checkedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 5,
-        statement: "Goldfish have a memory span of only 3 seconds.",
-        isTrue: false,
-        explanation: "Goldfish actually have much longer memories, lasting weeks or even months. They can be trained to respond to different stimuli.",
-        checksCount: 521,
-        checkedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 6,
-        statement: "The Great Wall of China is visible from space.",
-        isTrue: false,
-        explanation: "This is a persistent myth. The Great Wall is not visible from space with the naked eye due to its narrow width.",
-        checksCount: 498,
-        checkedAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 7,
-        statement: "Water boils at 100°C at sea level.",
-        isTrue: true,
-        explanation: "At standard atmospheric pressure (1 atmosphere), pure water boils at exactly 100°C (212°F).",
-        checksCount: 445,
-        checkedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 8,
-        statement: "Bulls are enraged by the color red.",
-        isTrue: false,
-        explanation: "Bulls are actually colorblind to red and green. They react to the movement of the matador's cape, not its color.",
-        checksCount: 387,
-        checkedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 9,
-        statement: "Hair and fingernails continue growing after death.",
-        isTrue: false,
-        explanation: "This is a myth. The skin shrinks as it dehydrates after death, making hair and nails appear longer.",
-        checksCount: 324,
-        checkedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 10,
-        statement: "Mount Everest is the tallest mountain on Earth.",
-        isTrue: true,
-        explanation: "Mount Everest stands at 8,848.86 meters (29,031.7 feet) above sea level, making it the highest point on Earth's surface.",
-        checksCount: 267,
-        checkedAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString()
       }
     ]
   });
