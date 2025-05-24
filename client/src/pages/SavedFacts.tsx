@@ -81,6 +81,12 @@ export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
           >
             Terms
           </Link>
+          <Link 
+            to="/contact"
+            className={`${activeTab === "contact" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
+          >
+            Contact
+          </Link>
         </nav>
       </div>
     </div>

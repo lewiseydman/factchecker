@@ -15,6 +15,7 @@ import Methodology from "@/pages/Methodology";
 import Subscription from "@/pages/Subscription";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
+import Contact from "@/pages/Contact";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/settings" component={isAuthenticated ? Settings : Dashboard} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );

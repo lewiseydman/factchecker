@@ -9,6 +9,7 @@ import { fromZodError } from "zod-validation-error";
 import factCheckRoutes from "./routes/factCheckRoutes";
 import subscriptionRoutes from "./routes/subscriptionRoutes";
 import { ultimateFactCheckService } from "./services/ultimateFactCheckService";
+import { MailService } from '@sendgrid/mail';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
