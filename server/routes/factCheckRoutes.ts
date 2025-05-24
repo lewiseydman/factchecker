@@ -205,4 +205,16 @@ router.get('/fact-checks/saved', isAuthenticated, async (req: any, res: Response
   }
 });
 
+// Clear all fact checks for a user
+router.delete('/fact-checks/clear-all', isAuthenticated, async (req: any, res: Response) => {
+  try {
+    const userId = req.user.claims.sub;
+    await storage.clearAllUserFactChecks(userId);
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error clearing all fact checks:', error);
+    res.status(500).json({ message: 'Failed to clear all fact checks' });
+  }
+});
+
 export default router;

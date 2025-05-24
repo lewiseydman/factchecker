@@ -39,6 +39,7 @@ export interface IStorage {
   getSavedFactChecksByUser(userId: string): Promise<FactCheck[]>;
   updateFactCheck(id: number, saved: boolean): Promise<FactCheck | undefined>;
   deleteFactCheck(id: number): Promise<boolean>;
+  clearAllUserFactChecks(userId: string): Promise<void>;
   
   // Category operations
   getCategories(): Promise<Category[]>;
@@ -196,6 +197,38 @@ export class DatabaseStorage implements IStorage {
       return result.rowCount > 0;
     } catch (error) {
       console.error("Error in deleteFactCheck:", error);
+      throw error;
+    }
+  }
+
+  async clearAllUserFactChecks(userId: string): Promise<void> {
+    try {
+      // Get all fact check IDs for this user first
+      const userFactChecks = await db
+        .select({ id: factChecks.id })
+        .from(factChecks)
+        .where(eq(factChecks.userId, userId));
+      
+      const factCheckIds = userFactChecks.map(fc => fc.id);
+      
+      if (factCheckIds.length > 0) {
+        // Delete associated tags for all user fact checks
+        await db
+          .delete(factCheckTags)
+          .where(inArray(factCheckTags.factCheckId, factCheckIds));
+        
+        // Delete trending facts entries for all user fact checks
+        await db
+          .delete(trendingFacts)
+          .where(inArray(trendingFacts.factCheckId, factCheckIds));
+        
+        // Finally delete all user fact checks
+        await db
+          .delete(factChecks)
+          .where(eq(factChecks.userId, userId));
+      }
+    } catch (error) {
+      console.error("Error clearing all user fact checks:", error);
       throw error;
     }
   }
