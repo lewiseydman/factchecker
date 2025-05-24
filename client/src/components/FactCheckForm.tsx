@@ -40,13 +40,12 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isAuthenticated } = useAuth();
   
-  const { 
-    isListening, 
-    transcript, 
-    startListening, 
-    stopListening,
-    hasRecognitionSupport
-  } = useSpeechRecognition();
+  // Temporarily disable voice recognition due to browser compatibility issues
+  const isListening = false;
+  const transcript = '';
+  const hasRecognitionSupport = false;
+  const startListening = () => {};
+  const stopListening = () => {};
   
   useEffect(() => {
     if (transcript) {
