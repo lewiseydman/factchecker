@@ -53,6 +53,12 @@ export const useSpeechRecognition = () => {
       }
       
       setTranscript(finalTranscript || interimTranscript);
+      
+      // Stop listening when we get a final result
+      if (finalTranscript) {
+        recognitionObj.stop();
+        setIsListening(false);
+      }
     };
     
     recognitionObj.onerror = (event: any) => {
