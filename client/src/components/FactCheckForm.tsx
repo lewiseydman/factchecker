@@ -118,9 +118,14 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
           <div className="flex items-center mb-4">
             <label htmlFor="fact-input" className="sr-only">Enter a fact to check</label>
             <div className="flex w-full">
-              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
+              <button
+                type="submit"
+                disabled={!statement.trim() || checkFactMutation.isPending}
+                className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                aria-label="Search and verify fact"
+              >
                 <Search className="h-4 w-4" />
-              </span>
+              </button>
               <Input
                 id="fact-input"
                 ref={inputRef}
