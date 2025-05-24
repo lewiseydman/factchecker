@@ -150,12 +150,12 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
               )}
             </div>
             {isListening && (
-              <div className="mt-2 text-sm text-red-500 flex items-center">
-                <span className="relative flex h-2.5 w-2.5 mr-2">
+              <div className="mt-3 text-sm text-red-600 flex items-center justify-center p-3 bg-red-50 border border-red-200 rounded-lg">
+                <span className="relative flex h-3 w-3 mr-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                 </span>
-                Listening to your voice input...
+                <span className="font-medium">Listening to your voice input...</span>
               </div>
             )}
           </div>
