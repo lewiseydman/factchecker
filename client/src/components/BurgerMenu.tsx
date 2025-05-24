@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import type { User } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -29,7 +28,6 @@ import {
 export const BurgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, isAuthenticated } = useAuth();
-  const typedUser = user as User | undefined;
 
   const closeMenu = () => setIsOpen(false);
 
@@ -91,22 +89,22 @@ export const BurgerMenu = () => {
         
         <div className="mt-6 space-y-6">
           {/* User Profile Section */}
-          {isAuthenticated && typedUser ? (
+          {isAuthenticated && user ? (
             <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={typedUser.profileImageUrl || ''} alt={typedUser.email || ''} />
+                <AvatarImage src={user.profileImageUrl || ''} alt={user.email || ''} />
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  {typedUser.email?.charAt(0).toUpperCase() || 'U'}
+                  {user.email?.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {typedUser.firstName && typedUser.lastName 
-                    ? `${typedUser.firstName} ${typedUser.lastName}` 
-                    : typedUser.email}
+                  {user.firstName && user.lastName 
+                    ? `${user.firstName} ${user.lastName}` 
+                    : user.email}
                 </p>
                 <p className="text-xs text-gray-500 truncate">
-                  {typedUser.email}
+                  {user.email}
                 </p>
               </div>
             </div>
