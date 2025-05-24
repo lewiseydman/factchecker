@@ -131,33 +131,32 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
                 ref={inputRef}
                 value={statement}
                 onChange={(e) => setStatement(e.target.value)}
-                placeholder={isListening ? "Speak now..." : "Enter a statement or question..."}
+                placeholder={isListening ? "Listening..." : "Enter a statement or question..."}
                 className={`rounded-none ${hasRecognitionSupport ? '' : 'rounded-r-md'} p-3 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0 ${isListening ? 'border-red-300' : ''}`}
               />
               {hasRecognitionSupport && (
-                <button
-                  type="button"
-                  onClick={toggleVoiceInput}
-                  className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 rounded-r-md h-10 transition-colors ${
-                    isListening 
-                      ? 'bg-red-500 text-white border-red-500' 
-                      : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
-                  }`}
-                  aria-label={isListening ? "Stop listening" : "Start voice input"}
-                >
-                  {isListening ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
-                </button>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={toggleVoiceInput}
+                    className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 rounded-r-md h-10 transition-colors ${
+                      isListening 
+                        ? 'bg-red-500 text-white border-red-500' 
+                        : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                    }`}
+                    aria-label={isListening ? "Stop listening" : "Start voice input"}
+                  >
+                    {isListening ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                  </button>
+                  {isListening && (
+                    <span className="absolute -right-1 -top-1 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                  )}
+                </div>
               )}
             </div>
-            {isListening && (
-              <div className="mt-3 text-sm text-red-600 flex items-center justify-center p-3 bg-red-50 border border-red-200 rounded-lg">
-                <span className="relative flex h-3 w-3 mr-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
-                <span className="font-medium">Listening to your voice input...</span>
-              </div>
-            )}
           </div>
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
