@@ -13,6 +13,8 @@ import Trending from "@/pages/Trending";
 import Settings from "@/pages/Settings";
 import Methodology from "@/pages/Methodology";
 import Subscription from "@/pages/Subscription";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -35,6 +37,8 @@ function Router() {
       <Route path="/methodology" component={Methodology} />
       <Route path="/subscription" component={Subscription} />
       <Route path="/settings" component={isAuthenticated ? Settings : Dashboard} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route component={NotFound} />
     </Switch>
   );
