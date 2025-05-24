@@ -51,42 +51,7 @@ export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
           >
             Trending
           </Link>
-          <Link 
-            to="/methodology"
-            className={`${activeTab === "methodology" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
-          >
-            Method
-          </Link>
-          <Link 
-            to="/subscription"
-            className={`${activeTab === "subscription" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
-          >
-            Pricing
-          </Link>
-          <Link 
-            to="/settings"
-            className={`${activeTab === "settings" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
-          >
-            Settings
-          </Link>
-          <Link 
-            to="/privacy"
-            className={`${activeTab === "privacy" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
-          >
-            Privacy
-          </Link>
-          <Link 
-            to="/terms"
-            className={`${activeTab === "terms" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
-          >
-            Terms
-          </Link>
-          <Link 
-            to="/contact"
-            className={`${activeTab === "contact" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
-          >
-            Contact
-          </Link>
+
         </nav>
       </div>
     </div>
