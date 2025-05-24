@@ -78,6 +78,27 @@ const History = () => {
       });
     }
   });
+
+  const clearAllHistoryMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("DELETE", "/api/fact-checks/clear-all");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/fact-checks/recent'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/fact-checks/saved'] });
+      toast({
+        title: "Success",
+        description: "All history cleared successfully"
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to clear history",
+        variant: "destructive"
+      });
+    }
+  });
   
   const handleSaveToggle = (id: number, currentStatus: boolean) => {
     toggleSaveMutation.mutate({ id, saved: !currentStatus });
@@ -86,6 +107,12 @@ const History = () => {
   const handleDelete = (id: number) => {
     if (confirm("Are you sure you want to delete this fact check? This action cannot be undone.")) {
       deleteFactCheckMutation.mutate(id);
+    }
+  };
+
+  const handleClearAllHistory = () => {
+    if (confirm("Are you sure you want to clear ALL your history? This action cannot be undone and will delete all your fact checks permanently.")) {
+      clearAllHistoryMutation.mutate();
     }
   };
   
@@ -109,7 +136,19 @@ const History = () => {
       <TabNavigation activeTab="history" />
       
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-semibold text-gray-800">Your Fact Check History</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <h2 className="text-2xl font-semibold text-gray-800">Your Fact Check History</h2>
+          {factChecks && factChecks.length > 0 && (
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={handleClearAllHistory}
+              disabled={clearAllHistoryMutation.isPending}
+            >
+              {clearAllHistoryMutation.isPending ? "Clearing..." : "Clear All History"}
+            </Button>
+          )}
+        </div>
         
         <div className="w-full sm:w-64">
           <div className="relative">
