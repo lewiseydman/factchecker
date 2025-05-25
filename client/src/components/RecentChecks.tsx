@@ -176,7 +176,7 @@ const RecentChecks = () => {
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-gray-800">
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
           {isAuthenticated ? 'Your Recent Checks' : 'Example Fact Checks'}
         </h3>
         {isAuthenticated && (
@@ -190,10 +190,10 @@ const RecentChecks = () => {
         {/* Left scroll button - only shown when we can scroll left */}
         {canScrollLeft && (
           <button 
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200 dark:border-gray-600"
             onClick={() => scroll('left')}
           >
-            <span className="material-icons">chevron_left</span>
+            <span className="material-icons text-gray-600 dark:text-gray-300">chevron_left</span>
           </button>
         )}
         
