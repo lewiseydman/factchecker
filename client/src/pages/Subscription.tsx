@@ -91,32 +91,32 @@ const Subscription = () => {
       <TabNavigation activeTab="subscription" />
       
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Subscription Plans</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Subscription Plans</h1>
+        <p className="text-gray-700 dark:text-gray-300">
           Choose the plan that best suits your fact-checking needs
         </p>
       </div>
 
       {/* Current subscription info */}
       {isAuthenticated && userSubscription && userSubscription.tier && (
-        <div className="mb-8 p-4 border rounded-lg bg-blue-50">
-          <h2 className="text-xl font-semibold mb-2">Your Current Subscription</h2>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex-1">
-              <p className="text-sm text-gray-500">Plan</p>
-              <p className="font-medium">{userSubscription.tier.name}</p>
+        <div className="mb-8 p-6 border border-gray-200 dark:border-gray-700 rounded-lg bg-blue-50 dark:bg-blue-950/30">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Your Current Subscription</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Plan</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{userSubscription.tier.name}</p>
             </div>
-            <div className="flex-1">
-              <p className="text-sm text-gray-500">Checks Remaining</p>
-              <p className="font-medium">{userSubscription.checksRemaining} of {userSubscription.tier.checkerLimit}</p>
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Checks Remaining</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{userSubscription.checksRemaining} of {userSubscription.tier.checkerLimit}</p>
             </div>
-            <div className="flex-1">
-              <p className="text-sm text-gray-500">AI Models</p>
-              <p className="font-medium">{userSubscription.tier.modelCount} models</p>
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">AI Models</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{userSubscription.tier.modelCount} models</p>
             </div>
-            <div className="flex-1">
-              <p className="text-sm text-gray-500">Expires</p>
-              <p className="font-medium">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Expires</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
                 {userSubscription.expiresAt 
                   ? new Date(userSubscription.expiresAt).toLocaleDateString() 
                   : 'N/A'}
@@ -150,49 +150,49 @@ const Subscription = () => {
             const isStandard = tier.name.includes('Standard');
             const isPremium = tier.name.includes('Premium');
             
-            let cardClassName = "h-full flex flex-col border-2";
-            let headerClassName = "space-y-1";
+            let cardClassName = "h-full flex flex-col border-2 bg-white dark:bg-gray-800";
+            let headerClassName = "space-y-1 p-6";
             
             if (isBasic) {
-              cardClassName += " border-blue-200";
-              headerClassName += " bg-blue-50";
+              cardClassName += " border-blue-200 dark:border-blue-700";
+              headerClassName += " bg-blue-50 dark:bg-blue-950/40";
             } else if (isStandard) {
-              cardClassName += " border-indigo-300";
-              headerClassName += " bg-indigo-50";
+              cardClassName += " border-indigo-300 dark:border-indigo-600";
+              headerClassName += " bg-indigo-50 dark:bg-indigo-950/40";
             } else if (isPremium) {
-              cardClassName += " border-purple-300";
-              headerClassName += " bg-purple-50";
+              cardClassName += " border-purple-300 dark:border-purple-600";
+              headerClassName += " bg-purple-50 dark:bg-purple-950/40";
             }
             
             return (
               <Card key={tier.id} className={cardClassName}>
                 <CardHeader className={headerClassName}>
-                  <CardTitle>
+                  <CardTitle className="text-gray-900 dark:text-gray-100">
                     {tier.name}
                     {isCurrentTier && (
-                      <Badge className="ml-2 bg-green-500">Current Plan</Badge>
+                      <Badge className="ml-2 bg-green-500 dark:bg-green-600 text-white">Current Plan</Badge>
                     )}
                   </CardTitle>
-                  <CardDescription>{tier.description}</CardDescription>
-                  <div className="text-3xl font-bold mt-2">
+                  <CardDescription className="text-gray-600 dark:text-gray-400">{tier.description}</CardDescription>
+                  <div className="text-3xl font-bold mt-2 text-gray-900 dark:text-gray-100">
                     {formatPrice(tier.monthlyPriceGBP)}
-                    <span className="text-sm font-normal text-gray-500">/month</span>
+                    <span className="text-sm font-normal text-gray-600 dark:text-gray-400">/month</span>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-grow">
+                <CardContent className="flex-grow p-6">
                   <div className="space-y-4">
                     <div className="flex items-center">
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                      <span>{tier.checkerLimit} fact checks per month</span>
+                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 flex-shrink-0" />
+                      <span className="text-gray-700 dark:text-gray-300">{tier.checkerLimit} fact checks per month</span>
                     </div>
                     <div className="flex items-center">
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                      <span>Uses {tier.modelCount} AI models</span>
+                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 flex-shrink-0" />
+                      <span className="text-gray-700 dark:text-gray-300">Uses {tier.modelCount} AI models</span>
                     </div>
                     {tier.features?.map((feature, index) => (
                       <div key={index} className="flex items-center">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                        <span>{feature}</span>
+                        <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 flex-shrink-0" />
+                        <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                       </div>
                     ))}
                   </div>
