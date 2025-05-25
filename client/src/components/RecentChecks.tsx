@@ -200,10 +200,10 @@ const RecentChecks = () => {
         {/* Right scroll button - only shown when we can scroll right */}
         {canScrollRight && (
           <button 
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200 dark:border-gray-600"
             onClick={() => scroll('right')}
           >
-            <span className="material-icons">chevron_right</span>
+            <span className="material-icons text-gray-600 dark:text-gray-300">chevron_right</span>
           </button>
         )}
         
@@ -221,19 +221,19 @@ const RecentChecks = () => {
           {displayChecks?.map((check: FactCheck) => (
             <div 
               key={check.id} 
-              className={`flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 border-l-4 ${check.isTrue ? 'border-l-true' : 'border-l-false'}`}
+              className={`flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 hover:shadow-md transition-shadow duration-200 border-l-4 ${check.isTrue ? 'border-l-true' : 'border-l-false'}`}
             >
               <div className="p-5">
-                <p className="text-gray-800 font-medium mb-3 line-clamp-2">{check.statement}</p>
+                <p className="text-gray-800 dark:text-gray-200 font-medium mb-3 line-clamp-2">{check.statement}</p>
                 {check.explanation && (
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-3">{check.explanation}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-3">{check.explanation}</p>
                 )}
                 <div className="flex items-center justify-between mb-2">
                   <span className={`flex items-center ${check.isTrue ? 'text-true' : 'text-false'} text-sm font-medium`}>
                     <span className="material-icons text-sm mr-1">{check.isTrue ? 'check_circle' : 'cancel'}</span>
                     {check.isTrue ? 'TRUE' : 'FALSE'}
                   </span>
-                  <span className="text-gray-500 text-xs">
+                  <span className="text-gray-500 dark:text-gray-400 text-xs">
                     {formatDistanceToNow(new Date(check.checkedAt), { addSuffix: true })}
                   </span>
                 </div>

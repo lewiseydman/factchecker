@@ -94,7 +94,7 @@ const TrendingFacts = () => {
   if (isLoading) {
     return (
       <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">Trending Fact Checks</h3>
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Trending Fact Checks</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
             <Card key={i} className="overflow-hidden">
@@ -114,26 +114,26 @@ const TrendingFacts = () => {
 
   return (
     <div className="mb-8">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">Trending Fact Checks</h3>
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Trending Fact Checks</h3>
       
       <div className="relative">
         {/* Left scroll button - only shown when we can scroll left */}
         {canScrollLeft && (
           <button 
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200 dark:border-gray-600"
             onClick={() => scroll('left')}
           >
-            <span className="material-icons">chevron_left</span>
+            <span className="material-icons text-gray-600 dark:text-gray-300">chevron_left</span>
           </button>
         )}
         
         {/* Right scroll button - only shown when we can scroll right */}
         {canScrollRight && (
           <button 
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200 dark:border-gray-600"
             onClick={() => scroll('right')}
           >
-            <span className="material-icons">chevron_right</span>
+            <span className="material-icons text-gray-600 dark:text-gray-300">chevron_right</span>
           </button>
         )}
         
@@ -152,17 +152,17 @@ const TrendingFacts = () => {
             trendingFacts.map((fact: TrendingFact) => (
               <div 
                 key={fact.id} 
-                className={`flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 border-l-4 ${fact.isTrue ? 'border-l-true' : 'border-l-false'}`}
+                className={`flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 hover:shadow-md transition-shadow duration-200 border-l-4 ${fact.isTrue ? 'border-l-true' : 'border-l-false'}`}
               >
                 <div className="p-5">
-                  <p className="text-gray-800 font-medium mb-3 line-clamp-2">{fact.statement}</p>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-3">{fact.explanation}</p>
+                  <p className="text-gray-800 dark:text-gray-200 font-medium mb-3 line-clamp-2">{fact.statement}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-3">{fact.explanation}</p>
                   <div className="flex items-center justify-between mb-2">
                     <span className={`flex items-center ${fact.isTrue ? 'text-true' : 'text-false'} text-sm font-medium`}>
                       <span className="material-icons text-sm mr-1">{fact.isTrue ? 'check_circle' : 'cancel'}</span>
                       {fact.isTrue ? 'TRUE' : 'FALSE'}
                     </span>
-                    <span className="text-gray-500 text-xs">
+                    <span className="text-gray-500 dark:text-gray-400 text-xs">
                       {formatDistanceToNow(new Date(fact.checkedAt), { addSuffix: true })}
                     </span>
                   </div>
