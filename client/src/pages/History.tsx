@@ -135,9 +135,57 @@ const History = () => {
     <div className="fade-in">
       <TabNavigation activeTab="history" />
       
-      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Your Fact Check History</h2>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Your Fact Check History</h1>
+        <p className="text-gray-700 dark:text-gray-300">
+          View and manage all your previous fact-checking results
+        </p>
+      </div>
+      
+      <div className="mb-6">
+        <div className="w-full sm:w-64 mb-4">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search your history..."
+              className="pl-10 pr-3 py-2"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span className="material-icons text-gray-400 dark:text-gray-500 text-sm">search</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap justify-between items-center gap-2 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-wrap gap-2">
+            <Button 
+              variant={filter === "all" ? "default" : "outline"} 
+              onClick={() => setFilter("all")}
+            >
+              All
+            </Button>
+            <Button 
+              variant={filter === "true" ? "default" : "outline"} 
+              onClick={() => setFilter("true")}
+            >
+              True
+            </Button>
+            <Button 
+              variant={filter === "false" ? "default" : "outline"} 
+              onClick={() => setFilter("false")}
+            >
+              False
+            </Button>
+            <Button 
+              variant={filter === "saved" ? "default" : "outline"} 
+              onClick={() => setFilter("saved")}
+            >
+              Saved
+            </Button>
+          </div>
+          
           {factChecks && factChecks.length > 0 && (
             <Button 
               variant="destructive" 
@@ -149,48 +197,6 @@ const History = () => {
             </Button>
           )}
         </div>
-        
-        <div className="w-full sm:w-64">
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search your history..."
-              className="pl-10 pr-3 py-2"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="material-icons text-gray-400 text-sm">search</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="flex flex-wrap gap-2 mb-6">
-        <Button 
-          variant={filter === "all" ? "default" : "outline"} 
-          onClick={() => setFilter("all")}
-        >
-          All
-        </Button>
-        <Button 
-          variant={filter === "true" ? "default" : "outline"} 
-          onClick={() => setFilter("true")}
-        >
-          True
-        </Button>
-        <Button 
-          variant={filter === "false" ? "default" : "outline"} 
-          onClick={() => setFilter("false")}
-        >
-          False
-        </Button>
-        <Button 
-          variant={filter === "saved" ? "default" : "outline"} 
-          onClick={() => setFilter("saved")}
-        >
-          Saved
-        </Button>
       </div>
       
       {isLoading ? (
