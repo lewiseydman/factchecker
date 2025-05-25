@@ -80,6 +80,55 @@ const RecentChecks = () => {
       isTrue: true,
       explanation: "A full set of adult teeth consists of 8 incisors, 4 canines, 8 premolars, and 12 molars, including wisdom teeth.",
       checkedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 4,
+      statement: "You can see the Great Wall of China from space.",
+      isTrue: false,
+      explanation: "This is a common myth. The Great Wall is not visible from space with the naked eye, despite being a massive structure.",
+      checkedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 5,
+      statement: "Goldfish have a 3-second memory.",
+      isTrue: false,
+      explanation: "Goldfish actually have much longer memories, capable of remembering things for months, not seconds.",
+      checkedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 6,
+      statement: "Bananas are berries, but strawberries aren't.",
+      isTrue: true,
+      explanation: "Botanically speaking, bananas qualify as berries while strawberries are aggregate accessory fruits.",
+      checkedAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 7,
+      statement: "Humans only use 10% of their brains.",
+      isTrue: false,
+      explanation: "Brain imaging shows that we use virtually every part of the brain, even during sleep. This 10% claim is a myth.",
+      checkedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 8,
+      statement: "Mount Everest is the tallest mountain on Earth.",
+      isTrue: true,
+      explanation: "At 29,032 feet (8,849 meters) above sea level, Mount Everest is indeed the highest peak on Earth.",
+      checkedAt: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 9,
+      statement: "Chameleons change color to blend in with their environment.",
+      isTrue: false,
+      explanation: "Chameleons primarily change color to communicate, regulate temperature, and express emotions, not for camouflage.",
+      checkedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 10,
+      statement: "The Earth's core is hotter than the surface of the Sun.",
+      isTrue: true,
+      explanation: "Earth's inner core reaches temperatures of about 5,700°C, while the Sun's surface is around 5,500°C.",
+      checkedAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString()
     }
   ];
 
