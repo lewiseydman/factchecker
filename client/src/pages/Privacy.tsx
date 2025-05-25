@@ -7,24 +7,24 @@ const Privacy = () => {
       
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">Privacy Policy</h1>
-          <p className="text-gray-600">Last updated: {new Date().toLocaleDateString()}</p>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Privacy Policy</h1>
+          <p className="text-gray-600 dark:text-gray-300">Last updated: {new Date().toLocaleDateString()}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 space-y-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 space-y-8">
           <section>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Information We Collect</h2>
-            <div className="space-y-4 text-gray-700">
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Information We Collect</h2>
+            <div className="space-y-4 text-gray-700 dark:text-gray-300">
               <div>
-                <h3 className="text-lg font-medium mb-2">Account Information</h3>
+                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Account Information</h3>
                 <p>When you log in through Replit, we collect your email address, name, and profile information to create and manage your account.</p>
               </div>
               <div>
-                <h3 className="text-lg font-medium mb-2">Fact Check Data</h3>
+                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Fact Check Data</h3>
                 <p>We store the statements you submit for fact-checking, along with verification results, sources, and historical context to provide our service and improve accuracy.</p>
               </div>
               <div>
-                <h3 className="text-lg font-medium mb-2">Usage Analytics</h3>
+                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Usage Analytics</h3>
                 <p>We collect information about how you use our service, including fact check frequency, subscription tier usage, and feature interactions to improve our platform.</p>
               </div>
               <div>

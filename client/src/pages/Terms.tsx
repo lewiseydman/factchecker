@@ -7,21 +7,21 @@ const Terms = () => {
       
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">Terms of Service</h1>
-          <p className="text-gray-600">Last updated: {new Date().toLocaleDateString()}</p>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Terms of Service</h1>
+          <p className="text-gray-600 dark:text-gray-300">Last updated: {new Date().toLocaleDateString()}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 space-y-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 space-y-8">
           <section>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Acceptance of Terms</h2>
-            <p className="text-gray-700">
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Acceptance of Terms</h2>
+            <p className="text-gray-700 dark:text-gray-300">
               By accessing and using our AI-powered fact-checking service, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Service Description</h2>
-            <div className="space-y-4 text-gray-700">
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Service Description</h2>
+            <div className="space-y-4 text-gray-700 dark:text-gray-300">
               <p>Our platform provides AI-powered fact-checking services that:</p>
               <ul className="list-disc pl-6 space-y-1">
                 <li>Analyze statements and questions for factual accuracy</li>

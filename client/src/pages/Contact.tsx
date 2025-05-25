@@ -75,8 +75,8 @@ const Contact = () => {
                   <Send className="w-8 h-8 text-green-600" />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Message Sent Successfully!</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Message Sent Successfully!</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Thank you for reaching out. We'll review your message and get back to you as soon as possible.
               </p>
               <Button 

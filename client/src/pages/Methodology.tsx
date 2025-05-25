@@ -6,13 +6,13 @@ const Methodology = () => {
       <TabNavigation activeTab="methodology" />
       
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Our Methodology</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2">Our Methodology</h1>
+        <p className="text-gray-600 dark:text-gray-300">
           A detailed explanation of how our fact-checking platform works
         </p>
       </div>
       
-      <div className="prose prose-blue max-w-none">
+      <div className="prose prose-blue dark:prose-invert max-w-none bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm">
         <h2>Multi-AI Verification System: How It Works</h2>
         
         <p>
