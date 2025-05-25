@@ -24,24 +24,24 @@ interface TabNavigationProps {
 
 export const TabNavigation = ({ activeTab }: TabNavigationProps) => {
   return (
-    <div className="border-b border-gray-200 mb-6 -mx-4 sm:mx-0">
+    <div className="border-b border-gray-200 dark:border-gray-700 mb-6 -mx-4 sm:mx-0">
       <div className="overflow-x-auto overflow-y-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
         <nav className="flex space-x-4 sm:space-x-8 whitespace-nowrap min-w-max px-4 sm:px-0 h-12">
           <Link 
             to="/"
-            className={`${activeTab === "dashboard" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
+            className={`${activeTab === "dashboard" ? "border-primary text-primary" : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium transition-colors`}
           >
             Dashboard
           </Link>
           <Link 
             to="/history"
-            className={`${activeTab === "history" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
+            className={`${activeTab === "history" ? "border-primary text-primary" : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium transition-colors`}
           >
             History
           </Link>
           <Link 
             to="/saved"
-            className={`${activeTab === "saved" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium`}
+            className={`${activeTab === "saved" ? "border-primary text-primary" : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600"} border-b-2 h-full flex items-center px-1 text-[13px] sm:text-sm font-medium transition-colors`}
           >
             Saved
           </Link>
