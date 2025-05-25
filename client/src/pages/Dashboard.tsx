@@ -60,8 +60,8 @@ const Dashboard = () => {
       <TabNavigation activeTab="dashboard" />
       
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">Fact Check</h2>
-        <p className="text-gray-600">Enter a statement to verify its accuracy</p>
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Fact Check</h2>
+        <p className="text-gray-600 dark:text-gray-300">Enter a statement to verify its accuracy</p>
       </div>
       
       <FactCheckForm onFactChecked={handleFactChecked} />

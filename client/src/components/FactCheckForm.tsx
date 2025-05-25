@@ -112,7 +112,7 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8 transition-colors">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <div className="flex items-center mb-4">
@@ -121,7 +121,7 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
               <button
                 type="submit"
                 disabled={!statement.trim() || checkFactMutation.isPending}
-                className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-700 dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 aria-label="Search and verify fact"
               >
                 <Search className="h-4 w-4" />
@@ -139,10 +139,10 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
                   <button
                     type="button"
                     onClick={toggleVoiceInput}
-                    className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 rounded-r-md h-10 transition-colors ${
+                    className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md h-10 transition-colors ${
                       isListening 
                         ? 'bg-red-500 text-white border-red-500' 
-                        : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                        : 'bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
                     }`}
                     aria-label={isListening ? "Stop listening" : "Start voice input"}
                   >
