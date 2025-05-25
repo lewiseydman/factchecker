@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import { useRef, useEffect, useState } from "react";
 
 type TrendingFact = {
   id: number;
@@ -9,9 +11,37 @@ type TrendingFact = {
   explanation: string;
   checkedAt: string;
   checksCount: number;
+  tierName?: string;
+  modelsUsed?: number;
 };
 
 const TrendingFacts = () => {
+  // Setup for horizontal slider
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
+  const [canScrollRight, setCanScrollRight] = useState<boolean>(false);
+  
+  // Check if we can scroll in either direction
+  const checkScrollability = () => {
+    if (sliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+  
+  // Handle scroll button clicks
+  const scroll = (direction: 'left' | 'right') => {
+    if (sliderRef.current) {
+      const scrollAmount = sliderRef.current.clientWidth * 0.75;
+      sliderRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      // Update buttons after scroll animation completes
+      setTimeout(checkScrollability, 400);
+    }
+  };
   const { data: trendingFacts, isLoading } = useQuery({
     queryKey: ['/api/fact-checks/trending'],
     queryFn: async () => {
@@ -47,25 +77,35 @@ const TrendingFacts = () => {
     ]
   });
 
+  // Set up scroll listeners
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (slider) {
+      checkScrollability();
+      slider.addEventListener('scroll', checkScrollability);
+      window.addEventListener('resize', checkScrollability);
+      return () => {
+        slider.removeEventListener('scroll', checkScrollability);
+        window.removeEventListener('resize', checkScrollability);
+      };
+    }
+  }, [trendingFacts]);
+
   if (isLoading) {
     return (
-      <div>
+      <div className="mb-8">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">Trending Fact Checks</h3>
-        <div className="bg-white rounded-lg shadow-sm divide-y">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="p-4">
-              <div className="flex">
-                <Skeleton className="h-6 w-6 rounded-full mr-3" />
-                <div className="flex-1">
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-3 w-3/4 mb-2" />
-                  <div className="flex items-center mt-2">
-                    <Skeleton className="h-2 w-16 mr-2" />
-                    <Skeleton className="h-2 w-16" />
-                  </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="overflow-hidden">
+              <CardContent className="p-4">
+                <Skeleton className="h-4 w-full mb-2" />
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-3 w-20" />
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -73,37 +113,89 @@ const TrendingFacts = () => {
   }
 
   return (
-    <div>
+    <div className="mb-8">
       <h3 className="text-xl font-semibold text-gray-800 mb-4">Trending Fact Checks</h3>
-      <div className="bg-white rounded-lg shadow-sm divide-y">
-        {Array.isArray(trendingFacts) && trendingFacts.length > 0 ? (
-          trendingFacts.map((fact: TrendingFact) => (
-            <div key={fact.id} className="p-4 hover:bg-gray-50">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 mt-1">
-                  <span className={`material-icons ${fact.isTrue ? 'text-true' : 'text-false'}`}>
-                    {fact.isTrue ? 'check_circle' : 'cancel'}
-                  </span>
-                </div>
-                <div className="ml-3">
-                  <p className="text-gray-800 font-medium">{fact.statement}</p>
-                  <p className="text-gray-600 text-sm mt-1">{fact.explanation}</p>
-                  <div className="flex items-center mt-2 text-xs text-gray-500">
-                    <span>{fact.checksCount?.toLocaleString() || 0} checks</span>
-                    <span className="mx-2">•</span>
-                    <span>{formatDistanceToNow(new Date(fact.checkedAt), { addSuffix: true })}</span>
+      
+      <div className="relative">
+        {/* Left scroll button - only shown when we can scroll left */}
+        {canScrollLeft && (
+          <button 
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200"
+            onClick={() => scroll('left')}
+          >
+            <span className="material-icons">chevron_left</span>
+          </button>
+        )}
+        
+        {/* Right scroll button - only shown when we can scroll right */}
+        {canScrollRight && (
+          <button 
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-md border border-gray-200"
+            onClick={() => scroll('right')}
+          >
+            <span className="material-icons">chevron_right</span>
+          </button>
+        )}
+        
+        {/* Scrollable container */}
+        <div 
+          ref={sliderRef}
+          className="flex overflow-x-auto pb-6 gap-4 pt-2 px-1 scrollbar-hide mask-fade-edges"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            paddingLeft: '20px',
+            paddingRight: '20px'
+          }}
+        >
+          {Array.isArray(trendingFacts) && trendingFacts.length > 0 ? (
+            trendingFacts.map((fact: TrendingFact) => (
+              <div 
+                key={fact.id} 
+                className={`flex-shrink-0 w-full sm:w-[280px] md:w-[300px] bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 border-l-4 ${fact.isTrue ? 'border-l-true' : 'border-l-false'}`}
+              >
+                <div className="p-5">
+                  <p className="text-gray-800 font-medium mb-3 line-clamp-2">{fact.statement}</p>
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-3">{fact.explanation}</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`flex items-center ${fact.isTrue ? 'text-true' : 'text-false'} text-sm font-medium`}>
+                      <span className="material-icons text-sm mr-1">{fact.isTrue ? 'check_circle' : 'cancel'}</span>
+                      {fact.isTrue ? 'TRUE' : 'FALSE'}
+                    </span>
+                    <span className="text-gray-500 text-xs">
+                      {formatDistanceToNow(new Date(fact.checkedAt), { addSuffix: true })}
+                    </span>
+                  </div>
+                  
+                  {/* Trending info and tier badge */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      🔥 {fact.checksCount?.toLocaleString() || 0} checks
+                    </span>
+                    <span className={`text-xs py-0.5 px-2 rounded-full font-medium ${
+                      fact.tierName === "Premium Tier" 
+                        ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
+                      : fact.tierName === "Standard Tier" 
+                        ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white"
+                      : fact.tierName === "Basic Tier"
+                        ? "bg-gradient-to-r from-teal-500 to-teal-700 text-white"  
+                      : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
+                    }`}>
+                      {fact.tierName ? fact.tierName.replace(" Tier", "") : "Free"} 
+                      {fact.modelsUsed ? ` (${fact.modelsUsed} models)` : ""}
+                    </span>
                   </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="flex-1 p-8 text-center bg-white rounded-lg shadow-sm">
+              <span className="material-icons text-gray-400 text-4xl mb-2">trending_up</span>
+              <p className="text-gray-700 font-medium">No trending facts available</p>
+              <p className="text-gray-500 mt-1">Check back later for popular fact checks</p>
             </div>
-          ))
-        ) : (
-          <div className="p-8 text-center">
-            <span className="material-icons text-gray-400 text-4xl mb-2">trending_up</span>
-            <p className="text-gray-700 font-medium">No trending facts available</p>
-            <p className="text-gray-500 mt-1">Check back later for popular fact checks</p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
