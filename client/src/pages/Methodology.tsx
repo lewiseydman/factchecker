@@ -6,8 +6,8 @@ const Methodology = () => {
       <TabNavigation activeTab="methodology" />
       
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2">Our Methodology</h1>
-        <p className="text-gray-600 dark:text-gray-300">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Our Methodology</h1>
+        <p className="text-gray-700 dark:text-gray-300">
           A detailed explanation of how our fact-checking platform works
         </p>
       </div>
