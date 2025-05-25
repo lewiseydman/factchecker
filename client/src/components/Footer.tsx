@@ -6,9 +6,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6">
-            <Link to="/about" className="text-gray-500 hover:text-gray-700 text-sm sm:text-base">
-              About
-            </Link>
+
             <Link to="/methodology" className="text-gray-500 hover:text-gray-700 text-sm sm:text-base">
               Methodology
             </Link>
