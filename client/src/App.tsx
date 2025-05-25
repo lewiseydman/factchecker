@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import Dashboard from "@/pages/Dashboard";
 import History from "@/pages/History";
 import SavedFacts from "@/pages/SavedFacts";
-import Trending from "@/pages/Trending";
+
 import Settings from "@/pages/Settings";
 import Methodology from "@/pages/Methodology";
 import Subscription from "@/pages/Subscription";
@@ -34,7 +34,7 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/history" component={isAuthenticated ? History : Dashboard} />
       <Route path="/saved" component={isAuthenticated ? SavedFacts : Dashboard} />
-      <Route path="/trending" component={Trending} />
+
       <Route path="/methodology" component={Methodology} />
       <Route path="/subscription" component={Subscription} />
       <Route path="/settings" component={isAuthenticated ? Settings : Dashboard} />
