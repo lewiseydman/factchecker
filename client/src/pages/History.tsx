@@ -194,7 +194,7 @@ const History = () => {
       </div>
       
       {isLoading ? (
-        <div className="bg-white shadow-sm rounded-lg divide-y">
+        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
           {[1, 2, 3].map(i => (
             <div key={i} className="p-4">
               <div className="sm:flex sm:justify-between sm:items-start">
@@ -212,33 +212,33 @@ const History = () => {
         </div>
       ) : (
         <>
-          <div className="bg-white shadow-sm rounded-lg divide-y">
+          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
             {filteredFactChecks?.length > 0 ? (
               filteredFactChecks.map((item: FactCheck) => (
-                <div key={item.id} className="p-4 hover:bg-gray-50">
+                <div key={item.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                   <div className="sm:flex sm:justify-between sm:items-start">
                     <div>
-                      <p className="text-gray-800 font-medium mb-1">{item.statement}</p>
+                      <p className="text-gray-800 dark:text-gray-200 font-medium mb-1">{item.statement}</p>
                       <div className="flex items-center mb-2">
                         <span className={`flex items-center ${item.isTrue ? 'text-true' : 'text-false'} text-sm font-medium`}>
                           <span className="material-icons text-sm mr-1">{item.isTrue ? 'check_circle' : 'cancel'}</span>
                           {item.isTrue ? 'TRUE' : 'FALSE'}
                         </span>
-                        <span className="text-gray-500 text-xs ml-3">
+                        <span className="text-gray-500 dark:text-gray-400 text-xs ml-3">
                           {formatDistanceToNow(new Date(item.checkedAt), { addSuffix: true })}
                         </span>
                       </div>
-                      <p className="text-gray-600 text-sm">{item.explanation}</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">{item.explanation}</p>
                     </div>
                     <div className="mt-3 sm:mt-0 sm:ml-4 flex items-center space-x-2">
                       <button 
-                        className={`${item.savedByUser ? 'text-primary' : 'text-gray-400'} hover:${item.savedByUser ? 'text-blue-600' : 'text-primary'}`}
+                        className={`${item.savedByUser ? 'text-primary' : 'text-gray-400 dark:text-gray-500'} hover:${item.savedByUser ? 'text-blue-600' : 'text-primary'} transition-colors`}
                         onClick={() => handleSaveToggle(item.id, item.savedByUser)}
                         disabled={toggleSaveMutation.isPending}
                       >
                         <span className="material-icons">{item.savedByUser ? 'bookmark' : 'bookmark_border'}</span>
                       </button>
-                      <button className="text-gray-400 hover:text-red-500">
+                      <button className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors">
                         <span className="material-icons" onClick={() => handleDelete(item.id)}>delete_outline</span>
                       </button>
                     </div>
@@ -247,7 +247,7 @@ const History = () => {
               ))
             ) : (
               <div className="p-8 text-center">
-                <p className="text-gray-500">No fact checks match your filters.</p>
+                <p className="text-gray-500 dark:text-gray-400">No fact checks match your filters.</p>
               </div>
             )}
           </div>
