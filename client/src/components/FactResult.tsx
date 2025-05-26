@@ -250,6 +250,19 @@ const FactResult = ({
         </div>
       </div>
 
+      {/* Historical Context - Right after fact analysis */}
+      {historicalContext && (
+        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-100 dark:border-blue-800/30">
+          <h4 className="text-base font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center">
+            <span className="material-icons text-sm mr-1">history</span>
+            Historical Context
+          </h4>
+          <div className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed">
+            {historicalContext}
+          </div>
+        </div>
+      )}
+
       {/* 3. THIRD MOST IMPORTANT: Top Sources */}
       {sources && sources.length > 0 && (
         <div className="mb-4">
@@ -287,22 +300,30 @@ const FactResult = ({
             }
           </p>
           <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-            AI models used: {Object.entries(domainInfo.modelWeights)
-              .filter(([model, weight]) => weight > 0)
-              .map(([model, weight]) => `${model.charAt(0).toUpperCase() + model.slice(1)} (${(weight * 100).toFixed(0)}%)`)
-              .join(', ')
+            AI models used: {serviceBreakdown && serviceBreakdown.length > 0 ? 
+              serviceBreakdown.map(service => `${service.name} (${(service.confidence * 100).toFixed(0)}% confidence)`).join(', ') :
+              Object.entries(domainInfo.modelWeights)
+                .filter(([model, weight]) => weight > 0)
+                .map(([model, weight]) => `${model.charAt(0).toUpperCase() + model.slice(1)} (${(weight * 100).toFixed(0)}%)`)
+                .join(', ')
             }
           </p>
           
           {(() => {
-            // Filter out models with 0% weights and prepare data for pie chart
-            const activeModels = Object.entries(domainInfo.modelWeights)
-              .filter(([model, weight]) => weight > 0)
-              .map(([model, weight]) => ({
-                name: model.charAt(0).toUpperCase() + model.slice(1),
-                value: weight * 100,
-                weight: weight
-              }));
+            // Use actual service breakdown if available, otherwise fall back to domain weights
+            const activeModels = serviceBreakdown && serviceBreakdown.length > 0 
+              ? serviceBreakdown.map(service => ({
+                  name: service.name,
+                  value: service.confidence * 100,
+                  weight: service.confidence
+                }))
+              : Object.entries(domainInfo.modelWeights)
+                  .filter(([model, weight]) => weight > 0)
+                  .map(([model, weight]) => ({
+                    name: model.charAt(0).toUpperCase() + model.slice(1),
+                    value: weight * 100,
+                    weight: weight
+                  }));
 
             // Define more distinct colors for each model
             const colors: { [key: string]: string } = {
@@ -567,19 +588,6 @@ const FactResult = ({
               )}
             </div>
           )}
-        </div>
-      )}
-      
-      {/* 4. FOURTH: Historical Context (only if exists) */}
-      {historicalContext && (
-        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-100 dark:border-blue-800/30">
-          <h4 className="text-base font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center">
-            <span className="material-icons text-sm mr-1">history</span>
-            Historical Context
-          </h4>
-          <div className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed">
-            {historicalContext}
-          </div>
         </div>
       )}
 
