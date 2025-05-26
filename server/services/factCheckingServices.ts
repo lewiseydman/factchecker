@@ -481,13 +481,14 @@ export class InFactService {
       }
     }
 
-    // If no sources provide verification
+    // If no sources provide verification - ABSTAIN rather than vote false
     return {
-      isTrue: false,
+      isTrue: null, // Abstain from voting
       explanation: "Unable to verify this statement against available authentic databases. This doesn't indicate the statement is false, but rather that it requires human expert verification.",
       sources: [],
       confidence: 0.0,
-      serviceUsed: "InFact (no verification found)"
+      serviceUsed: "InFact (abstained - no verification found)",
+      abstained: true
     };
   }
 
@@ -1034,12 +1035,20 @@ export class FactCheckAggregator {
    * Checks a fact using multiple services and aggregates the results
    */
   async aggregateFactCheck(statement: string): Promise<{
-    isTrue: boolean;
+    isTrue: boolean | 'mixed';
     explanation: string;
     historicalContext: string;
     sources: TrustedSource[];
     confidenceScore: number;
     individualResults: FactCheckingResult[];
+    manipulationRisk?: number;
+    conflictingEvaluations?: Array<{
+      source: string;
+      verdict: boolean;
+      confidence: number;
+      explanation: string;
+      datePublished?: string;
+    }>;
   }> {
     // Run all fact checks in parallel
     const [perplexityResult, defameResult, inFactResult] = await Promise.all([
@@ -1052,21 +1061,55 @@ export class FactCheckAggregator {
       this.inFactService.checkFact(statement)
     ]);
     
-    // Collect all results
-    const allResults = [perplexityResult, defameResult, inFactResult];
+    // Separate DEFAME manipulation risk from truth determination
+    const manipulationRisk = defameResult.confidence ? (1 - defameResult.confidence) : 0;
     
-    // Calculate weighted truth value based on confidence
+    // Filter out abstentions and DEFAME from truth calculation
+    const truthResults = [perplexityResult, inFactResult].filter(result => 
+      result && !result.abstained && result.isTrue !== null
+    );
+    
+    // Calculate weighted truth value only from non-abstaining sources
     let weightedTruthSum = 0;
     let confidenceSum = 0;
     
-    allResults.forEach((result: FactCheckingResult) => {
-      const confidence = result.confidence || 0.5; // Default to 0.5 if no confidence provided
-      weightedTruthSum += (result.isTrue ? 1 : 0) * confidence;
-      confidenceSum += confidence;
+    truthResults.forEach((result: FactCheckingResult) => {
+      const confidence = result.confidence || 0.5;
+      if (confidence >= 0.3) { // Minimum threshold for inclusion
+        weightedTruthSum += (result.isTrue ? 1 : 0) * confidence;
+        confidenceSum += confidence;
+      }
     });
     
-    const aggregatedTruthValue = weightedTruthSum / confidenceSum;
-    const isTrue = aggregatedTruthValue >= 0.5; // True if weighted average is >= 0.5
+    // Determine verdict type
+    let isTrue: boolean | 'mixed';
+    let conflictingEvaluations: Array<any> = [];
+    
+    if (confidenceSum === 0) {
+      isTrue = 'mixed'; // No qualifying sources
+    } else {
+      const aggregatedTruthValue = weightedTruthSum / confidenceSum;
+      
+      // Check for high-confidence conflicting sources
+      const highConfidenceSources = truthResults.filter(r => r.confidence >= 0.75);
+      const hasConflict = highConfidenceSources.length >= 2 && 
+        highConfidenceSources.some(r => r.isTrue) && 
+        highConfidenceSources.some(r => !r.isTrue);
+      
+      if (hasConflict || (aggregatedTruthValue >= 0.40 && aggregatedTruthValue <= 0.60)) {
+        isTrue = 'mixed';
+        // Collect conflicting evaluations for side-by-side display
+        conflictingEvaluations = truthResults.map(result => ({
+          source: result.serviceUsed,
+          verdict: result.isTrue,
+          confidence: result.confidence,
+          explanation: result.explanation,
+          datePublished: new Date().toISOString().split('T')[0] // Current date as placeholder
+        }));
+      } else {
+        isTrue = aggregatedTruthValue >= 0.6; // Higher threshold for definitive verdicts
+      }
+    }
     
     // Collect all sources
     const allSources: Source[] = allResults.flatMap(result => result.sources || []);
