@@ -56,6 +56,8 @@ export const factChecks = pgTable("fact_checks", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").references(() => users.id),
   statement: text("statement").notNull(),
+  originalInput: text("original_input"), // Store the user's original input
+  inputType: varchar("input_type", { length: 20 }), // question, statement, opinion, speculative
   isTrue: boolean("is_true").notNull(),
   explanation: text("explanation").notNull(),
   historicalContext: text("historical_context"),
@@ -67,6 +69,7 @@ export const factChecks = pgTable("fact_checks", {
   serviceBreakdown: jsonb("service_breakdown"),
   tierName: varchar("tier_name", { length: 50 }),
   modelsUsed: integer("models_used"),
+  inputProcessingContext: text("input_processing_context"), // Processing context and reasoning
 });
 
 // Many-to-many relationship between fact checks and tags
