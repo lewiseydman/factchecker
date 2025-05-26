@@ -85,9 +85,10 @@ const FactResult = ({
 
   // Filter to only show AI models that are actually working
   const workingModels = ['Perplexity', 'Gemini', 'Mistral'];
+  
   const serviceBreakdown = rawServiceBreakdown?.filter(service => 
     workingModels.includes(service.name)
-  );
+  ) || [];
 
   // Filter domain info to only show working models
   const domainInfo = rawDomainInfo ? {
@@ -103,7 +104,7 @@ const FactResult = ({
         return workingModels.includes(displayName);
       })
     )
-  } : rawDomainInfo;
+  } : undefined;
   
   // Safely format date or use fallback
   let formattedDate = "Just now";
