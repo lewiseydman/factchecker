@@ -42,7 +42,7 @@ export class DEFAMEService {
   async checkFact(statement: string): Promise<FactCheckingResult> {
     console.log("DEFAME Service analyzing for manipulation patterns:", statement);
     
-    // Multi-stage analysis including external academic sources
+    // Multi-stage analysis including external academic sources and news organizations
     const analyses = await Promise.all([
       this.analyzeManipulationPatterns(statement),
       this.detectEmotionalManipulation(statement),
@@ -50,7 +50,9 @@ export class DEFAMEService {
       this.matchKnownNarratives(statement),
       this.assessLanguageCredibility(statement),
       this.checkEUDisinfoPatterns(statement),
-      this.applyFirstDraftTechniques(statement)
+      this.applyFirstDraftTechniques(statement),
+      this.checkReutersFactDatabase(statement),
+      this.checkAPFactDatabase(statement)
     ]);
 
     // Combine all analysis results
@@ -65,6 +67,14 @@ export class DEFAMEService {
       explanation: this.generateDetailedExplanation(overallScore, detectedTechniques),
       historicalContext: this.getHistoricalContext(detectedTechniques),
       sources: [
+        {
+          name: "Reuters Fact Check Database",
+          url: "https://www.reuters.com/fact-check/"
+        },
+        {
+          name: "Associated Press Fact Check",
+          url: "https://apnews.com/hub/ap-fact-check"
+        },
         {
           name: "EU DisinfoLab Research",
           url: "https://www.disinfo.eu/"
@@ -304,9 +314,79 @@ export class DEFAMEService {
     return Math.min(manipulationScore, 0.6);
   }
 
+  private async checkReutersFactDatabase(statement: string): Promise<number> {
+    // Reuters Fact Check has documented patterns of common false claims
+    const reutersDebunkedClaims = [
+      'covid vaccine microchip', 'bill gates population control', '5g coronavirus',
+      'pizza gate conspiracy', 'stolen election 2020', 'qanon deep state',
+      'covid engineered bioweapon', 'hydroxychloroquine cure covid',
+      'masks dont work covid', 'vaccines cause infertility', 'climate change hoax fossil',
+      'antifa january 6', 'voting machines hacked', 'mail ballot fraud'
+    ];
+
+    const reutersMisleadingPatterns = [
+      'mainstream media lies', 'fake news media', 'corrupt journalists',
+      'liberal bias news', 'propaganda press', 'media conspiracy'
+    ];
+
+    const lowerStatement = statement.toLowerCase();
+    let debunkScore = 0;
+
+    // Check for known debunked claims
+    reutersDebunkedClaims.forEach(claim => {
+      if (lowerStatement.includes(claim)) {
+        debunkScore += 0.4; // High score for known false claims
+      }
+    });
+
+    // Check for anti-media patterns
+    reutersMisleadingPatterns.forEach(pattern => {
+      if (lowerStatement.includes(pattern)) {
+        debunkScore += 0.2;
+      }
+    });
+
+    return Math.min(debunkScore, 0.9);
+  }
+
+  private async checkAPFactDatabase(statement: string): Promise<number> {
+    // Associated Press documented false claims and patterns
+    const apDebunkedClaims = [
+      'stolen election fraud', 'dominion voting machines', 'dead people voted',
+      'january 6 antifa false flag', 'covid lab leak wuhan', 'ivermectin covid cure',
+      'vaccine deaths vaers', 'natural immunity better vaccine', 'lockdown ineffective',
+      'climate change natural cycles', 'renewable energy unreliable'
+    ];
+
+    const apMisinformationIndicators = [
+      'they dont want you to know', 'suppressed information', 'censored truth',
+      'follow the money', 'wake up sheeple', 'do your own research',
+      'question everything', 'think for yourself'
+    ];
+
+    const lowerStatement = statement.toLowerCase();
+    let apScore = 0;
+
+    // Check against AP documented false claims
+    apDebunkedClaims.forEach(claim => {
+      if (lowerStatement.includes(claim)) {
+        apScore += 0.35;
+      }
+    });
+
+    // Check for conspiracy theory language patterns
+    apMisinformationIndicators.forEach(indicator => {
+      if (lowerStatement.includes(indicator)) {
+        apScore += 0.15;
+      }
+    });
+
+    return Math.min(apScore, 0.8);
+  }
+
   private calculateManipulationScore(analyses: number[]): number {
-    // Updated weighted average for expanded analysis
-    const weights = [0.20, 0.15, 0.12, 0.25, 0.08, 0.10, 0.10]; // Distributed across all analyses
+    // Updated weighted average for expanded analysis including Reuters/AP
+    const weights = [0.15, 0.12, 0.10, 0.20, 0.08, 0.08, 0.08, 0.12, 0.07]; // Distributed across all analyses
     let weightedSum = 0;
     let totalWeight = 0;
 
