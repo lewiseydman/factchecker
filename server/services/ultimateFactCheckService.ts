@@ -235,13 +235,13 @@ export class UltimateFactCheckService {
     const defameResult = await enhancedDEFAMEService.analyzeForMisinformation(statement);
     
     // Step 10: Create service breakdown for UI display - only show services with real API keys
-    const realServiceResults = serviceResults.filter(result => result.hasRealKey);
-    const totalRealConfidence = realServiceResults.reduce((sum, result) => sum + result.confidence, 0);
+    const realServicesForBreakdown = serviceResults.filter(result => result.hasRealKey);
+    const totalRealConfidence = realServicesForBreakdown.reduce((sum, result) => sum + result.confidence, 0);
     
-    const serviceBreakdown = realServiceResults.map(result => ({
+    const serviceBreakdown = realServicesForBreakdown.map(result => ({
       name: result.name,
       verdict: result.isTrue ? "TRUE" : "FALSE",
-      confidence: totalRealConfidence > 0 ? (result.confidence / totalRealConfidence) : (1 / realServiceResults.length)
+      confidence: totalRealConfidence > 0 ? (result.confidence / totalRealConfidence) : (1 / realServicesForBreakdown.length)
     }));
     
     // Step 11: Calculate final verdict and confidence by weighted average
@@ -264,17 +264,17 @@ export class UltimateFactCheckService {
     const confidenceScore = serviceResults.length > 0 ? totalConfidenceSum / serviceResults.length : 0.5;
     
     // Step 12: Create comprehensive explanation from real AI services
-    const realServiceResults = serviceResults.filter(result => result.hasRealKey);
-    const aiExplanations = realServiceResults.length > 0 
-      ? realServiceResults.map(result => `**${result.name}**: ${result.explanation}`).join('\n\n')
+    const realServicesForExplanation = serviceResults.filter(result => result.hasRealKey);
+    const aiExplanations = realServicesForExplanation.length > 0 
+      ? realServicesForExplanation.map(result => `**${result.name}**: ${result.explanation}`).join('\n\n')
       : 'No AI services with valid API keys provided analysis.';
     
-    const comprehensiveExplanation = realServiceResults.length > 0
+    const comprehensiveExplanation = realServicesForExplanation.length > 0
       ? `${aiExplanations}\n\n**Database Verification**: ${inFactResult.consolidatedExplanation}`
       : inFactResult.consolidatedExplanation;
 
-    const bestHistoricalContext = realServiceResults.length > 0 && realServiceResults[0].historicalContext
-      ? realServiceResults[0].historicalContext 
+    const bestHistoricalContext = realServicesForExplanation.length > 0 && realServicesForExplanation[0].historicalContext
+      ? realServicesForExplanation[0].historicalContext 
       : inFactResult.bestHistoricalContext;
 
     // Step 12: Return comprehensive results
@@ -295,7 +295,12 @@ export class UltimateFactCheckService {
       domainInfo: {
         detectedDomains: detectedDomains,
         detectedDomainsDisplay: domainDetectionService.getDomainDisplayNames(detectedDomains),
-        modelWeights,
+        modelWeights: Object.fromEntries(
+          Object.entries(modelWeights).filter(([modelName]) => {
+            const hasKey = apiKeyManager.hasKey(modelName as any);
+            return hasKey;
+          })
+        ),
         explanation: weightExplanation
       }
     };
