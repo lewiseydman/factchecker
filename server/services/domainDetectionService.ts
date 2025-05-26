@@ -31,13 +31,13 @@ export class DomainDetectionService {
   // User-friendly display names for domains
   private domainDisplayNames: { [key in Domain]: string } = {
     medical: 'Health & Medicine',
-    scientific: 'Science & Research', 
+    scientific: 'Science', 
     historical: 'History & Culture',
-    technical: 'Technology & Engineering',
-    financial: 'Finance & Economics',
-    political: 'Politics & Government',
-    currentEvents: 'Current Events & News',
-    sports: 'Sports & Athletics',
+    technical: 'Technology',
+    financial: 'Economics & Finance',
+    political: 'Politics',
+    currentEvents: 'Current Events',
+    sports: 'Sports',
     entertainment: 'Entertainment & Media',
     generalKnowledge: 'General Knowledge'
   };

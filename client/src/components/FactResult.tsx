@@ -212,7 +212,7 @@ const FactResult = ({
             Topic Analysis
           </h4>
           <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-            Domains detected: {domainInfo.detectedDomainsDisplay ? 
+            This fact relates to: {domainInfo.detectedDomainsDisplay ? 
               domainInfo.detectedDomainsDisplay.join(', ') : 
               domainInfo.detectedDomains.map(d => 
                 d.charAt(0).toUpperCase() + d.slice(1)
@@ -230,14 +230,14 @@ const FactResult = ({
                 weight: weight
               }));
 
-            // Define colors for each model
-            const colors = {
-              'Claude': '#8E44EC',
-              'Openai': '#00A67E', 
-              'Perplexity': '#0469D2',
-              'Gemini': '#4285F4',
-              'Mistral': '#FF6B35',
-              'Llama': '#1877F2'
+            // Define more distinct colors for each model
+            const colors: { [key: string]: string } = {
+              'Claude': '#8B5CF6',  // Purple
+              'Openai': '#10B981',  // Emerald Green
+              'Perplexity': '#3B82F6', // Blue
+              'Gemini': '#F59E0B',  // Amber
+              'Mistral': '#EF4444', // Red
+              'Llama': '#EC4899'    // Pink
             };
 
             if (activeModels.length === 0) {
