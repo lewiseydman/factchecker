@@ -109,10 +109,10 @@ router.post('/fact-check', async (req: Request, res: Response) => {
         // Create the fact check data with required fields
         const factCheckData = {
           userId,
-          statement: factResult.processedStatement || userInput,
+          statement: userInput,
           originalInput: userInput,
-          inputType: factResult.inputType || 'statement',
-          processingContext: factResult.processingContext || null,
+          inputType: 'statement',
+          processingContext: null,
           isTrue: factResult.isTrue,
           explanation: factResult.explanation || "No explanation provided",
           historicalContext: factResult.historicalContext || null,
@@ -148,9 +148,19 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       displayModelCount = 4;
     }
     
-    // Return result to the client with correct tier information
+    // Return result to the client with all verification information including AI model breakdown
     return res.status(200).json({
       ...(savedFactCheck || { id: 0 }),
+      // Core fact-check data
+      statement: userInput,
+      isTrue: factResult.isTrue,
+      explanation: factResult.explanation,
+      historicalContext: factResult.historicalContext,
+      sources: factResult.sources || [],
+      confidenceScore: factResult.confidenceScore,
+      // Service breakdown for AI model contributions - THIS IS THE KEY DATA!
+      serviceBreakdown: factResult.serviceBreakdown || [],
+      // Advanced analysis data
       factualConsensus: factResult.factualConsensus,
       manipulationScore: factResult.manipulationScore,
       contradictionIndex: factResult.contradictionIndex,
@@ -158,9 +168,11 @@ router.post('/fact-check', async (req: Request, res: Response) => {
       transformedStatement: factResult.transformedStatement,
       implicitClaims: factResult.implicitClaims,
       domainInfo: factResult.domainInfo,
-      // Ensure tier info is included even if database save failed
+      // Subscription tier information
       tierName: subscriptionTier,
-      modelsUsed: displayModelCount
+      modelsUsed: displayModelCount,
+      // Timestamp
+      checkedAt: new Date().toISOString()
     });
     
   } catch (error) {

@@ -267,6 +267,7 @@ export class UltimateFactCheckService {
       sources: inFactResult.consolidatedSources,
       confidenceScore,
       serviceBreakdown,
+      // Advanced analysis
       factualConsensus: inFactResult.factualConsensus,
       manipulationScore: defameResult.manipulationScore,
       contradictionIndex: defameResult.contradictionIndex,
