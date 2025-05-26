@@ -79,6 +79,7 @@ const FactResult = ({
 }: FactResultProps) => {
   const [isSaved, setIsSaved] = useState(savedByUser);
   const [showFullExplanation, setShowFullExplanation] = useState(false);
+  const [isExplanationExpanded, setIsExplanationExpanded] = useState(false);
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   
