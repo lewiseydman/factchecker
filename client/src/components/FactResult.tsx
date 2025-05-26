@@ -483,11 +483,11 @@ const FactResult = ({
       
       {sources && sources.length > 0 && (
         <div className="mt-4">
-          <h4 className="text-sm font-medium text-gray-700 mb-1">Top Sources:</h4>
-          <ul className="text-sm text-gray-600 space-y-1 ml-5 list-disc">
+          <h4 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">Top Sources:</h4>
+          <ul className="text-sm text-gray-700 dark:text-gray-200 space-y-2 ml-5 list-disc">
             {sources.slice(0, 3).map((source, index) => (
               <li key={index}>
-                <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
                   {source.name || source.url}
                 </a>
               </li>
@@ -497,12 +497,12 @@ const FactResult = ({
       )}
       
       {historicalContext && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
-          <h4 className="text-sm font-medium text-blue-700 mb-1 flex items-center">
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-100 dark:border-blue-800/30">
+          <h4 className="text-base font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center">
             <span className="material-icons text-sm mr-1">history</span>
             Historical Context
           </h4>
-          <div className="text-sm text-gray-700">
+          <div className="text-sm text-gray-800 dark:text-gray-100">
             {historicalContext}
           </div>
         </div>
@@ -510,20 +510,20 @@ const FactResult = ({
       
       <div className="mt-4">
         <div className="flex justify-between items-center mb-2">
-          <h4 className="text-sm font-medium text-gray-700 flex items-center">
+          <h4 className="text-base font-semibold text-gray-800 dark:text-gray-100 flex items-center">
             <span className="material-icons text-sm mr-1">fact_check</span>
             Fact Analysis
           </h4>
           {explanation?.length > 300 && (
             <button 
               onClick={() => setShowFullExplanation(!showFullExplanation)}
-              className="text-xs text-primary hover:underline"
+              className="text-sm text-primary hover:underline font-medium"
             >
               {showFullExplanation ? 'Show Less' : 'Show More'}
             </button>
           )}
         </div>
-        <div className="text-sm text-gray-700 whitespace-pre-line">
+        <div className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed">
           {showFullExplanation ? explanation : shortenedExplanation}
         </div>
       </div>
