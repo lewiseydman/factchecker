@@ -166,8 +166,19 @@ const FactResult = ({
       
       {/* 1. MOST IMPORTANT: The Verdict */}
       <div className="flex justify-between items-start mb-4">
-        <div>
-          <p className="text-gray-800 dark:text-gray-200 font-medium mb-3">{statement}</p>
+        <div className="flex-1 min-w-0">
+          <DynamicTooltip 
+            config={{
+              content: statement,
+              position: 'top',
+              delay: 300
+            }}
+            trigger="hover"
+          >
+            <p className="text-gray-800 dark:text-gray-200 font-medium mb-3 truncate cursor-help" title={statement}>
+              {statement}
+            </p>
+          </DynamicTooltip>
           <div className="flex items-center gap-3 flex-wrap">
             <span className={`flex items-center ${isTrue ? 'text-true' : 'text-false'} font-bold text-lg`}>
               <span className="material-icons mr-2 text-lg">{isTrue ? 'check_circle' : 'cancel'}</span>
@@ -234,7 +245,7 @@ const FactResult = ({
             </button>
           )}
         </div>
-        <div className="text-sm text-gray-800 dark:text-gray-100 leading-relaxed">
+        <div className="text-sm text-gray-800 dark:text-gray-100 leading-relaxed whitespace-pre-line">
           {isExplanationExpanded ? explanation : shortenedExplanation}
         </div>
       </div>
@@ -273,6 +284,13 @@ const FactResult = ({
               domainInfo.detectedDomains.map(d => 
                 d.charAt(0).toUpperCase() + d.slice(1)
               ).join(', ')
+            }
+          </p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+            AI models used: {Object.entries(domainInfo.modelWeights)
+              .filter(([model, weight]) => weight > 0)
+              .map(([model, weight]) => `${model.charAt(0).toUpperCase() + model.slice(1)} (${(weight * 100).toFixed(0)}%)`)
+              .join(', ')
             }
           </p>
           
@@ -552,52 +570,18 @@ const FactResult = ({
         </div>
       )}
       
-      {sources && sources.length > 0 && (
-        <div className="mt-4">
-          <h4 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">Top Sources:</h4>
-          <ul className="text-sm text-gray-700 dark:text-gray-200 space-y-2 ml-5 list-disc">
-            {sources.slice(0, 3).map((source, index) => (
-              <li key={index}>
-                <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
-                  {source.name || source.url}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      
+      {/* 4. FOURTH: Historical Context (only if exists) */}
       {historicalContext && (
-        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-100 dark:border-blue-800/30">
+        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-100 dark:border-blue-800/30">
           <h4 className="text-base font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center">
             <span className="material-icons text-sm mr-1">history</span>
             Historical Context
           </h4>
-          <div className="text-sm text-gray-800 dark:text-gray-100">
+          <div className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed">
             {historicalContext}
           </div>
         </div>
       )}
-      
-      <div className="mt-4">
-        <div className="flex justify-between items-center mb-2">
-          <h4 className="text-base font-semibold text-gray-800 dark:text-gray-100 flex items-center">
-            <span className="material-icons text-sm mr-1">fact_check</span>
-            Fact Analysis
-          </h4>
-          {explanation?.length > 300 && (
-            <button 
-              onClick={() => setShowFullExplanation(!showFullExplanation)}
-              className="text-sm text-primary hover:underline font-medium"
-            >
-              {showFullExplanation ? 'Show Less' : 'Show More'}
-            </button>
-          )}
-        </div>
-        <div className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-line leading-relaxed">
-          {showFullExplanation ? explanation : shortenedExplanation}
-        </div>
-      </div>
 
       {isAuthenticated && onDelete && (
         <div className="mt-4 flex justify-end">
