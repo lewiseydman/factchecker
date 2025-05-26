@@ -261,11 +261,25 @@ export class UltimateFactCheckService {
     }
     const confidenceScore = serviceResults.length > 0 ? totalConfidenceSum / serviceResults.length : 0.5;
     
+    // Step 12: Create comprehensive explanation from real AI services
+    const realServiceResults = serviceResults.filter(result => result.hasRealKey);
+    const aiExplanations = realServiceResults.length > 0 
+      ? realServiceResults.map(result => `**${result.name}**: ${result.explanation}`).join('\n\n')
+      : 'No AI services with valid API keys provided analysis.';
+    
+    const comprehensiveExplanation = realServiceResults.length > 0
+      ? `${aiExplanations}\n\n**Database Verification**: ${inFactResult.consolidatedExplanation}`
+      : inFactResult.consolidatedExplanation;
+
+    const bestHistoricalContext = realServiceResults.length > 0 && realServiceResults[0].historicalContext
+      ? realServiceResults[0].historicalContext 
+      : inFactResult.bestHistoricalContext;
+
     // Step 12: Return comprehensive results
     return {
       isTrue: weightedIsTrue,
-      explanation: inFactResult.consolidatedExplanation,
-      historicalContext: inFactResult.bestHistoricalContext,
+      explanation: comprehensiveExplanation,
+      historicalContext: bestHistoricalContext,
       sources: inFactResult.consolidatedSources,
       confidenceScore,
       serviceBreakdown,
