@@ -278,6 +278,7 @@ export class UltimateFactCheckService {
       implicitClaims: implicitClaims.length > 0 ? implicitClaims : undefined,
       domainInfo: {
         detectedDomains: detectedDomains,
+        detectedDomainsDisplay: domainDetectionService.getDomainDisplayNames(detectedDomains),
         modelWeights,
         explanation: weightExplanation
       }

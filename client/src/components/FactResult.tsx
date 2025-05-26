@@ -34,10 +34,14 @@ interface FactResultProps {
   implicitClaims?: string[];
   domainInfo?: {
     detectedDomains: string[];
+    detectedDomainsDisplay?: string[];
     modelWeights: {
       claude: number;
       openai: number;
       perplexity: number;
+      gemini?: number;
+      mistral?: number;
+      llama?: number;
     };
     explanation: string;
   };
@@ -208,9 +212,12 @@ const FactResult = ({
             Topic Analysis
           </h4>
           <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-            Domains detected: {domainInfo.detectedDomains.map(d => 
-              d.charAt(0).toUpperCase() + d.slice(1)
-            ).join(', ')}
+            Domains detected: {domainInfo.detectedDomainsDisplay ? 
+              domainInfo.detectedDomainsDisplay.join(', ') : 
+              domainInfo.detectedDomains.map(d => 
+                d.charAt(0).toUpperCase() + d.slice(1)
+              ).join(', ')
+            }
           </p>
           
           {(() => {

@@ -28,6 +28,20 @@ interface AIStrengthMap {
 }
 
 export class DomainDetectionService {
+  // User-friendly display names for domains
+  private domainDisplayNames: { [key in Domain]: string } = {
+    medical: 'Health & Medicine',
+    scientific: 'Science & Research', 
+    historical: 'History & Culture',
+    technical: 'Technology & Engineering',
+    financial: 'Finance & Economics',
+    political: 'Politics & Government',
+    currentEvents: 'Current Events & News',
+    sports: 'Sports & Athletics',
+    entertainment: 'Entertainment & Media',
+    generalKnowledge: 'General Knowledge'
+  };
+
   // Keywords associated with different domains
   private domainKeywords: DomainKeywords = {
     medical: [
@@ -247,6 +261,24 @@ export class DomainDetectionService {
   }
 
   /**
+   * Get user-friendly display name for a domain
+   * @param domain The domain key
+   * @returns User-friendly display name
+   */
+  public getDomainDisplayName(domain: Domain): string {
+    return this.domainDisplayNames[domain] || domain;
+  }
+
+  /**
+   * Get user-friendly display names for multiple domains
+   * @param domains Array of domain keys
+   * @returns Array of user-friendly display names
+   */
+  public getDomainDisplayNames(domains: Domain[]): string[] {
+    return domains.map(domain => this.getDomainDisplayName(domain));
+  }
+
+  /**
    * Checks if input is a question rather than a statement
    * @param input The user input
    * @returns Boolean indicating whether the input is a question
@@ -273,10 +305,8 @@ export class DomainDetectionService {
     mistral?: number;
     llama?: number;
   }): string {
-    // Format domains for display
-    const domainDisplay = domains.map(d => 
-      d.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())
-    ).join(', ');
+    // Format domains for display using friendly names
+    const domainDisplay = this.getDomainDisplayNames(domains).join(', ');
     
     // Format weights as percentages
     const claudePercent = Math.round(weights.claude * 100);
