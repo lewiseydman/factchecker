@@ -326,14 +326,14 @@ const FactResult = ({
             AI models used: {serviceBreakdown && serviceBreakdown.length > 0 ? 
               serviceBreakdown.map(service => `${service.name} (${(service.confidence * 100).toFixed(0)}% confidence)`).join(', ') :
               Object.entries(domainInfo.modelWeights)
-                .filter(([model, weight]) => weight > 0)
-                .map(([model, weight]) => `${model.charAt(0).toUpperCase() + model.slice(1)} (${(weight * 100).toFixed(0)}%)`)
+                .filter(([model, weight]) => (weight as number) > 0)
+                .map(([model, weight]) => `${model.charAt(0).toUpperCase() + model.slice(1)} (${((weight as number) * 100).toFixed(0)}%)`)
                 .join(', ')
             }
           </p>
           
           {(() => {
-            // Use actual service breakdown if available, otherwise fall back to domain weights
+            // Use actual service breakdown if available, otherwise fall back to filtered domain weights
             const activeModels = serviceBreakdown && serviceBreakdown.length > 0 
               ? serviceBreakdown.map(service => ({
                   name: service.name,
@@ -341,11 +341,11 @@ const FactResult = ({
                   weight: service.confidence
                 }))
               : Object.entries(domainInfo.modelWeights)
-                  .filter(([model, weight]) => weight > 0)
+                  .filter(([model, weight]) => (weight as number) > 0)
                   .map(([model, weight]) => ({
                     name: model.charAt(0).toUpperCase() + model.slice(1),
-                    value: weight * 100,
-                    weight: weight
+                    value: (weight as number) * 100,
+                    weight: weight as number
                   }));
 
             // Define more distinct colors for each model
