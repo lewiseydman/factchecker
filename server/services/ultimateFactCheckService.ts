@@ -263,11 +263,11 @@ export class UltimateFactCheckService {
     }
     const confidenceScore = serviceResults.length > 0 ? totalConfidenceSum / serviceResults.length : 0.5;
     
-    // Step 12: Create comprehensive explanation from real AI services
+    // Step 12: Create comprehensive explanation from real AI services only
     const realServicesForExplanation = serviceResults.filter(result => result.hasRealKey);
     const aiExplanations = realServicesForExplanation.length > 0 
       ? realServicesForExplanation.map(result => `**${result.name}**: ${result.explanation}`).join('\n\n')
-      : 'No AI services with valid API keys provided analysis.';
+      : '';
     
     const comprehensiveExplanation = realServicesForExplanation.length > 0
       ? `${aiExplanations}\n\n**Database Verification**: ${inFactResult.consolidatedExplanation}`

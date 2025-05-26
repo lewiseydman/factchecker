@@ -305,32 +305,31 @@ export class DomainDetectionService {
     mistral?: number;
     llama?: number;
   }): string {
+    // Import API key manager to check which models are active
+    const { apiKeyManager } = require('./apiKeyManager');
+    
     // Format domains for display using friendly names
     const domainDisplay = this.getDomainDisplayNames(domains).join(', ');
     
-    // Format weights as percentages
-    const claudePercent = Math.round(weights.claude * 100);
-    const openaiPercent = Math.round(weights.openai * 100);
-    const perplexityPercent = Math.round(weights.perplexity * 100);
+    // Only include models that have API keys and weights > 0
+    const activeModels: Array<{name: string, percent: number}> = [];
+    
+    if (weights.perplexity > 0 && apiKeyManager.hasKey('perplexity')) {
+      activeModels.push({name: 'Perplexity', percent: Math.round(weights.perplexity * 100)});
+    }
+    if (weights.gemini && weights.gemini > 0 && apiKeyManager.hasKey('gemini')) {
+      activeModels.push({name: 'Gemini', percent: Math.round(weights.gemini * 100)});
+    }
+    if (weights.mistral && weights.mistral > 0 && apiKeyManager.hasKey('mistral')) {
+      activeModels.push({name: 'Mistral', percent: Math.round(weights.mistral * 100)});
+    }
     
     let explanation = `This statement was classified in the following domains: ${domainDisplay}. 
-Based on these domains, the AI models were weighted as follows:
-- Claude: ${claudePercent}%
-- GPT: ${openaiPercent}%
-- Perplexity: ${perplexityPercent}%`;
-
-    // Add new models if they have weights
-    if (weights.gemini !== undefined) {
-      explanation += `\n- Gemini: ${Math.round(weights.gemini * 100)}%`;
-    }
+Based on these domains, the AI models were weighted as follows:`;
     
-    if (weights.mistral !== undefined) {
-      explanation += `\n- Mistral: ${Math.round(weights.mistral * 100)}%`;
-    }
-    
-    if (weights.llama !== undefined) {
-      explanation += `\n- Llama: ${Math.round(weights.llama * 100)}%`;
-    }
+    activeModels.forEach(model => {
+      explanation += `\n- ${model.name}: ${model.percent}%`;
+    });
     
     return explanation;
   }
