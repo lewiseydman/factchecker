@@ -4,12 +4,13 @@ import { Source } from "@shared/schema";
  * Base interface for all fact-checking services
  */
 export interface FactCheckingResult {
-  isTrue: boolean;
+  isTrue: boolean | null; // null indicates abstention from voting
   explanation: string;
   historicalContext?: string;
   sources: Source[];
   confidence?: number; // 0-1 scale representing confidence in the verdict
   serviceUsed: string; // Name of the service that provided this result
+  abstained?: boolean; // Indicates if this service abstained from making a determination
 }
 
 /**
@@ -1111,6 +1112,9 @@ export class FactCheckAggregator {
       }
     }
     
+    // Collect all results for processing
+    const allResults = [perplexityResult, defameResult, inFactResult];
+    
     // Collect all sources
     const allSources: Source[] = allResults.flatMap(result => result.sources || []);
     
@@ -1136,8 +1140,10 @@ export class FactCheckAggregator {
       explanation: `Aggregated analysis from multiple fact-checking services:\n\n${explanations}`,
       historicalContext,
       sources: trustedSources,
-      confidenceScore: confidenceSum / allResults.length,
-      individualResults: allResults
+      confidenceScore: confidenceSum / Math.max(allResults.length, 1),
+      individualResults: allResults,
+      manipulationRisk,
+      conflictingEvaluations: conflictingEvaluations.length > 0 ? conflictingEvaluations : undefined
     };
   }
 }
