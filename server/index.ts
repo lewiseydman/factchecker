@@ -2,6 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupDefaultTiers } from "./setupDefaultTiers";
+import { ultimateFactCheckService } from "./services/ultimateFactCheckService";
+import { apiKeyManager } from "./services/apiKeyManager";
 
 const app = express();
 app.use(express.json());
@@ -38,6 +40,16 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize AI services with available API keys at startup
+  ultimateFactCheckService.initializeServices({
+    claude: apiKeyManager.getApiKey('claude'),
+    openai: apiKeyManager.getApiKey('openai'),
+    perplexity: apiKeyManager.getApiKey('perplexity'),
+    gemini: apiKeyManager.getApiKey('gemini'),
+    mistral: apiKeyManager.getApiKey('mistral'),
+    llama: apiKeyManager.getApiKey('llama')
+  });
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
