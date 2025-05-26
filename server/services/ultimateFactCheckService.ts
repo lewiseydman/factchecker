@@ -254,13 +254,18 @@ export class UltimateFactCheckService {
     
     const weightedIsTrue = weightedTrueScore / totalWeight > 0.5;
     
-    // Calculate weighted average confidence score (ensure it stays between 0 and 1)
-    let confidenceScore = 0;
+    // Calculate proper weighted average confidence score
+    let weightedConfidenceSum = 0;
+    let totalEffectiveWeight = 0;
+    
     for (const result of serviceResults) {
-      confidenceScore += result.confidence * (result.weight / totalWeight);
+      const effectiveWeight = result.weight * (result.hasRealKey ? 1 : 0.7);
+      weightedConfidenceSum += result.confidence * effectiveWeight;
+      totalEffectiveWeight += effectiveWeight;
     }
-    // Ensure confidence score is capped at 1.0 (100%)
-    confidenceScore = Math.min(confidenceScore, 1.0);
+    
+    // Calculate final confidence as a proper average (will always be between 0 and 1)
+    const confidenceScore = totalEffectiveWeight > 0 ? weightedConfidenceSum / totalEffectiveWeight : 0.5;
     
     // Step 12: Return comprehensive results
     return {
