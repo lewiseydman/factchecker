@@ -5,6 +5,8 @@
  * and provides mappings of AI model strengths in different domains.
  */
 
+import { apiKeyManager } from './apiKeyManager';
+
 export type Domain = 
   | 'medical' 
   | 'scientific' 
@@ -305,9 +307,6 @@ export class DomainDetectionService {
     mistral?: number;
     llama?: number;
   }): string {
-    // Import API key manager to check which models are active
-    const { apiKeyManager } = require('./apiKeyManager');
-    
     // Format domains for display using friendly names
     const domainDisplay = this.getDomainDisplayNames(domains).join(', ');
     
