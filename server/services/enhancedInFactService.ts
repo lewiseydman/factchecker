@@ -15,9 +15,14 @@ interface AIServiceResult {
 /**
  * Enhanced InFact service
  * This service aggregates and analyzes factual information from multiple AI sources
- * focusing on consolidating facts and identifying consensus
+ * focusing on consolidating facts and identifying consensus with authentic database verification
  */
 export class EnhancedInFactService {
+  private inFactService: InFactService;
+
+  constructor() {
+    this.inFactService = new InFactService();
+  }
   /**
    * Aggregates factual information from multiple AI services
    * and produces a consolidated assessment
@@ -77,39 +82,16 @@ export class EnhancedInFactService {
     const results: AIServiceResult[] = [];
 
     try {
-      // Try NASA verification for space/science statements
-      const nasaResult = await nasaService.checkFact(statement);
-      if (nasaResult) {
+      // Use the InFact service which contains all authentic database verification
+      const inFactResult = await this.inFactService.checkFact(statement);
+      
+      if (inFactResult && inFactResult.confidence > 0) {
         results.push({
-          isTrue: nasaResult.isTrue,
-          explanation: nasaResult.explanation,
-          historicalContext: nasaResult.historicalContext,
-          sources: nasaResult.sources,
-          confidence: nasaResult.confidence
-        });
-      }
-
-      // Try Wikidata verification for general factual claims
-      const wikidataResult = await wikidataService.checkFact(statement);
-      if (wikidataResult) {
-        results.push({
-          isTrue: wikidataResult.isTrue,
-          explanation: wikidataResult.explanation,
-          historicalContext: wikidataResult.historicalContext,
-          sources: wikidataResult.sources,
-          confidence: wikidataResult.confidence
-        });
-      }
-
-      // Try Google Fact Check for previously fact-checked claims
-      const googleResult = await googleFactCheckService.checkFact(statement);
-      if (googleResult) {
-        results.push({
-          isTrue: googleResult.isTrue,
-          explanation: googleResult.explanation,
-          historicalContext: googleResult.historicalContext,
-          sources: googleResult.sources,
-          confidence: googleResult.confidence
+          isTrue: inFactResult.isTrue,
+          explanation: inFactResult.explanation,
+          historicalContext: inFactResult.historicalContext,
+          sources: inFactResult.sources,
+          confidence: inFactResult.confidence
         });
       }
 
