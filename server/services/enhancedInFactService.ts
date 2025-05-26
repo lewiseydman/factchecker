@@ -1,4 +1,5 @@
 import { Source } from '@shared/schema';
+import { InFactService } from './factCheckingServices';
 
 /**
  * Interface for the result from any AI service
@@ -27,55 +28,37 @@ export class EnhancedInFactService {
     consolidatedSources: Source[];
     factualConsensus: number;
   }> {
-    // Simulate analyzing statement with multiple services
-    // This would normally come from actual API calls to multiple services
-    const simulatedResults: AIServiceResult[] = [
-      {
-        isTrue: statement.toLowerCase().includes("false") ? false : Math.random() > 0.3,
-        explanation: `Service 1 explanation for "${statement}"`,
-        historicalContext: `Historical background for the statement "${statement}" from service 1.`,
-        sources: [
-          { name: "Source 1A", url: "https://example.com/1a" },
-          { name: "Source 1B", url: "https://example.com/1b" }
+    // Get authentic database verification results
+    const authenticResults = await this.getAuthenticDatabaseVerification(statement);
+    
+    // If we have authentic results, use them; otherwise abstain
+    if (authenticResults.length === 0) {
+      return {
+        consolidatedExplanation: "InFact abstains from verification - no matching records found in authoritative databases for this specific claim.",
+        bestHistoricalContext: "Database verification requires specific, factual claims that can be cross-referenced with authoritative sources.",
+        consolidatedSources: [
+          { name: "NASA Open Data Portal", url: "https://api.nasa.gov" },
+          { name: "Wikidata Knowledge Base", url: "https://www.wikidata.org" },
+          { name: "Google Fact Check Tools", url: "https://toolbox.google.com/factcheck/" }
         ],
-        confidence: 0.82
-      },
-      {
-        isTrue: statement.toLowerCase().includes("false") ? false : Math.random() > 0.4,
-        explanation: `Service 2 explanation for "${statement}"`,
-        historicalContext: `A more detailed historical context about "${statement}" including relevant dates and events.`,
-        sources: [
-          { name: "Source 2A", url: "https://example.com/2a" },
-          { name: "Source 2B", url: "https://example.com/2b" },
-          { name: "Source 2C", url: "https://example.com/2c" }
-        ],
-        confidence: 0.76
-      },
-      {
-        isTrue: statement.toLowerCase().includes("false") ? false : Math.random() > 0.2,
-        explanation: `Service 3 explanation for "${statement}"`,
-        historicalContext: `Brief historical notes about "${statement}".`,
-        sources: [
-          { name: "Source 3A", url: "https://example.com/3a" },
-          { name: "Source 3B", url: "https://example.com/3b" }
-        ],
-        confidence: 0.91
-      }
-    ];
+        factualConsensus: 0.5 // Neutral when abstaining
+      };
+    }
 
+    // Use authentic database results
     const consolidatedExplanation = this.consolidateExplanations(
-      ...simulatedResults.map(result => result.explanation)
+      ...authenticResults.map(result => result.explanation)
     );
     
     const bestHistoricalContext = this.selectBestHistoricalContext(
-      simulatedResults.map(result => result.historicalContext)
+      authenticResults.map(result => result.historicalContext)
     );
     
-    const allSources = simulatedResults.flatMap(result => result.sources);
+    const allSources = authenticResults.flatMap(result => result.sources);
     const consolidatedSources = this.consolidateSources(allSources);
     
-    // Calculate factual consensus (agreement between services)
-    const verdicts = simulatedResults.map(result => result.isTrue);
+    // Calculate factual consensus (agreement between authentic services)
+    const verdicts = authenticResults.map(result => result.isTrue);
     const trueCount = verdicts.filter(v => v).length;
     const factualConsensus = trueCount / verdicts.length;
     
@@ -85,6 +68,56 @@ export class EnhancedInFactService {
       consolidatedSources,
       factualConsensus
     };
+  }
+
+  /**
+   * Get verification results from authentic database sources
+   */
+  private async getAuthenticDatabaseVerification(statement: string): Promise<AIServiceResult[]> {
+    const results: AIServiceResult[] = [];
+
+    try {
+      // Try NASA verification for space/science statements
+      const nasaResult = await nasaService.checkFact(statement);
+      if (nasaResult) {
+        results.push({
+          isTrue: nasaResult.isTrue,
+          explanation: nasaResult.explanation,
+          historicalContext: nasaResult.historicalContext,
+          sources: nasaResult.sources,
+          confidence: nasaResult.confidence
+        });
+      }
+
+      // Try Wikidata verification for general factual claims
+      const wikidataResult = await wikidataService.checkFact(statement);
+      if (wikidataResult) {
+        results.push({
+          isTrue: wikidataResult.isTrue,
+          explanation: wikidataResult.explanation,
+          historicalContext: wikidataResult.historicalContext,
+          sources: wikidataResult.sources,
+          confidence: wikidataResult.confidence
+        });
+      }
+
+      // Try Google Fact Check for previously fact-checked claims
+      const googleResult = await googleFactCheckService.checkFact(statement);
+      if (googleResult) {
+        results.push({
+          isTrue: googleResult.isTrue,
+          explanation: googleResult.explanation,
+          historicalContext: googleResult.historicalContext,
+          sources: googleResult.sources,
+          confidence: googleResult.confidence
+        });
+      }
+
+    } catch (error) {
+      console.error("Error getting authentic database verification:", error);
+    }
+
+    return results;
   }
   
   /**
