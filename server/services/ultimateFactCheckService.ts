@@ -150,20 +150,8 @@ export class UltimateFactCheckService {
     // Step 5: Generate weight explanation
     const weightExplanation = domainDetectionService.getWeightExplanation(detectedDomains, modelWeights);
     
-    // Step 6: Gather available API keys and prepare services list
+    // Step 6: Only include services with working API keys
     const allPossibleServices = [
-      {
-        name: "Claude",
-        service: claudeService,
-        weight: modelWeights.claude,
-        hasRealKey: apiKeyManager.hasKey('claude')
-      },
-      {
-        name: "GPT-4",
-        service: openAIService,
-        weight: modelWeights.openai,
-        hasRealKey: apiKeyManager.hasKey('openai')
-      },
       {
         name: "Perplexity",
         service: enhancedPerplexityService,
@@ -181,14 +169,8 @@ export class UltimateFactCheckService {
         service: mistralService,
         weight: modelWeights.mistral,
         hasRealKey: apiKeyManager.hasKey('mistral')
-      },
-      {
-        name: "Llama",
-        service: llamaService,
-        weight: modelWeights.llama,
-        hasRealKey: apiKeyManager.hasKey('llama')
       }
-    ];
+    ].filter(serviceInfo => serviceInfo.hasRealKey);
     
     // Sort services by weight to prioritize the most relevant ones
     allPossibleServices.sort((a, b) => b.weight - a.weight);
