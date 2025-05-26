@@ -277,6 +277,18 @@ export class UltimateFactCheckService {
       ? realServicesForExplanation[0].historicalContext 
       : inFactResult.bestHistoricalContext;
 
+    // Filter model weights to only show models with real API keys
+    const filteredModelWeights = Object.fromEntries(
+      Object.entries(modelWeights).filter(([modelName]) => {
+        const hasKey = apiKeyManager.hasKey(modelName as any);
+        console.log(`Model ${modelName} has key: ${hasKey}`);
+        return hasKey;
+      })
+    );
+
+    console.log("Service breakdown being returned:", serviceBreakdown);
+    console.log("Filtered model weights:", filteredModelWeights);
+
     // Step 12: Return comprehensive results
     return {
       isTrue: weightedIsTrue,
@@ -295,12 +307,7 @@ export class UltimateFactCheckService {
       domainInfo: {
         detectedDomains: detectedDomains,
         detectedDomainsDisplay: domainDetectionService.getDomainDisplayNames(detectedDomains),
-        modelWeights: Object.fromEntries(
-          Object.entries(modelWeights).filter(([modelName]) => {
-            const hasKey = apiKeyManager.hasKey(modelName as any);
-            return hasKey;
-          })
-        ),
+        modelWeights: filteredModelWeights,
         explanation: weightExplanation
       }
     };
