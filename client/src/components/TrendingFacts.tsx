@@ -94,7 +94,7 @@ const TrendingFacts = () => {
   if (isLoading) {
     return (
       <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Trending Fact Checks</h3>
+        <h3 className="text-subtitle text-gray-900 dark:text-gray-50 mb-4">Trending Fact Checks</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
             <Card key={i} className="overflow-hidden">

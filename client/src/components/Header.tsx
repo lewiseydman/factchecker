@@ -12,7 +12,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <span className="material-icons text-primary text-3xl">fact_check</span>
-          <Link to="/" className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
+          <Link to="/" className="text-title text-gray-900 dark:text-gray-50 hover:text-primary dark:hover:text-primary transition-colors">
             FactCheck
           </Link>
         </div>

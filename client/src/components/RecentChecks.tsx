@@ -176,11 +176,11 @@ const RecentChecks = () => {
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+        <h3 className="text-subtitle text-gray-900 dark:text-gray-50">
           {isAuthenticated ? 'Your Recent Checks' : 'Example Fact Checks'}
         </h3>
         {isAuthenticated && (
-          <Link to="/history" className="text-primary hover:text-blue-600 text-sm font-medium">
+          <Link to="/history" className="text-body-small text-primary hover:text-blue-600 font-medium">
             View All
           </Link>
         )}
