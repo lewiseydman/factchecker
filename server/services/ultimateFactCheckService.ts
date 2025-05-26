@@ -234,11 +234,12 @@ export class UltimateFactCheckService {
     // Step 9: Process results through DEFAME (misinformation detection) layer
     const defameResult = await enhancedDEFAMEService.analyzeForMisinformation(statement);
     
-    // Step 10: Create service breakdown for UI display
+    // Step 10: Create service breakdown for UI display with normalized confidence
+    const totalConfidence = serviceResults.reduce((sum, result) => sum + result.confidence, 0);
     const serviceBreakdown = serviceResults.map(result => ({
       name: result.name,
       verdict: result.isTrue ? "TRUE" : "FALSE",
-      confidence: result.confidence
+      confidence: totalConfidence > 0 ? (result.confidence / totalConfidence) : (1 / serviceResults.length)
     }));
     
     // Step 11: Calculate final verdict and confidence by weighted average
