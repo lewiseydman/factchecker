@@ -355,9 +355,9 @@ const FactResult = ({
                   <div key={index} className={`flex items-center text-xs ${isHighestContribution ? 'font-semibold' : ''}`}>
                     <span className={`inline-block w-2 h-2 rounded-full mr-1 ${dotColor}`}></span>
                     <span>{service.name}</span>
-                    <span className="text-gray-500 ml-1">({contributionPercent.toFixed(0)}%)</span>
+                    <span className="text-gray-700 dark:text-gray-300 ml-1">({contributionPercent.toFixed(0)}%)</span>
                     {isHighestContribution && (
-                      <span className="text-xs ml-1 text-gray-700">★</span>
+                      <span className="text-xs ml-1 text-gray-800 dark:text-gray-200">★</span>
                     )}
                   </div>
                 );
@@ -420,7 +420,7 @@ const FactResult = ({
                     <span className={service.verdict === "TRUE" || service.verdict === "True" ? "text-true" : "text-false"}>
                       {service.verdict}
                     </span>
-                    <span className={`${isHighestConfidence ? 'font-medium text-primary' : 'text-gray-500'}`}>
+                    <span className={`${isHighestConfidence ? 'font-medium text-primary' : 'text-gray-700 dark:text-gray-300'}`}>
                       {contributionPercent.toFixed(0)}% confidence
                     </span>
                   </div>
@@ -440,8 +440,8 @@ const FactResult = ({
             <div className="grid grid-cols-3 gap-2 mt-3">
               {factualConsensus !== undefined && (
                 <div className="text-center">
-                  <div className="text-xs text-gray-500">Consensus</div>
-                  <div className="font-medium">{(factualConsensus * 100).toFixed(0)}%</div>
+                  <div className="text-sm text-gray-700 dark:text-gray-200">Consensus</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">{(factualConsensus * 100).toFixed(0)}%</div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                     <div 
                       className="bg-green-500 h-1.5 rounded-full" 
@@ -453,8 +453,8 @@ const FactResult = ({
               
               {manipulationScore !== undefined && (
                 <div className="text-center">
-                  <div className="text-xs text-gray-500">Manipulation Risk</div>
-                  <div className="font-medium">{(manipulationScore * 100).toFixed(0)}%</div>
+                  <div className="text-sm text-gray-700 dark:text-gray-200">Manipulation Risk</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">{(manipulationScore * 100).toFixed(0)}%</div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                     <div 
                       className="bg-orange-500 h-1.5 rounded-full" 
@@ -466,8 +466,8 @@ const FactResult = ({
               
               {contradictionIndex !== undefined && (
                 <div className="text-center">
-                  <div className="text-xs text-gray-500">Contradiction</div>
-                  <div className="font-medium">{(contradictionIndex * 100).toFixed(0)}%</div>
+                  <div className="text-sm text-gray-700 dark:text-gray-200">Contradiction</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">{(contradictionIndex * 100).toFixed(0)}%</div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                     <div 
                       className="bg-red-500 h-1.5 rounded-full" 
