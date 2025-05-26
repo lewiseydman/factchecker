@@ -170,11 +170,11 @@ const FactResult = ({
               {isTrue ? 'TRUE' : 'FALSE'}
             </span>
             {confidenceScore && (
-              <span className="text-gray-700 dark:text-gray-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
+              <span className="text-gray-800 dark:text-gray-100 text-sm bg-gray-200 dark:bg-gray-600 px-2 py-0.5 rounded">
                 Confidence: {(confidenceScore * 100).toFixed(0)}%
               </span>
             )}
-            <span className="text-gray-500 text-sm">Verified {formattedDate}</span>
+            <span className="text-gray-700 dark:text-gray-300 text-sm">Verified {formattedDate}</span>
             
             {/* Subscription Tier Badge */}
             <span className={`text-xs py-0.5 px-2 rounded-full font-medium ml-2 ${
@@ -211,7 +211,7 @@ const FactResult = ({
             <span className="material-icons text-sm mr-1">category</span>
             Topic Analysis
           </h4>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-sm text-gray-700 dark:text-gray-200 mb-3">
             This fact relates to: {domainInfo.detectedDomainsDisplay ? 
               domainInfo.detectedDomainsDisplay.join(', ') : 
               domainInfo.detectedDomains.map(d => 
@@ -282,8 +282,8 @@ const FactResult = ({
                         className="w-3 h-3 rounded-full" 
                         style={{ backgroundColor: colors[model.name] || '#8884d8' }}
                       ></div>
-                      <span className="font-medium text-gray-700 dark:text-gray-300">{model.name}</span>
-                      <span className="text-gray-500 dark:text-gray-400">{model.value.toFixed(1)}%</span>
+                      <span className="font-medium text-gray-800 dark:text-gray-100">{model.name}</span>
+                      <span className="text-gray-700 dark:text-gray-300">{model.value.toFixed(1)}%</span>
                     </div>
                   ))}
                 </div>
@@ -291,7 +291,7 @@ const FactResult = ({
             );
           })()}
           
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">{domainInfo.explanation}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-200 mt-3">{domainInfo.explanation}</p>
         </div>
       )}
       
@@ -305,7 +305,7 @@ const FactResult = ({
           
           {/* Contribution summary bar - Shows which AI model had the most impact */}
           <div className="mb-4">
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">AI Model Contributions</div>
+            <div className="text-sm text-gray-700 dark:text-gray-200 mb-1 font-medium">AI Model Contributions</div>
             <div className="h-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden flex">
               {serviceBreakdown.map((service, index) => {
                 // Sort services by confidence to determine width proportion
