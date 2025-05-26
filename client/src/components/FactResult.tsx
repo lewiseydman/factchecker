@@ -219,10 +219,15 @@ const FactResult = ({
       {/* Domain Detection Info */}
       {domainInfo && (
         <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-100 dark:border-blue-800/30">
-          <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1 flex items-center">
-            <span className="material-icons text-sm mr-1">category</span>
-            Topic Analysis
-          </h4>
+          <DynamicTooltip 
+            config={getContextualTooltip('domainDetection')}
+            trigger="hover"
+          >
+            <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1 flex items-center cursor-help">
+              <span className="material-icons text-sm mr-1">category</span>
+              Topic Analysis
+            </h4>
+          </DynamicTooltip>
           <p className="text-sm text-gray-700 dark:text-gray-200 mb-3">
             This fact relates to: {domainInfo.detectedDomainsDisplay ? 
               domainInfo.detectedDomainsDisplay.join(', ') : 
@@ -451,42 +456,57 @@ const FactResult = ({
           {(factualConsensus !== undefined || manipulationScore !== undefined || contradictionIndex !== undefined) && (
             <div className="grid grid-cols-3 gap-2 mt-3">
               {factualConsensus !== undefined && (
-                <div className="text-center">
-                  <div className="text-sm text-gray-700 dark:text-gray-200">Consensus</div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{(factualConsensus * 100).toFixed(0)}%</div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                    <div 
-                      className="bg-green-500 h-1.5 rounded-full" 
-                      style={{ width: `${factualConsensus * 100}%` }}
-                    ></div>
+                <DynamicTooltip 
+                  config={getContextualTooltip('factualConsensus')}
+                  trigger="hover"
+                >
+                  <div className="text-center cursor-help">
+                    <div className="text-sm text-gray-700 dark:text-gray-200">Consensus</div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{(factualConsensus * 100).toFixed(0)}%</div>
+                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                      <div 
+                        className="bg-green-500 h-1.5 rounded-full" 
+                        style={{ width: `${factualConsensus * 100}%` }}
+                      ></div>
+                    </div>
                   </div>
-                </div>
+                </DynamicTooltip>
               )}
               
               {manipulationScore !== undefined && (
-                <div className="text-center">
-                  <div className="text-sm text-gray-700 dark:text-gray-200">Manipulation Risk</div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{(manipulationScore * 100).toFixed(0)}%</div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                    <div 
-                      className="bg-orange-500 h-1.5 rounded-full" 
-                      style={{ width: `${manipulationScore * 100}%` }}
-                    ></div>
+                <DynamicTooltip 
+                  config={getContextualTooltip('manipulationRisk')}
+                  trigger="hover"
+                >
+                  <div className="text-center cursor-help">
+                    <div className="text-sm text-gray-700 dark:text-gray-200">Manipulation Risk</div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{(manipulationScore * 100).toFixed(0)}%</div>
+                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                      <div 
+                        className="bg-orange-500 h-1.5 rounded-full" 
+                        style={{ width: `${manipulationScore * 100}%` }}
+                      ></div>
+                    </div>
                   </div>
-                </div>
+                </DynamicTooltip>
               )}
               
               {contradictionIndex !== undefined && (
-                <div className="text-center">
-                  <div className="text-sm text-gray-700 dark:text-gray-200">Contradiction</div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{(contradictionIndex * 100).toFixed(0)}%</div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                    <div 
-                      className="bg-red-500 h-1.5 rounded-full" 
-                      style={{ width: `${contradictionIndex * 100}%` }}
-                    ></div>
+                <DynamicTooltip 
+                  config={getContextualTooltip('contradictionIndex')}
+                  trigger="hover"
+                >
+                  <div className="text-center cursor-help">
+                    <div className="text-sm text-gray-700 dark:text-gray-200">Contradiction</div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{(contradictionIndex * 100).toFixed(0)}%</div>
+                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                      <div 
+                        className="bg-red-500 h-1.5 rounded-full" 
+                        style={{ width: `${contradictionIndex * 100}%` }}
+                      ></div>
+                    </div>
                   </div>
-                </div>
+                </DynamicTooltip>
               )}
             </div>
           )}

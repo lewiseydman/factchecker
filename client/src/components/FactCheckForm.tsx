@@ -8,6 +8,8 @@ import { useSpeechRecognition } from "@/lib/speech-recognition";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { Mic, MicOff, Search } from "lucide-react";
+import DynamicTooltip from "./DynamicTooltip";
+import { getContextualTooltip } from "@/lib/tooltipConfigs";
 
 type FactCheckResponse = {
   id: number;
@@ -136,18 +138,23 @@ const FactCheckForm = ({ onFactChecked }: FactCheckFormProps) => {
               />
               {hasRecognitionSupport && (
                 <div className="relative">
-                  <button
-                    type="button"
-                    onClick={toggleVoiceInput}
-                    className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md h-10 transition-colors ${
-                      isListening 
-                        ? 'bg-red-500 text-white border-red-500' 
-                        : 'bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
-                    }`}
-                    aria-label={isListening ? "Stop listening" : "Start voice input"}
+                  <DynamicTooltip 
+                    config={getContextualTooltip('voiceInput')}
+                    trigger="hover"
                   >
-                    {isListening ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
-                  </button>
+                    <button
+                      type="button"
+                      onClick={toggleVoiceInput}
+                      className={`inline-flex items-center justify-center px-3 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md h-10 transition-colors ${
+                        isListening 
+                          ? 'bg-red-500 text-white border-red-500' 
+                          : 'bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+                      }`}
+                      aria-label={isListening ? "Stop listening" : "Start voice input"}
+                    >
+                      {isListening ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                    </button>
+                  </DynamicTooltip>
                   {isListening && (
                     <span className="absolute -right-1 -top-1 flex h-3 w-3">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
