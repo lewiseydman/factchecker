@@ -202,30 +202,91 @@ const FactResult = ({
       
       {/* Domain Detection Info */}
       {domainInfo && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
-          <h4 className="text-sm font-medium text-blue-700 mb-1 flex items-center">
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-100 dark:border-blue-800/30">
+          <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1 flex items-center">
             <span className="material-icons text-sm mr-1">category</span>
             Topic Analysis
           </h4>
-          <p className="text-xs text-gray-600 mb-2">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
             Domains detected: {domainInfo.detectedDomains.map(d => 
               d.charAt(0).toUpperCase() + d.slice(1)
             ).join(', ')}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2">
-            {Object.entries(domainInfo.modelWeights).map(([model, weight]) => (
-              <div key={model} className="bg-white p-1 rounded border border-blue-50 text-center">
-                <div className="text-xs font-medium">{model.charAt(0).toUpperCase() + model.slice(1)}</div>
-                <div className="text-xs">Weight: {(weight * 100).toFixed(0)}%</div>
-                <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                  <div 
-                    className="bg-blue-600 h-1.5 rounded-full" 
-                    style={{ width: `${weight * 100}%` }}
-                  ></div>
+          
+          {(() => {
+            // Filter out models with 0% weights and prepare data for pie chart
+            const activeModels = Object.entries(domainInfo.modelWeights)
+              .filter(([model, weight]) => weight > 0)
+              .map(([model, weight]) => ({
+                name: model.charAt(0).toUpperCase() + model.slice(1),
+                value: weight * 100,
+                weight: weight
+              }));
+
+            // Define colors for each model
+            const colors = {
+              'Claude': '#8E44EC',
+              'Openai': '#00A67E', 
+              'Perplexity': '#0469D2',
+              'Gemini': '#4285F4',
+              'Mistral': '#FF6B35',
+              'Llama': '#1877F2'
+            };
+
+            if (activeModels.length === 0) {
+              return (
+                <p className="text-xs text-gray-500 dark:text-gray-400">No model weights available</p>
+              );
+            }
+
+            return (
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                {/* Pie Chart */}
+                <div className="w-48 h-48 flex-shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={activeModels}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, value }) => `${name}: ${value.toFixed(0)}%`}
+                        labelLine={false}
+                      >
+                        {activeModels.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={colors[entry.name] || '#8884d8'} 
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Weight']}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                
+                {/* Legend */}
+                <div className="flex flex-col gap-2">
+                  {activeModels.map((model, index) => (
+                    <div key={model.name} className="flex items-center gap-2 text-xs">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: colors[model.name] || '#8884d8' }}
+                      ></div>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">{model.name}</span>
+                      <span className="text-gray-500 dark:text-gray-400">{model.value.toFixed(1)}%</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })()}
+          
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">{domainInfo.explanation}</p>
         </div>
       )}
       
