@@ -254,11 +254,13 @@ export class UltimateFactCheckService {
     
     const weightedIsTrue = weightedTrueScore / totalWeight > 0.5;
     
-    // Combine confidence scores
+    // Calculate weighted average confidence score (ensure it stays between 0 and 1)
     let confidenceScore = 0;
     for (const result of serviceResults) {
       confidenceScore += result.confidence * (result.weight / totalWeight);
     }
+    // Ensure confidence score is capped at 1.0 (100%)
+    confidenceScore = Math.min(confidenceScore, 1.0);
     
     // Step 12: Return comprehensive results
     return {
