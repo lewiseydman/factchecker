@@ -50,7 +50,28 @@ export class ApiKeyManager {
    * Check if a specific API key is available
    */
   hasKey(service: 'claude' | 'openai' | 'perplexity' | 'gemini' | 'mistral' | 'llama'): boolean {
-    return !!this.apiKeys[service];
+    // Check both stored keys and environment variables
+    if (this.apiKeys[service]) {
+      return true;
+    }
+    
+    // Check environment variables
+    switch (service) {
+      case 'claude':
+        return !!process.env.ANTHROPIC_API_KEY;
+      case 'openai':
+        return !!process.env.OPENAI_API_KEY;
+      case 'perplexity':
+        return !!process.env.PERPLEXITY_API_KEY;
+      case 'gemini':
+        return !!process.env.GEMINI_API_KEY;
+      case 'mistral':
+        return !!process.env.MISTRAL_API_KEY;
+      case 'llama':
+        return !!process.env.XAI_API_KEY;
+      default:
+        return false;
+    }
   }
   
   /**
