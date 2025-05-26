@@ -128,18 +128,18 @@ const FactResult = ({
     : explanation;
 
   return (
-    <div className={`bg-white border-l-4 ${isTrue ? 'border-true' : 'border-false'} rounded-lg shadow-sm p-6 mb-4`}>
+    <div className={`bg-white dark:bg-gray-800 border-l-4 ${isTrue ? 'border-true' : 'border-false'} rounded-lg shadow-sm p-6 mb-4`}>
       {/* Question Transformation Info */}
       {isQuestion && transformedStatement && (
-        <div className="mb-4 p-3 bg-purple-50 rounded-md border border-purple-100">
-          <h4 className="text-sm font-medium text-purple-800 mb-1 flex items-center">
+        <div className="mb-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-md border border-purple-100 dark:border-purple-800/30">
+          <h4 className="text-sm font-medium text-purple-800 dark:text-purple-200 mb-1 flex items-center">
             <span className="material-icons text-sm mr-1">help</span>
             Question Analyzed
           </h4>
-          <p className="text-sm text-gray-700 mb-2">
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
             Your question was analyzed as checking this statement:
           </p>
-          <p className="text-sm font-medium bg-white p-2 rounded border border-purple-100">
+          <p className="text-sm font-medium bg-white dark:bg-gray-700 dark:text-gray-200 p-2 rounded border border-purple-100 dark:border-purple-800/30">
             "{transformedStatement}"
           </p>
           
@@ -158,14 +158,14 @@ const FactResult = ({
       
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-gray-800 font-medium mb-2">{statement}</p>
+          <p className="text-gray-800 dark:text-gray-200 font-medium mb-2">{statement}</p>
           <div className="flex items-center gap-3 flex-wrap">
             <span className={`flex items-center ${isTrue ? 'text-true' : 'text-false'} font-bold`}>
               <span className="material-icons mr-1">{isTrue ? 'check_circle' : 'cancel'}</span>
               {isTrue ? 'TRUE' : 'FALSE'}
             </span>
             {confidenceScore && (
-              <span className="text-gray-700 text-sm bg-gray-100 px-2 py-0.5 rounded">
+              <span className="text-gray-700 dark:text-gray-300 text-sm bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
                 Confidence: {(confidenceScore * 100).toFixed(0)}%
               </span>
             )}
@@ -230,16 +230,16 @@ const FactResult = ({
       
       {/* Multi-AI Verification */}
       {serviceBreakdown && serviceBreakdown.length > 0 && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-md border border-gray-100">
-          <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+        <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-100 dark:border-gray-600">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 flex items-center">
             <span className="material-icons text-sm mr-1">analytics</span>
             Multi-AI Verification
           </h4>
           
           {/* Contribution summary bar - Shows which AI model had the most impact */}
           <div className="mb-4">
-            <div className="text-xs text-gray-500 mb-1">AI Model Contributions</div>
-            <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden flex">
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">AI Model Contributions</div>
+            <div className="h-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden flex">
               {serviceBreakdown.map((service, index) => {
                 // Sort services by confidence to determine width proportion
                 const totalConfidence = serviceBreakdown.reduce((sum, s) => sum + s.confidence, 0);
@@ -309,7 +309,7 @@ const FactResult = ({
               return (
                 <div 
                   key={index} 
-                  className={`p-2 border rounded bg-white transition-all ${isHighestConfidence ? 'ring-2 ring-offset-1 ring-primary/30 border-primary/20' : ''}`}
+                  className={`p-2 border rounded bg-white dark:bg-gray-600 transition-all ${isHighestConfidence ? 'ring-2 ring-offset-1 ring-primary/30 border-primary/20' : 'border-gray-200 dark:border-gray-500'}`}
                 >
                   <div className="flex items-center mb-1">
                     <div className="w-6 h-6 mr-2 flex items-center justify-center">
@@ -344,7 +344,7 @@ const FactResult = ({
                         </svg>
                       )}
                     </div>
-                    <div className={`font-medium text-sm ${isHighestConfidence ? 'text-primary' : ''}`}>
+                    <div className={`font-medium text-sm ${isHighestConfidence ? 'text-primary' : 'text-gray-800 dark:text-gray-200'}`}>
                       {service.name}
                       {isHighestConfidence && <span className="text-xs ml-1 text-primary">★</span>}
                     </div>

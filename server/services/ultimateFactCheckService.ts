@@ -235,11 +235,11 @@ export class UltimateFactCheckService {
     const defameResult = await enhancedDEFAMEService.analyzeForMisinformation(statement);
     
     // Step 10: Create service breakdown for UI display with normalized confidence
-    const totalConfidence = serviceResults.reduce((sum, result) => sum + result.confidence, 0);
+    const totalConfidenceForBreakdown = serviceResults.reduce((sum, result) => sum + result.confidence, 0);
     const serviceBreakdown = serviceResults.map(result => ({
       name: result.name,
       verdict: result.isTrue ? "TRUE" : "FALSE",
-      confidence: totalConfidence > 0 ? (result.confidence / totalConfidence) : (1 / serviceResults.length)
+      confidence: totalConfidenceForBreakdown > 0 ? (result.confidence / totalConfidenceForBreakdown) : (1 / serviceResults.length)
     }));
     
     // Step 11: Calculate final verdict and confidence by weighted average
@@ -255,11 +255,11 @@ export class UltimateFactCheckService {
     const weightedIsTrue = weightedTrueScore / totalWeight > 0.5;
     
     // Calculate average confidence score (simple average to ensure it stays between 0-1)
-    let totalConfidence = 0;
+    let totalConfidenceSum = 0;
     for (const result of serviceResults) {
-      totalConfidence += result.confidence;
+      totalConfidenceSum += result.confidence;
     }
-    const confidenceScore = serviceResults.length > 0 ? totalConfidence / serviceResults.length : 0.5;
+    const confidenceScore = serviceResults.length > 0 ? totalConfidenceSum / serviceResults.length : 0.5;
     
     // Step 12: Return comprehensive results
     return {
