@@ -144,7 +144,7 @@ export class UltimateFactCheckService {
     console.log("Detected domains:", detectedDomains);
     
     // Step 4: Calculate weights for AI models based on their domain strengths
-    const modelWeights = domainDetectionService.calculateModelWeights(detectedDomains);
+    const modelWeights = domainDetectionService.calculateModelWeights(detectedDomains, modelCount);
     console.log("Model weights:", modelWeights);
     
     // Step 5: Generate weight explanation

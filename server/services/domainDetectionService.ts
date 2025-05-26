@@ -182,9 +182,10 @@ export class DomainDetectionService {
   /**
    * Calculates weights for each AI model based on their strengths in detected domains
    * @param domains The detected domains
+   * @param modelCount Number of models to use (based on subscription tier)
    * @returns Object with weights for each AI model
    */
-  public calculateModelWeights(domains: Domain[]): {
+  public calculateModelWeights(domains: Domain[], modelCount: number = 6): {
     claude: number;
     openai: number;
     perplexity: number;
@@ -192,36 +193,57 @@ export class DomainDetectionService {
     mistral: number;
     llama: number;
   } {
-    // Default equal weights
-    let claudeWeight = 1;
-    let openaiWeight = 1;
-    let perplexityWeight = 1;
-    let geminiWeight = 1;
-    let mistralWeight = 1;
-    let llamaWeight = 1;
+    // Calculate raw strengths for each model in the detected domains
+    const modelStrengths = [
+      { name: 'claude', strength: this.calculateDomainStrength('claude', domains) },
+      { name: 'openai', strength: this.calculateDomainStrength('openai', domains) },
+      { name: 'perplexity', strength: this.calculateDomainStrength('perplexity', domains) },
+      { name: 'gemini', strength: this.calculateDomainStrength('gemini', domains) },
+      { name: 'mistral', strength: this.calculateDomainStrength('mistral', domains) },
+      { name: 'llama', strength: this.calculateDomainStrength('llama', domains) }
+    ];
     
-    // Adjust weights based on domains
+    // Sort by strength and take only the number of models specified by subscription tier
+    const topModels = modelStrengths
+      .sort((a, b) => b.strength - a.strength)
+      .slice(0, modelCount);
+    
+    // Calculate total weight for normalization
+    const totalWeight = topModels.reduce((sum, model) => sum + model.strength, 0);
+    
+    // Initialize all weights to 0
+    const weights = {
+      claude: 0,
+      openai: 0,
+      perplexity: 0,
+      gemini: 0,
+      mistral: 0,
+      llama: 0
+    };
+    
+    // Assign normalized weights only to selected models
+    topModels.forEach(model => {
+      weights[model.name as keyof typeof weights] = totalWeight > 0 ? model.strength / totalWeight : 1 / modelCount;
+    });
+    
+    return weights;
+  }
+
+  /**
+   * Calculate the overall strength of a model for given domains
+   * @param modelName The name of the AI model
+   * @param domains The detected domains
+   * @returns Combined strength score for the model
+   */
+  private calculateDomainStrength(modelName: string, domains: Domain[]): number {
+    let totalStrength = 1;
+    
     for (const domain of domains) {
-      claudeWeight *= this.aiStrengths.claude[domain] || 0.7;
-      openaiWeight *= this.aiStrengths.openai[domain] || 0.7;
-      perplexityWeight *= this.aiStrengths.perplexity[domain] || 0.7;
-      geminiWeight *= this.aiStrengths.gemini[domain] || 0.7;
-      mistralWeight *= this.aiStrengths.mistral[domain] || 0.7;
-      llamaWeight *= this.aiStrengths.llama[domain] || 0.7;
+      const domainStrength = this.aiStrengths[modelName]?.[domain] || 0.7;
+      totalStrength *= domainStrength;
     }
     
-    // Normalize weights to sum to 1
-    const totalWeight = claudeWeight + openaiWeight + perplexityWeight + 
-                       geminiWeight + mistralWeight + llamaWeight;
-    
-    return {
-      claude: claudeWeight / totalWeight,
-      openai: openaiWeight / totalWeight,
-      perplexity: perplexityWeight / totalWeight,
-      gemini: geminiWeight / totalWeight,
-      mistral: mistralWeight / totalWeight,
-      llama: llamaWeight / totalWeight
-    };
+    return totalStrength;
   }
 
   /**
