@@ -109,7 +109,10 @@ router.post('/fact-check', async (req: Request, res: Response) => {
         // Create the fact check data with required fields
         const factCheckData = {
           userId,
-          statement: userInput,
+          statement: factResult.processedStatement || userInput,
+          originalInput: userInput,
+          inputType: factResult.inputType || 'statement',
+          processingContext: factResult.processingContext || null,
           isTrue: factResult.isTrue,
           explanation: factResult.explanation || "No explanation provided",
           historicalContext: factResult.historicalContext || null,
