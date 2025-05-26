@@ -163,12 +163,13 @@ const FactResult = ({
         </div>
       )}
       
-      <div className="flex justify-between items-start">
+      {/* 1. MOST IMPORTANT: The Verdict */}
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <p className="text-gray-800 dark:text-gray-200 font-medium mb-2">{statement}</p>
+          <p className="text-gray-800 dark:text-gray-200 font-medium mb-3">{statement}</p>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className={`flex items-center ${isTrue ? 'text-true' : 'text-false'} font-bold`}>
-              <span className="material-icons mr-1">{isTrue ? 'check_circle' : 'cancel'}</span>
+            <span className={`flex items-center ${isTrue ? 'text-true' : 'text-false'} font-bold text-lg`}>
+              <span className="material-icons mr-2 text-lg">{isTrue ? 'check_circle' : 'cancel'}</span>
               {isTrue ? 'TRUE' : 'FALSE'}
             </span>
             {confidenceScore && (
@@ -215,6 +216,43 @@ const FactResult = ({
           </div>
         )}
       </div>
+
+      {/* 2. SECOND MOST IMPORTANT: The Explanation */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="text-base font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <span className="material-icons text-sm mr-1">fact_check</span>
+            Fact Analysis
+          </h4>
+          {explanation?.length > 300 && (
+            <button 
+              onClick={() => setIsExplanationExpanded(!isExplanationExpanded)}
+              className="text-primary hover:text-blue-600 text-sm font-medium"
+            >
+              {isExplanationExpanded ? 'Show Less' : 'Show More'}
+            </button>
+          )}
+        </div>
+        <div className="text-sm text-gray-800 dark:text-gray-100 leading-relaxed">
+          {isExplanationExpanded ? explanation : shortenedExplanation}
+        </div>
+      </div>
+
+      {/* 3. THIRD MOST IMPORTANT: Top Sources */}
+      {sources && sources.length > 0 && (
+        <div className="mb-4">
+          <h4 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">Top Sources:</h4>
+          <ul className="text-sm text-gray-700 dark:text-gray-200 space-y-2 ml-5 list-disc">
+            {sources.slice(0, 3).map((source, index) => (
+              <li key={index}>
+                <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
+                  {source.name || source.url}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       
       {/* Domain Detection Info */}
       {domainInfo && (
