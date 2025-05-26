@@ -268,9 +268,9 @@ const FactResult = ({
             {/* Legend for the contribution bar */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2">
               {serviceBreakdown.map((service, index) => {
-                // Sort services by confidence to highlight the most influential
+                // Calculate normalized percentage (each service's relative contribution)
                 const totalConfidence = serviceBreakdown.reduce((sum, s) => sum + s.confidence, 0);
-                const contributionPercent = (service.confidence / totalConfidence) * 100;
+                const contributionPercent = totalConfidence > 0 ? (service.confidence / totalConfidence) * 100 : 0;
                 
                 // Determine color based on service
                 let dotColor = "bg-gray-400";
