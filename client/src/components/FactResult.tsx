@@ -6,6 +6,8 @@ import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import DynamicTooltip from "./DynamicTooltip";
+import { getContextualTooltip } from "@/lib/tooltipConfigs";
 
 type Source = {
   name: string;
@@ -170,25 +172,35 @@ const FactResult = ({
               {isTrue ? 'TRUE' : 'FALSE'}
             </span>
             {confidenceScore && (
-              <span className="text-gray-800 dark:text-gray-100 text-sm bg-gray-200 dark:bg-gray-600 px-2 py-0.5 rounded">
-                Confidence: {(confidenceScore * 100).toFixed(0)}%
-              </span>
+              <DynamicTooltip 
+                config={getContextualTooltip('confidenceScore', { score: confidenceScore })}
+                trigger="hover"
+              >
+                <span className="text-gray-800 dark:text-gray-100 text-sm bg-gray-200 dark:bg-gray-600 px-2 py-0.5 rounded cursor-help">
+                  Confidence: {(confidenceScore * 100).toFixed(0)}%
+                </span>
+              </DynamicTooltip>
             )}
             <span className="text-gray-700 dark:text-gray-300 text-sm">Verified {formattedDate}</span>
             
             {/* Subscription Tier Badge */}
-            <span className={`text-xs py-0.5 px-2 rounded-full font-medium ml-2 ${
-              tierName === "Premium Tier" 
-                ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
-              : tierName === "Standard Tier" 
-                ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white"
-              : tierName === "Basic Tier"
-                ? "bg-gradient-to-r from-teal-500 to-teal-700 text-white"  
-              : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
-            }`}>
-              {tierName ? tierName.replace(" Tier", "") : "Free"} 
-              {modelsUsed ? ` (${modelsUsed} models)` : ""}
-            </span>
+            <DynamicTooltip 
+              config={getContextualTooltip('subscriptionTier', { tierName, modelsUsed })}
+              trigger="hover"
+            >
+              <span className={`text-xs py-0.5 px-2 rounded-full font-medium ml-2 cursor-help ${
+                tierName === "Premium Tier" 
+                  ? "bg-gradient-to-r from-purple-500 to-purple-700 text-white" 
+                : tierName === "Standard Tier" 
+                  ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white"
+                : tierName === "Basic Tier"
+                  ? "bg-gradient-to-r from-teal-500 to-teal-700 text-white"  
+                : "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
+              }`}>
+                {tierName ? tierName.replace(" Tier", "") : "Free"} 
+                {modelsUsed ? ` (${modelsUsed} models)` : ""}
+              </span>
+            </DynamicTooltip>
           </div>
         </div>
         {isAuthenticated && (
