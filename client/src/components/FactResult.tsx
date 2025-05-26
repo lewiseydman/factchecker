@@ -66,11 +66,11 @@ const FactResult = ({
   checkedAt,
   onDelete,
   confidenceScore,
-  serviceBreakdown,
+  serviceBreakdown: rawServiceBreakdown,
   isQuestion,
   transformedStatement,
   implicitClaims,
-  domainInfo,
+  domainInfo: rawDomainInfo,
   factualConsensus,
   manipulationScore,
   contradictionIndex,
@@ -82,6 +82,28 @@ const FactResult = ({
   const [isExplanationExpanded, setIsExplanationExpanded] = useState(false);
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
+
+  // Filter to only show AI models that are actually working
+  const workingModels = ['Perplexity', 'Gemini', 'Mistral'];
+  const serviceBreakdown = rawServiceBreakdown?.filter(service => 
+    workingModels.includes(service.name)
+  );
+
+  // Filter domain info to only show working models
+  const domainInfo = rawDomainInfo ? {
+    ...rawDomainInfo,
+    modelWeights: Object.fromEntries(
+      Object.entries(rawDomainInfo.modelWeights).filter(([modelName]) => {
+        const displayName = modelName === 'claude' ? 'Claude' :
+                           modelName === 'openai' ? 'GPT-4' :
+                           modelName === 'perplexity' ? 'Perplexity' :
+                           modelName === 'gemini' ? 'Gemini' :
+                           modelName === 'mistral' ? 'Mistral' :
+                           modelName === 'llama' ? 'Llama' : modelName;
+        return workingModels.includes(displayName);
+      })
+    )
+  } : rawDomainInfo;
   
   // Safely format date or use fallback
   let formattedDate = "Just now";
