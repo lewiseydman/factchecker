@@ -69,31 +69,125 @@ export class DEFAMEService {
 
 /**
  * InFactService 
- * A hypothetical service that checks statements against a curated database of verified facts
+ * Checks statements against Google's Fact Check Tools API database of verified facts
+ * from professional fact-checking organizations worldwide
  */
 export class InFactService {
+  private apiKey: string;
+  
+  constructor() {
+    this.apiKey = process.env.GOOGLE_FACT_CHECK_API_KEY || '';
+  }
+
   async checkFact(statement: string): Promise<FactCheckingResult> {
-    // This would be replaced by an actual API call to the InFact service
     console.log("InFact Service checking fact:", statement);
     
-    // Simulate analysis time
-    await new Promise(resolve => setTimeout(resolve, 700));
+    if (!this.apiKey) {
+      console.warn("Google Fact Check API key not available, using fallback response");
+      return this.getFallbackResponse(statement);
+    }
+
+    try {
+      // Call Google Fact Check Tools API
+      const response = await fetch(
+        `https://factchecktools.googleapis.com/v1alpha1/claims:search?query=${encodeURIComponent(statement)}&key=${this.apiKey}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`API call failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.claims || data.claims.length === 0) {
+        return {
+          isTrue: null, // Unknown - no existing fact-checks found
+          explanation: "No existing fact-checks found in professional databases for this specific claim. This doesn't mean the statement is false, just that it hasn't been previously fact-checked by major organizations.",
+          sources: [],
+          confidence: 0.0,
+          serviceUsed: "InFact (Google Fact Check)"
+        };
+      }
+
+      // Process the first relevant claim
+      const claim = data.claims[0];
+      const review = claim.claimReview?.[0];
+      
+      if (!review) {
+        return this.getFallbackResponse(statement);
+      }
+
+      // Convert Google's rating to boolean
+      const rating = review.textualRating?.toLowerCase() || '';
+      const isTrue = this.interpretRating(rating);
+      
+      // Calculate confidence based on publisher credibility and rating clarity
+      const confidence = this.calculateConfidence(review.publisher?.name, rating);
+
+      return {
+        isTrue,
+        explanation: `Professional fact-check found: "${review.textualRating}" - ${claim.text || statement}`,
+        historicalContext: `Fact-checked by ${review.publisher?.name || 'professional organization'} on ${review.reviewDate || 'unknown date'}`,
+        sources: [
+          {
+            name: review.publisher?.name || "Fact-checking organization",
+            url: review.url || ""
+          }
+        ],
+        confidence,
+        serviceUsed: "InFact (Google Fact Check)"
+      };
+
+    } catch (error) {
+      console.error("Google Fact Check API error:", error);
+      return this.getFallbackResponse(statement);
+    }
+  }
+
+  private interpretRating(rating: string): boolean | null {
+    const lowerRating = rating.toLowerCase();
     
+    // True ratings
+    if (lowerRating.includes('true') || lowerRating.includes('correct') || 
+        lowerRating.includes('accurate') || lowerRating.includes('verified')) {
+      return true;
+    }
+    
+    // False ratings
+    if (lowerRating.includes('false') || lowerRating.includes('incorrect') || 
+        lowerRating.includes('misleading') || lowerRating.includes('pants on fire')) {
+      return false;
+    }
+    
+    // Mixed or unclear ratings
+    return null;
+  }
+
+  private calculateConfidence(publisher: string = '', rating: string = ''): number {
+    let confidence = 0.7; // Base confidence for professional fact-checkers
+    
+    // Boost confidence for highly credible publishers
+    const highCredibilityPublishers = ['snopes', 'politifact', 'factcheck.org', 'reuters', 'ap news'];
+    if (highCredibilityPublishers.some(pub => publisher.toLowerCase().includes(pub))) {
+      confidence += 0.2;
+    }
+    
+    // Boost confidence for clear ratings
+    const clearRatings = ['true', 'false', 'correct', 'incorrect'];
+    if (clearRatings.some(clear => rating.toLowerCase().includes(clear))) {
+      confidence += 0.1;
+    }
+    
+    return Math.min(confidence, 0.95); // Cap at 95%
+  }
+
+  private getFallbackResponse(statement: string): FactCheckingResult {
     return {
-      isTrue: Math.random() > 0.4, // Random for demo purposes
-      explanation: "InFact database analysis complete. The statement has been evaluated against our database of pre-verified facts.",
-      sources: [
-        { 
-          name: "InFact Verified Database",
-          url: "https://example.com/infact/database" 
-        },
-        { 
-          name: "Historical Records Archive",
-          url: "https://example.com/history/archive" 
-        }
-      ],
-      confidence: 0.92,
-      serviceUsed: "InFact"
+      isTrue: null,
+      explanation: "Unable to verify against professional fact-checking databases at this time. The statement will be evaluated using other AI verification methods.",
+      sources: [],
+      confidence: 0.0,
+      serviceUsed: "InFact (unavailable)"
     };
   }
 }
