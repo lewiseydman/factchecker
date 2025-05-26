@@ -300,6 +300,9 @@ const FactResult = ({
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             {serviceBreakdown.map((service, index) => {
+              // Calculate normalized percentage for each service
+              const totalConfidence = serviceBreakdown.reduce((sum, s) => sum + s.confidence, 0);
+              const contributionPercent = totalConfidence > 0 ? (service.confidence / totalConfidence) * 100 : 0;
               // Sort services by confidence to highlight the most influential
               const isHighestConfidence = service.confidence === Math.max(...serviceBreakdown.map(s => s.confidence));
               
@@ -351,13 +354,13 @@ const FactResult = ({
                       {service.verdict}
                     </span>
                     <span className={`${isHighestConfidence ? 'font-medium text-primary' : 'text-gray-500'}`}>
-                      {(service.confidence * 100).toFixed(0)}% confidence
+                      {contributionPercent.toFixed(0)}% confidence
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
                     <div 
                       className={`h-1 rounded-full ${service.verdict === "TRUE" || service.verdict === "True" ? "bg-true" : "bg-false"}`}
-                      style={{ width: `${service.confidence * 100}%` }}
+                      style={{ width: `${contributionPercent}%` }}
                     ></div>
                   </div>
                 </div>
