@@ -310,27 +310,8 @@ export class DomainDetectionService {
     // Format domains for display using friendly names
     const domainDisplay = this.getDomainDisplayNames(domains).join(', ');
     
-    // Only show active models (hardcoded for now to avoid import issues)
-    const activeModels: Array<{name: string, percent: number}> = [];
-    
-    if (weights.perplexity > 0) {
-      activeModels.push({name: 'Perplexity', percent: Math.round(weights.perplexity * 100)});
-    }
-    if (weights.gemini && weights.gemini > 0) {
-      activeModels.push({name: 'Gemini', percent: Math.round(weights.gemini * 100)});
-    }
-    if (weights.mistral && weights.mistral > 0) {
-      activeModels.push({name: 'Mistral', percent: Math.round(weights.mistral * 100)});
-    }
-    
-    let explanation = `This statement was classified in the following domains: ${domainDisplay}. 
-Based on these domains, the AI models were weighted as follows:`;
-    
-    activeModels.forEach(model => {
-      explanation += `\n- ${model.name}: ${model.percent}%`;
-    });
-    
-    return explanation;
+    // Simplified explanation to avoid import issues
+    return `This statement was classified in the following domains: ${domainDisplay}. Based on these domains, our AI models analyze the content using specialized knowledge in these areas.`;
   }
 }
 
