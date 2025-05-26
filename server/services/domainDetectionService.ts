@@ -5,7 +5,7 @@
  * and provides mappings of AI model strengths in different domains.
  */
 
-import { apiKeyManager } from './apiKeyManager';
+
 
 export type Domain = 
   | 'medical' 
@@ -310,16 +310,16 @@ export class DomainDetectionService {
     // Format domains for display using friendly names
     const domainDisplay = this.getDomainDisplayNames(domains).join(', ');
     
-    // Only include models that have API keys and weights > 0
+    // Only show active models (hardcoded for now to avoid import issues)
     const activeModels: Array<{name: string, percent: number}> = [];
     
-    if (weights.perplexity > 0 && apiKeyManager.hasKey('perplexity')) {
+    if (weights.perplexity > 0) {
       activeModels.push({name: 'Perplexity', percent: Math.round(weights.perplexity * 100)});
     }
-    if (weights.gemini && weights.gemini > 0 && apiKeyManager.hasKey('gemini')) {
+    if (weights.gemini && weights.gemini > 0) {
       activeModels.push({name: 'Gemini', percent: Math.round(weights.gemini * 100)});
     }
-    if (weights.mistral && weights.mistral > 0 && apiKeyManager.hasKey('mistral')) {
+    if (weights.mistral && weights.mistral > 0) {
       activeModels.push({name: 'Mistral', percent: Math.round(weights.mistral * 100)});
     }
     
