@@ -6,7 +6,7 @@ import { Source } from "@shared/schema";
 export class EnhancedPerplexityService {
   private apiKey: string | null = null;
   private baseUrl: string = 'https://api.perplexity.ai/chat/completions';
-  private model: string = 'llama-3.1-sonar-small-128k-online';
+  private model: string = 'llama-3.1-sonar-large-128k-online';
   
   constructor() {
     // Will initialize this with your API key when you're ready

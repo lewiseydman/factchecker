@@ -58,9 +58,57 @@ export class ClaudeService {
 
       const userPrompt = `Analyze this statement and determine if it is factually accurate: "${statement}"`;
 
-      // The API call would be done here when you add your API key
-      // For now, return a simulated response
-      return this.simulatedResponse(statement);
+      const message = await this.anthropic.messages.create({
+        model: 'claude-3-5-sonnet-20241022', // Optimal model for fact-checking
+        max_tokens: 1024,
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
+          },
+          {
+            role: 'user', 
+            content: userPrompt
+          }
+        ]
+      });
+
+      const response = message.content[0].text;
+      
+      // Parse the response
+      const verdictMatch = response.match(/VERDICT:\s*(TRUE|FALSE)/i);
+      const confidenceMatch = response.match(/CONFIDENCE:\s*([\d.]+)/);
+      const explanationMatch = response.match(/EXPLANATION:\s*(.*?)(?=HISTORICAL_CONTEXT:|$)/s);
+      const contextMatch = response.match(/HISTORICAL_CONTEXT:\s*(.*?)(?=SOURCES:|$)/s);
+      const sourcesMatch = response.match(/SOURCES:\s*(.*?)$/s);
+      
+      const isTrue = verdictMatch?.[1]?.toUpperCase() === 'TRUE';
+      const confidence = confidenceMatch ? parseFloat(confidenceMatch[1]) : 0.7;
+      const explanation = explanationMatch?.[1]?.trim() || 'Analysis completed';
+      const historicalContext = contextMatch?.[1]?.trim() || '';
+      
+      // Parse sources
+      const sources: Source[] = [];
+      if (sourcesMatch?.[1]) {
+        const sourceLines = sourcesMatch[1].split('\n').filter(line => line.trim());
+        sourceLines.forEach(line => {
+          const parts = line.split('|');
+          if (parts.length >= 2) {
+            sources.push({
+              name: parts[0].trim(),
+              url: parts[1].trim()
+            });
+          }
+        });
+      }
+      
+      return {
+        isTrue,
+        explanation,
+        historicalContext,
+        sources,
+        confidence
+      };
     } catch (error) {
       console.error('Error checking fact with Claude:', error);
       throw error;

@@ -151,6 +151,18 @@ export class UltimateFactCheckService {
     // Step 6: Only include services with working API keys
     const allPossibleServices = [
       {
+        name: "Claude",
+        service: claudeService,
+        weight: modelWeights.claude,
+        hasRealKey: apiKeyManager.hasKey('claude')
+      },
+      {
+        name: "OpenAI",
+        service: openAIService,
+        weight: modelWeights.openai,
+        hasRealKey: apiKeyManager.hasKey('openai')
+      },
+      {
         name: "Perplexity",
         service: enhancedPerplexityService,
         weight: modelWeights.perplexity,
