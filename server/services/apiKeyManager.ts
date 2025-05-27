@@ -21,7 +21,7 @@ export class ApiKeyManager {
       perplexity: process.env.PERPLEXITY_API_KEY || null,
       gemini: process.env.GEMINI_API_KEY || null,
       mistral: process.env.MISTRAL_API_KEY || null,
-      llama: process.env.LLAMA_API_KEY || null
+
     };
   }
   
