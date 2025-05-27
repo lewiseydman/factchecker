@@ -304,6 +304,18 @@ export class DomainDetectionService {
       entertainment: 0.7,
       generalKnowledge: 0.75,
     },
+    cohere: {
+      medical: 0.85, // High - bias reduction crucial for health info
+      scientific: 0.85, // High - academic rigor important
+      historical: 0.80, // Good - objective historical analysis
+      technical: 0.75, // Good - enterprise focus
+      financial: 0.80, // High - objective analysis needed
+      political: 0.90, // Highest - bias reduction most critical
+      currentEvents: 0.75, // Good - but Perplexity leads with real-time
+      sports: 0.70, // Moderate - less bias-sensitive
+      entertainment: 0.70, // Moderate - less bias-sensitive
+      generalKnowledge: 0.80, // Strong baseline with bias reduction
+    },
 
   };
 
