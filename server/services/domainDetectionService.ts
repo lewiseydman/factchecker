@@ -1,23 +1,21 @@
 /**
  * Domain Detection Service
- * 
+ *
  * This service analyzes input statements to detect which knowledge domains they belong to,
  * and provides mappings of AI model strengths in different domains.
  */
 
-
-
-export type Domain = 
-  | 'medical' 
-  | 'scientific' 
-  | 'historical' 
-  | 'technical' 
-  | 'financial' 
-  | 'political'
-  | 'currentEvents'
-  | 'sports'
-  | 'entertainment'
-  | 'generalKnowledge';
+export type Domain =
+  | "medical"
+  | "scientific"
+  | "historical"
+  | "technical"
+  | "financial"
+  | "political"
+  | "currentEvents"
+  | "sports"
+  | "entertainment"
+  | "generalKnowledge";
 
 interface DomainKeywords {
   [domain: string]: string[];
@@ -32,68 +30,216 @@ interface AIStrengthMap {
 export class DomainDetectionService {
   // User-friendly display names for domains
   private domainDisplayNames: { [key in Domain]: string } = {
-    medical: 'Health & Medicine',
-    scientific: 'Science', 
-    historical: 'History & Culture',
-    technical: 'Technology',
-    financial: 'Economics & Finance',
-    political: 'Politics',
-    currentEvents: 'Current Events',
-    sports: 'Sports',
-    entertainment: 'Entertainment & Media',
-    generalKnowledge: 'General Knowledge'
+    medical: "Health & Medicine",
+    scientific: "Science",
+    historical: "History & Culture",
+    technical: "Technology",
+    financial: "Economics & Finance",
+    political: "Politics",
+    currentEvents: "Current Events",
+    sports: "Sports",
+    entertainment: "Entertainment & Media",
+    generalKnowledge: "General Knowledge",
   };
 
   // Keywords associated with different domains
   private domainKeywords: DomainKeywords = {
     medical: [
-      "disease", "patient", "doctor", "treatment", "diagnosis", "symptoms", 
-      "hospital", "medicine", "vaccine", "virus", "bacteria", "infection",
-      "surgery", "health", "medical", "cancer", "cure", "therapy", "drug"
+      "disease",
+      "patient",
+      "doctor",
+      "treatment",
+      "diagnosis",
+      "symptoms",
+      "hospital",
+      "medicine",
+      "vaccine",
+      "virus",
+      "bacteria",
+      "infection",
+      "surgery",
+      "health",
+      "medical",
+      "cancer",
+      "cure",
+      "therapy",
+      "drug",
     ],
     scientific: [
-      "research", "study", "experiment", "theory", "hypothesis", "scientists",
-      "physics", "chemistry", "biology", "laboratory", "discovery", "evidence",
-      "analysis", "particle", "quantum", "molecular", "data", "observation"
+      "research",
+      "study",
+      "experiment",
+      "theory",
+      "hypothesis",
+      "scientists",
+      "physics",
+      "chemistry",
+      "biology",
+      "laboratory",
+      "discovery",
+      "evidence",
+      "analysis",
+      "particle",
+      "quantum",
+      "molecular",
+      "data",
+      "observation",
     ],
     historical: [
-      "history", "century", "ancient", "dynasty", "war", "period", "king",
-      "queen", "empire", "civilization", "archaeology", "artifact", "medieval",
-      "revolution", "historical", "era", "dynasty", "prehistoric", "date"
+      "history",
+      "century",
+      "ancient",
+      "dynasty",
+      "war",
+      "period",
+      "king",
+      "queen",
+      "empire",
+      "civilization",
+      "archaeology",
+      "artifact",
+      "medieval",
+      "revolution",
+      "historical",
+      "era",
+      "dynasty",
+      "prehistoric",
+      "date",
     ],
     technical: [
-      "technology", "software", "hardware", "algorithm", "code", "system",
-      "computer", "programming", "digital", "device", "application", "internet",
-      "robot", "artificial intelligence", "machine learning", "network", "interface"
+      "technology",
+      "software",
+      "hardware",
+      "algorithm",
+      "code",
+      "system",
+      "computer",
+      "programming",
+      "digital",
+      "device",
+      "application",
+      "internet",
+      "robot",
+      "artificial intelligence",
+      "machine learning",
+      "network",
+      "interface",
     ],
     financial: [
-      "market", "economy", "stocks", "investment", "financial", "economic",
-      "money", "bank", "inflation", "recession", "currency", "trading", "finance",
-      "debt", "interest", "price", "cost", "profit", "budget", "fiscal"
+      "market",
+      "economy",
+      "stocks",
+      "investment",
+      "financial",
+      "economic",
+      "money",
+      "bank",
+      "inflation",
+      "recession",
+      "currency",
+      "trading",
+      "finance",
+      "debt",
+      "interest",
+      "price",
+      "cost",
+      "profit",
+      "budget",
+      "fiscal",
     ],
     political: [
-      "government", "policy", "election", "party", "president", "vote",
-      "democracy", "congress", "parliament", "law", "legislation", "senator",
-      "representative", "politician", "campaign", "ballot", "constitutional"
+      "government",
+      "policy",
+      "election",
+      "party",
+      "president",
+      "vote",
+      "democracy",
+      "congress",
+      "parliament",
+      "law",
+      "legislation",
+      "senator",
+      "representative",
+      "politician",
+      "campaign",
+      "ballot",
+      "constitutional",
     ],
     currentEvents: [
-      "news", "recently", "today", "yesterday", "this week", "this month",
-      "this year", "ongoing", "developing", "breaking", "current", "latest"
+      "news",
+      "recently",
+      "today",
+      "yesterday",
+      "this week",
+      "this month",
+      "this year",
+      "ongoing",
+      "developing",
+      "breaking",
+      "current",
+      "latest",
     ],
     sports: [
-      "game", "player", "team", "score", "championship", "tournament", "athlete",
-      "coach", "stadium", "match", "sports", "football", "basketball", "baseball",
-      "soccer", "tennis", "olympics", "medal", "record", "league"
+      "game",
+      "player",
+      "team",
+      "score",
+      "championship",
+      "tournament",
+      "athlete",
+      "coach",
+      "stadium",
+      "match",
+      "sports",
+      "football",
+      "basketball",
+      "baseball",
+      "soccer",
+      "tennis",
+      "olympics",
+      "medal",
+      "record",
+      "league",
     ],
     entertainment: [
-      "movie", "film", "actor", "actress", "director", "celebrity", "music",
-      "song", "album", "artist", "TV", "television", "show", "series", "award",
-      "performance", "concert", "theater", "streaming", "popular", "star"
+      "movie",
+      "film",
+      "actor",
+      "actress",
+      "director",
+      "celebrity",
+      "music",
+      "song",
+      "album",
+      "artist",
+      "TV",
+      "television",
+      "show",
+      "series",
+      "award",
+      "performance",
+      "concert",
+      "theater",
+      "streaming",
+      "popular",
+      "star",
     ],
     generalKnowledge: [
-      "fact", "information", "knowledge", "common", "general", "world", "global",
-      "culture", "society", "education", "learning", "understanding", "basics"
-    ]
+      "fact",
+      "information",
+      "knowledge",
+      "common",
+      "general",
+      "world",
+      "global",
+      "culture",
+      "society",
+      "education",
+      "learning",
+      "understanding",
+      "basics",
+    ],
   };
 
   // AI model strengths in different domains
@@ -108,7 +254,7 @@ export class DomainDetectionService {
       currentEvents: 0.5,
       sports: 0.6,
       entertainment: 0.7,
-      generalKnowledge: 0.8
+      generalKnowledge: 0.8,
     },
     openai: {
       medical: 0.7,
@@ -120,7 +266,7 @@ export class DomainDetectionService {
       currentEvents: 0.6,
       sports: 0.7,
       entertainment: 0.8,
-      generalKnowledge: 0.9
+      generalKnowledge: 0.9,
     },
     perplexity: {
       medical: 0.7,
@@ -132,7 +278,7 @@ export class DomainDetectionService {
       currentEvents: 0.9, // Perplexity excels with web search
       sports: 0.8,
       entertainment: 0.8,
-      generalKnowledge: 0.7
+      generalKnowledge: 0.7,
     },
     gemini: {
       medical: 0.8,
@@ -144,7 +290,7 @@ export class DomainDetectionService {
       currentEvents: 0.8,
       sports: 0.7,
       entertainment: 0.75,
-      generalKnowledge: 0.8
+      generalKnowledge: 0.8,
     },
     mistral: {
       medical: 0.75,
@@ -156,20 +302,9 @@ export class DomainDetectionService {
       currentEvents: 0.65,
       sports: 0.65,
       entertainment: 0.7,
-      generalKnowledge: 0.75
+      generalKnowledge: 0.75,
     },
-    llama: {
-      medical: 0.75,
-      scientific: 0.8,
-      historical: 0.8,
-      technical: 0.85,
-      financial: 0.75,
-      political: 0.7,
-      currentEvents: 0.7,
-      sports: 0.85,
-      entertainment: 0.9,
-      generalKnowledge: 0.8
-    }
+
   };
 
   /**
@@ -180,18 +315,18 @@ export class DomainDetectionService {
   public detectDomains(statement: string): Domain[] {
     const lowerStatement = statement.toLowerCase();
     const foundDomains: Domain[] = [];
-    
+
     for (const [domain, keywords] of Object.entries(this.domainKeywords)) {
-      if (keywords.some(keyword => lowerStatement.includes(keyword))) {
+      if (keywords.some((keyword) => lowerStatement.includes(keyword))) {
         foundDomains.push(domain as Domain);
       }
     }
-    
+
     // If no specific domains detected, default to general knowledge
     if (foundDomains.length === 0) {
-      foundDomains.push('generalKnowledge');
+      foundDomains.push("generalKnowledge");
     }
-    
+
     return foundDomains;
   }
 
@@ -201,7 +336,10 @@ export class DomainDetectionService {
    * @param modelCount Number of models to use (based on subscription tier)
    * @returns Object with weights for each AI model
    */
-  public calculateModelWeights(domains: Domain[], modelCount: number = 6): {
+  public calculateModelWeights(
+    domains: Domain[],
+    modelCount: number = 6
+  ): {
     claude: number;
     openai: number;
     perplexity: number;
@@ -211,22 +349,43 @@ export class DomainDetectionService {
   } {
     // Calculate raw strengths for each model in the detected domains
     const modelStrengths = [
-      { name: 'claude', strength: this.calculateDomainStrength('claude', domains) },
-      { name: 'openai', strength: this.calculateDomainStrength('openai', domains) },
-      { name: 'perplexity', strength: this.calculateDomainStrength('perplexity', domains) },
-      { name: 'gemini', strength: this.calculateDomainStrength('gemini', domains) },
-      { name: 'mistral', strength: this.calculateDomainStrength('mistral', domains) },
-      { name: 'llama', strength: this.calculateDomainStrength('llama', domains) }
+      {
+        name: "claude",
+        strength: this.calculateDomainStrength("claude", domains),
+      },
+      {
+        name: "openai",
+        strength: this.calculateDomainStrength("openai", domains),
+      },
+      {
+        name: "perplexity",
+        strength: this.calculateDomainStrength("perplexity", domains),
+      },
+      {
+        name: "gemini",
+        strength: this.calculateDomainStrength("gemini", domains),
+      },
+      {
+        name: "mistral",
+        strength: this.calculateDomainStrength("mistral", domains),
+      },
+      {
+        name: "llama",
+        strength: this.calculateDomainStrength("llama", domains),
+      },
     ];
-    
+
     // Sort by strength and take only the number of models specified by subscription tier
     const topModels = modelStrengths
       .sort((a, b) => b.strength - a.strength)
       .slice(0, modelCount);
-    
+
     // Calculate total weight for normalization
-    const totalWeight = topModels.reduce((sum, model) => sum + model.strength, 0);
-    
+    const totalWeight = topModels.reduce(
+      (sum, model) => sum + model.strength,
+      0
+    );
+
     // Initialize all weights to 0
     const weights = {
       claude: 0,
@@ -234,14 +393,15 @@ export class DomainDetectionService {
       perplexity: 0,
       gemini: 0,
       mistral: 0,
-      llama: 0
+      llama: 0,
     };
-    
+
     // Assign normalized weights only to selected models
-    topModels.forEach(model => {
-      weights[model.name as keyof typeof weights] = totalWeight > 0 ? model.strength / totalWeight : 1 / modelCount;
+    topModels.forEach((model) => {
+      weights[model.name as keyof typeof weights] =
+        totalWeight > 0 ? model.strength / totalWeight : 1 / modelCount;
     });
-    
+
     return weights;
   }
 
@@ -251,14 +411,17 @@ export class DomainDetectionService {
    * @param domains The detected domains
    * @returns Combined strength score for the model
    */
-  private calculateDomainStrength(modelName: string, domains: Domain[]): number {
+  private calculateDomainStrength(
+    modelName: string,
+    domains: Domain[]
+  ): number {
     let totalStrength = 1;
-    
+
     for (const domain of domains) {
       const domainStrength = this.aiStrengths[modelName]?.[domain] || 0.7;
       totalStrength *= domainStrength;
     }
-    
+
     return totalStrength;
   }
 
@@ -277,7 +440,7 @@ export class DomainDetectionService {
    * @returns Array of user-friendly display names
    */
   public getDomainDisplayNames(domains: Domain[]): string[] {
-    return domains.map(domain => this.getDomainDisplayName(domain));
+    return domains.map((domain) => this.getDomainDisplayName(domain));
   }
 
   /**
@@ -287,29 +450,48 @@ export class DomainDetectionService {
    */
   public isQuestion(input: string): boolean {
     // Check if input ends with a question mark
-    if (input.trim().endsWith('?')) return true;
-    
+    if (input.trim().endsWith("?")) return true;
+
     // Check if input starts with question words
-    const questionStarters = ['who', 'what', 'where', 'when', 'why', 'how', 'is', 'are', 'do', 'does', 'did', 'can', 'could', 'will', 'would'];
-    const firstWord = input.trim().toLowerCase().split(' ')[0];
-    
+    const questionStarters = [
+      "who",
+      "what",
+      "where",
+      "when",
+      "why",
+      "how",
+      "is",
+      "are",
+      "do",
+      "does",
+      "did",
+      "can",
+      "could",
+      "will",
+      "would",
+    ];
+    const firstWord = input.trim().toLowerCase().split(" ")[0];
+
     return questionStarters.includes(firstWord);
   }
 
   /**
    * Get human-readable explanation of domain detection and model weights
    */
-  public getWeightExplanation(domains: Domain[], weights: {
-    claude: number;
-    openai: number;
-    perplexity: number;
-    gemini?: number;
-    mistral?: number;
-    llama?: number;
-  }): string {
+  public getWeightExplanation(
+    domains: Domain[],
+    weights: {
+      claude: number;
+      openai: number;
+      perplexity: number;
+      gemini?: number;
+      mistral?: number;
+      llama?: number;
+    }
+  ): string {
     // Format domains for display using friendly names
-    const domainDisplay = this.getDomainDisplayNames(domains).join(', ');
-    
+    const domainDisplay = this.getDomainDisplayNames(domains).join(", ");
+
     // Simplified explanation to avoid import issues
     return `This statement was classified in the following domains: ${domainDisplay}. Based on these domains, our AI models analyze the content using specialized knowledge in these areas.`;
   }
