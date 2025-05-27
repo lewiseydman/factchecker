@@ -33,10 +33,9 @@ export class OpenAIService {
     sources: Source[];
     confidence: number;
   }> {
-    // If no API key, return simulated response
+    // If no API key, throw error
     if (!this.apiKey) {
-      console.log("OpenAI API key not available, using simulated response");
-      return this.simulatedResponse(statement);
+      throw new Error("OpenAI API key not available");
     }
     
     try {
