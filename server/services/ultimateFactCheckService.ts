@@ -159,12 +159,12 @@ export class UltimateFactCheckService {
         weight: modelWeights.claude,
         hasRealKey: apiKeyManager.hasKey('claude')
       },
-      {
-        name: "OpenAI",
-        service: openAIService,
-        weight: modelWeights.openai,
-        hasRealKey: apiKeyManager.hasKey('openai')
-      },
+      // {
+      //   name: "OpenAI",
+      //   service: openAIService,
+      //   weight: modelWeights.openai,
+      //   hasRealKey: apiKeyManager.hasKey('openai')
+      // },
       {
         name: "Perplexity",
         service: enhancedPerplexityService,
