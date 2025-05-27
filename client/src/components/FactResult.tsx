@@ -83,26 +83,16 @@ const FactResult = ({
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
 
-  // Filter to only show AI models that are actually working
-  const workingModels = ['Perplexity', 'Gemini', 'Mistral'];
-  
-  const serviceBreakdown = rawServiceBreakdown?.filter(service => 
-    workingModels.includes(service.name)
-  ) || [];
+  // Show all AI models that actually provided results (no filtering needed)
+  const serviceBreakdown = rawServiceBreakdown || [];
 
-  // Filter domain info to only show working models
+  // Show all domain info for models that were actually used (with weight > 0)
   const domainInfo = rawDomainInfo ? {
     ...rawDomainInfo,
     modelWeights: Object.fromEntries(
-      Object.entries(rawDomainInfo.modelWeights).filter(([modelName]) => {
-        const displayName = modelName === 'claude' ? 'Claude' :
-                           modelName === 'openai' ? 'GPT-4' :
-                           modelName === 'perplexity' ? 'Perplexity' :
-                           modelName === 'gemini' ? 'Gemini' :
-                           modelName === 'mistral' ? 'Mistral' :
-                           modelName === 'llama' ? 'Llama' : modelName;
-        return workingModels.includes(displayName);
-      })
+      Object.entries(rawDomainInfo.modelWeights).filter(([modelName, weight]) => 
+        (weight as number) > 0
+      )
     )
   } : undefined;
   
@@ -355,7 +345,8 @@ const FactResult = ({
               'Perplexity': '#3B82F6', // Blue
               'Gemini': '#F59E0B',  // Amber
               'Mistral': '#EF4444', // Red
-              'Llama': '#EC4899'    // Pink
+              'Cohere': '#EC4899',  // Pink
+              'Llama': '#6B7280'    // Gray (deprecated)
             };
 
             if (activeModels.length === 0) {
