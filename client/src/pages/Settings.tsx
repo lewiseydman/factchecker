@@ -271,38 +271,12 @@ const Settings = () => {
                     <p className="text-xs text-gray-500">Excellent mathematical and reasoning capabilities</p>
                   </div>
                   
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <Label htmlFor="llama" className="flex items-center gap-1">
-                        Meta Llama
-                        <a 
-                          href="https://ai.meta.com/resources/models-and-libraries/llama-downloads/" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-xs text-blue-500 hover:underline ml-1"
-                        >
-                          <BadgeInfo size={12} />
-                        </a>
-                      </Label>
-                      {keyStatus?.llama && (
-                        <span className="flex items-center text-xs text-green-600">
-                          <CheckCircle2 size={12} className="mr-1" /> Active
-                        </span>
-                      )}
-                    </div>
-                    <Input
-                      id="llama"
-                      type="password"
-                      placeholder="..."
-                      {...form.register("llama")}
-                    />
-                    <p className="text-xs text-gray-500">Well-rounded with strong general capabilities</p>
-                  </div>
+
                 </div>
                 
                 <div className="pt-4">
                   {(!keyStatus?.claude || !keyStatus?.openai || !keyStatus?.perplexity || 
-                    !keyStatus?.gemini || !keyStatus?.mistral || !keyStatus?.llama) && (
+                    !keyStatus?.gemini || !keyStatus?.mistral) && (
                     <div className="flex items-start gap-2 p-4 bg-amber-50 border border-amber-200 rounded-md text-amber-700 mb-6">
                       <AlertTriangle size={18} className="mt-0.5 flex-shrink-0" />
                       <div>
