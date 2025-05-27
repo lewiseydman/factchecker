@@ -228,8 +228,8 @@ export class UltimateFactCheckService {
     // Step 9: Process results through DEFAME (misinformation detection) layer
     const defameResult = await enhancedDEFAMEService.analyzeForMisinformation(statement);
     
-    // Step 10: Create service breakdown for UI display - only show services with real API keys
-    const realServicesForBreakdown = serviceResults.filter(result => result.hasRealKey);
+    // Step 10: Create service breakdown for UI display - only show services with real API keys and exclude OpenAI temporarily
+    const realServicesForBreakdown = serviceResults.filter(result => result.hasRealKey && result.name !== "OpenAI");
     const totalRealConfidence = realServicesForBreakdown.reduce((sum, result) => sum + result.confidence, 0);
     
     const serviceBreakdown = realServicesForBreakdown.map(result => ({
