@@ -28,14 +28,14 @@ export class ApiKeyManager {
   /**
    * Set an API key for a service
    */
-  setApiKey(service: 'claude' | 'openai' | 'perplexity' | 'gemini' | 'mistral' | 'llama', key: string): void {
+  setApiKey(service: 'claude' | 'openai' | 'perplexity' | 'gemini' | 'mistral', key: string): void {
     this.apiKeys[service] = key;
   }
   
   /**
    * Get an API key for a service
    */
-  getApiKey(service: 'claude' | 'openai' | 'perplexity' | 'gemini' | 'mistral' | 'llama'): string | null {
+  getApiKey(service: 'claude' | 'openai' | 'perplexity' | 'gemini' | 'mistral'): string | null {
     return this.apiKeys[service];
   }
   
@@ -49,7 +49,7 @@ export class ApiKeyManager {
   /**
    * Check if a specific API key is available
    */
-  hasKey(service: 'claude' | 'openai' | 'perplexity' | 'gemini' | 'mistral' | 'llama'): boolean {
+  hasKey(service: 'claude' | 'openai' | 'perplexity' | 'gemini' | 'mistral'): boolean {
     // Check both stored keys and environment variables
     if (this.apiKeys[service]) {
       return true;
