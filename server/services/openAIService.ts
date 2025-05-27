@@ -98,8 +98,8 @@ export class OpenAIService {
       };
     } catch (error) {
       console.error("Error checking fact with OpenAI:", error);
-      // Fall back to simulated response if API call fails
-      return this.simulatedResponse(statement);
+      // Re-throw the error so this service gets excluded from results
+      throw error;
     }
   }
   
