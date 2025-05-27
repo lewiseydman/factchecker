@@ -357,7 +357,7 @@ export class DomainDetectionService {
     perplexity: number;
     gemini: number;
     mistral: number;
-    llama: number;
+    cohere: number;
   } {
     // Calculate raw strengths for each model in the detected domains
     const modelStrengths = [
@@ -382,8 +382,8 @@ export class DomainDetectionService {
         strength: this.calculateDomainStrength("mistral", domains),
       },
       {
-        name: "llama",
-        strength: this.calculateDomainStrength("llama", domains),
+        name: "cohere",
+        strength: this.calculateDomainStrength("cohere", domains),
       },
     ];
 
@@ -405,7 +405,7 @@ export class DomainDetectionService {
       perplexity: 0,
       gemini: 0,
       mistral: 0,
-      llama: 0,
+      cohere: 0,
     };
 
     // Assign normalized weights only to selected models

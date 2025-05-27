@@ -11,7 +11,7 @@ export class ApiKeyManager {
     perplexity: string | null;
     gemini: string | null;
     mistral: string | null;
-    llama: string | null;
+    cohere: string | null;
   };
   
   constructor() {
@@ -67,8 +67,8 @@ export class ApiKeyManager {
         return !!process.env.GEMINI_API_KEY;
       case 'mistral':
         return !!process.env.MISTRAL_API_KEY;
-      case 'llama':
-        return !!process.env.XAI_API_KEY;
+      case 'cohere':
+        return !!process.env.COHERE_API_KEY;
       default:
         return false;
     }
@@ -83,7 +83,7 @@ export class ApiKeyManager {
     perplexity: string | null;
     gemini: string | null;
     mistral: string | null;
-    llama: string | null;
+    cohere: string | null;
   } {
     return { ...this.apiKeys };
   }
