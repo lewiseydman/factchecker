@@ -198,36 +198,29 @@ export class UltimateFactCheckService {
     const availableServices = allPossibleServices.slice(0, modelCount);
     
     // Step 7: Run fact-checking in parallel with all available services
-    const serviceResults = await Promise.all(
+    const serviceResults = (await Promise.allSettled(
       availableServices.map(async ({ name, service, weight, hasRealKey }) => {
-        try {
-          const result = await service.checkFact(statement);
-          return {
-            name,
-            isTrue: result.isTrue,
-            explanation: result.explanation,
-            historicalContext: result.historicalContext,
-            sources: result.sources,
-            confidence: result.confidence,
-            weight,
-            hasRealKey
-          };
-        } catch (error) {
-          console.error(`Error with ${name} service:`, error);
-          // Return fallback result if a service fails
-          return {
-            name,
-            isTrue: false,
-            explanation: `Error: ${name} service could not process this statement.`,
-            historicalContext: "",
-            sources: [],
-            confidence: 0.5,
-            weight,
-            hasRealKey: false
-          };
-        }
+        const result = await service.checkFact(statement);
+        return {
+          name,
+          isTrue: result.isTrue,
+          explanation: result.explanation,
+          historicalContext: result.historicalContext,
+          sources: result.sources,
+          confidence: result.confidence,
+          weight,
+          hasRealKey
+        };
       })
-    );
+    ))
+    .filter((result): result is PromiseFulfilledResult<any> => {
+      if (result.status === 'rejected') {
+        console.error(`Service failed and will be excluded from results:`, result.reason);
+        return false;
+      }
+      return true;
+    })
+    .map(result => result.value);
     
     // Step 8: Process results through InFact (factual consensus) layer
     const inFactResult = await enhancedInFactService.aggregateFactCheckInfo(statement);
