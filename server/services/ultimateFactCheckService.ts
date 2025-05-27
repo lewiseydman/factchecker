@@ -6,6 +6,7 @@ import { claudeService } from './claudeService';
 import { openAIService } from './openaiService';
 import { geminiService } from './geminiService';
 import { mistralService } from './mistralService';
+import { cohereService } from './cohereService';
 
 import { enhancedInFactService } from './enhancedInFactService';
 import { enhancedDEFAMEService } from './enhancedDEFAMEService';
@@ -26,12 +27,14 @@ export class UltimateFactCheckService {
     perplexity?: string | null;
     gemini?: string | null;
     mistral?: string | null;
+    cohere?: string | null;
   }): void {
     if (apiKeys.claude) claudeService.initializeClient(apiKeys.claude);
     if (apiKeys.openai) openAIService.initializeClient(apiKeys.openai);
     if (apiKeys.perplexity) enhancedPerplexityService.initializeClient(apiKeys.perplexity);
     if (apiKeys.gemini) geminiService.initializeClient(apiKeys.gemini);
     if (apiKeys.mistral) mistralService.initializeClient(apiKeys.mistral);
+    if (apiKeys.cohere) cohereService.initializeClient(apiKeys.cohere);
   }
   
   /**
@@ -179,6 +182,12 @@ export class UltimateFactCheckService {
         service: mistralService,
         weight: modelWeights.mistral,
         hasRealKey: apiKeyManager.hasKey('mistral')
+      },
+      {
+        name: "Cohere",
+        service: cohereService,
+        weight: modelWeights.cohere,
+        hasRealKey: apiKeyManager.hasKey('cohere')
       }
     ].filter(serviceInfo => serviceInfo.hasRealKey);
     
