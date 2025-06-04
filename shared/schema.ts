@@ -10,6 +10,7 @@ import {
   integer,
   unique,
   numeric,
+  real,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -203,4 +204,110 @@ export const insertTrendingFactSchema = createInsertSchema(trendingFacts).omit({
 export type InsertTrendingFact = z.infer<typeof insertTrendingFactSchema>;
 export type TrendingFact = typeof trendingFacts.$inferSelect;
 
-// No need for this duplicate definition - it's already defined above
+// Context-aware fact-checking tables
+export const publicFigures = pgTable("public_figures", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  title: varchar("title"), // e.g., "President", "CEO", "Scientist"
+  organization: varchar("organization"),
+  politicalAffiliation: varchar("political_affiliation"),
+  credibilityScore: real("credibility_score").default(0.5), // 0-1 scale
+  totalStatements: integer("total_statements").default(0),
+  accurateStatements: integer("accurate_statements").default(0),
+  verificationSource: varchar("verification_source"), // How we identified this person
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const statementSources = pgTable("statement_sources", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(), // e.g., "Twitter", "CNN Interview", "Press Conference"
+  type: varchar("type").notNull(), // "social_media", "news_interview", "speech", "document"
+  credibilityRating: real("credibility_rating").default(0.5), // 0-1 scale
+  verificationStandards: varchar("verification_standards"), // How this source verifies information
+  biasRating: varchar("bias_rating"), // "left", "right", "center", "unknown"
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const claimContexts = pgTable("claim_contexts", {
+  id: serial("id").primaryKey(),
+  factCheckId: integer("fact_check_id").notNull().references(() => factChecks.id),
+  speakerId: integer("speaker_id").references(() => publicFigures.id),
+  sourceId: integer("source_id").references(() => statementSources.id),
+  originalContext: text("original_context"), // Full context where statement was made
+  dateSpoken: timestamp("date_spoken"),
+  location: varchar("location"), // Where the statement was made
+  audience: varchar("audience"), // Who the statement was directed to
+  intentCategory: varchar("intent_category"), // "informational", "persuasive", "misleading", "satirical"
+  politicalContext: varchar("political_context"), // Election period, policy debate, etc.
+  urgency: varchar("urgency").default("normal"), // "breaking", "trending", "normal"
+  crossReferences: text("cross_references").array(), // Related statements or fact-checks
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Misinformation tracking tables
+export const misinformationAlerts = pgTable("misinformation_alerts", {
+  id: serial("id").primaryKey(),
+  statementHash: varchar("statement_hash").notNull(), // Hash of the core claim
+  firstDetected: timestamp("first_detected").defaultNow(),
+  viralityScore: real("virality_score").default(0), // How widely spread
+  platformsDetected: varchar("platforms_detected").array().default([]), // Social media platforms
+  relatedFactChecks: integer("related_fact_checks").array().default([]), // Fact check IDs
+  alertLevel: varchar("alert_level").default("low"), // "low", "medium", "high", "critical"
+  description: text("description"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
+export const viralClaims = pgTable("viral_claims", {
+  id: serial("id").primaryKey(),
+  claimText: text("claim_text").notNull(),
+  firstSeen: timestamp("first_seen").defaultNow(),
+  platformData: jsonb("platform_data"), // Engagement metrics from different platforms
+  factCheckStatus: varchar("fact_check_status").default("pending"), // "pending", "verified", "false", "mixed"
+  urgencyLevel: varchar("urgency_level").default("normal"), // "low", "normal", "high", "critical"
+  estimatedReach: integer("estimated_reach").default(0),
+  growthRate: real("growth_rate").default(0), // Rate of spread
+  relatedAlertId: integer("related_alert_id").references(() => misinformationAlerts.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Schema types for new tables
+export const insertPublicFigureSchema = createInsertSchema(publicFigures).omit({
+  id: true,
+  lastUpdated: true,
+  createdAt: true,
+});
+export type InsertPublicFigure = z.infer<typeof insertPublicFigureSchema>;
+export type PublicFigure = typeof publicFigures.$inferSelect;
+
+export const insertStatementSourceSchema = createInsertSchema(statementSources).omit({
+  id: true,
+  createdAt: true,
+});
+export type InsertStatementSource = z.infer<typeof insertStatementSourceSchema>;
+export type StatementSource = typeof statementSources.$inferSelect;
+
+export const insertClaimContextSchema = createInsertSchema(claimContexts).omit({
+  id: true,
+  createdAt: true,
+});
+export type InsertClaimContext = z.infer<typeof insertClaimContextSchema>;
+export type ClaimContext = typeof claimContexts.$inferSelect;
+
+export const insertMisinformationAlertSchema = createInsertSchema(misinformationAlerts).omit({
+  id: true,
+  firstDetected: true,
+  lastUpdated: true,
+});
+export type InsertMisinformationAlert = z.infer<typeof insertMisinformationAlertSchema>;
+export type MisinformationAlert = typeof misinformationAlerts.$inferSelect;
+
+export const insertViralClaimSchema = createInsertSchema(viralClaims).omit({
+  id: true,
+  firstSeen: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertViralClaim = z.infer<typeof insertViralClaimSchema>;
+export type ViralClaim = typeof viralClaims.$inferSelect;
