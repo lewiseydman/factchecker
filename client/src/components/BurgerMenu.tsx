@@ -148,12 +148,37 @@ export const BurgerMenu = () => {
                 <Link key={item.href} href={item.href}>
                   <div
                     onClick={closeMenu}
-                    className="flex items-center space-x-3 px-3 py-3 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group cursor-pointer"
+                    className={`flex items-center space-x-3 px-3 py-3 text-sm rounded-lg transition-colors group cursor-pointer ${
+                      item.featured 
+                        ? 'bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border border-blue-200 dark:border-blue-800 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900 dark:hover:to-purple-900' 
+                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
                   >
-                    <Icon className="h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+                    <Icon className={`h-5 w-5 ${
+                      item.featured 
+                        ? 'text-blue-600 dark:text-blue-400' 
+                        : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'
+                    }`} />
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900 dark:text-gray-100">{item.label}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
+                      <div className={`font-medium ${
+                        item.featured 
+                          ? 'text-blue-900 dark:text-blue-100' 
+                          : 'text-gray-900 dark:text-gray-100'
+                      }`}>
+                        {item.label}
+                        {item.featured && (
+                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            NEW
+                          </span>
+                        )}
+                      </div>
+                      <div className={`text-xs ${
+                        item.featured 
+                          ? 'text-blue-700 dark:text-blue-300' 
+                          : 'text-gray-500 dark:text-gray-400'
+                      }`}>
+                        {item.description}
+                      </div>
                     </div>
                   </div>
                 </Link>
