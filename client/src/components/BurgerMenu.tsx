@@ -22,7 +22,9 @@ import {
   Scale, 
   MessageCircle,
   LogOut,
-  LogIn
+  LogIn,
+  Brain,
+  AlertTriangle
 } from "lucide-react";
 
 export const BurgerMenu = () => {
@@ -32,6 +34,13 @@ export const BurgerMenu = () => {
   const closeMenu = () => setIsOpen(false);
 
   const menuItems = [
+    {
+      icon: Brain,
+      label: "Context-Aware",
+      href: "/context-aware",
+      description: "Track WHO said what, WHEN + misinformation alerts",
+      featured: true
+    },
     {
       icon: FileText,
       label: "Methodology",

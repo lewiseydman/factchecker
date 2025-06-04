@@ -54,8 +54,8 @@ export class ContextAwareFactCheckService {
       speakerCredibility = speaker.credibilityScore || 0.5;
       
       // Add historical pattern analysis
-      if (speaker.totalStatements > 10) {
-        const accuracyRate = (speaker.accurateStatements || 0) / speaker.totalStatements;
+      if ((speaker.totalStatements || 0) > 10) {
+        const accuracyRate = (speaker.accurateStatements || 0) / (speaker.totalStatements || 1);
         if (accuracyRate < 0.3) {
           historicalPatterns.push(`${speakerName} has low historical accuracy (${(accuracyRate * 100).toFixed(0)}%)`);
           contextualRiskFactors.push('Speaker has pattern of inaccurate statements');
@@ -203,7 +203,6 @@ export class ContextAwareFactCheckService {
         statement: factChecks.statement,
         isTrue: factChecks.isTrue,
         checkedAt: factChecks.checkedAt,
-        confidence: factChecks.confidence,
       })
       .from(factChecks)
       .innerJoin(claimContexts, eq(claimContexts.factCheckId, factChecks.id))

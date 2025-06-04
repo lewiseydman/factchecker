@@ -157,7 +157,7 @@ export class MisinformationTrackingService {
       .limit(limit);
     
     const fastestGrowing = recentClaims
-      .filter(c => c.growthRate > 1.5)
+      .filter(c => (c.growthRate || 0) > 1.5)
       .slice(0, 5);
     
     const mostReach = recentClaims
@@ -380,7 +380,8 @@ export class MisinformationTrackingService {
     }
     
     // Calculate growth rate
-    const timeDiff = Date.now() - existing.firstSeen.getTime();
+    const firstSeenTime = existing.firstSeen ? existing.firstSeen.getTime() : Date.now();
+    const timeDiff = Date.now() - firstSeenTime;
     const hoursElapsed = timeDiff / (1000 * 60 * 60);
     const oldReach = existing.estimatedReach || 1;
     const growthRate = hoursElapsed > 0 ? (newReach / oldReach) / hoursElapsed : 0;

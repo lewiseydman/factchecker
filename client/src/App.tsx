@@ -16,6 +16,7 @@ import Subscription from "@/pages/Subscription";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Contact from "@/pages/Contact";
+import ContextAware from "@/pages/ContextAware";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/history" component={isAuthenticated ? History : Dashboard} />
       <Route path="/saved" component={isAuthenticated ? SavedFacts : Dashboard} />
 
+      <Route path="/context-aware" component={ContextAware} />
       <Route path="/methodology" component={Methodology} />
       <Route path="/subscription" component={Subscription} />
       <Route path="/settings" component={isAuthenticated ? Settings : Dashboard} />
