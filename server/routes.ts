@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import factCheckRoutes from "./routes/factCheckRoutes";
 import subscriptionRoutes from "./routes/subscriptionRoutes";
+import contextAwareRoutes from "./routes/contextAwareRoutes";
 import { ultimateFactCheckService } from "./services/ultimateFactCheckService";
 import { MailService } from '@sendgrid/mail';
 
@@ -478,6 +479,9 @@ This message was sent from the FactCheck contact form.
       });
     }
   });
+
+  // Use the context-aware routes
+  app.use("/api/context", contextAwareRoutes);
 
   const httpServer = createServer(app);
   return httpServer;
