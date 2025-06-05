@@ -206,7 +206,9 @@ Environment variables must be configured on your deployment platform.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+The MIT License allows for maximum adoption and integration of this fact-checking technology across platforms and organizations while requiring only attribution.
 
 ## 🆘 Support
 
