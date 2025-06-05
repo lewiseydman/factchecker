@@ -215,14 +215,14 @@ The MIT License allows for maximum adoption and integration of this fact-checkin
 For support and questions:
 - Open an issue on GitHub
 - Contact via the application's contact form
-- Email: support@factcheck.com
+- Email: lewiseydman@gmail.com
 
 ## 🔮 Roadmap
 
-- [ ] Advanced NLP for claim similarity detection
-- [ ] Integration with fact-checking databases
 - [ ] Mobile application
 - [ ] Browser extension
+- [ ] Advanced NLP for claim similarity detection
+- [ ] Integration with fact-checking databases
 - [ ] API for third-party integrations
 - [ ] Advanced analytics and reporting
 - [ ] Multi-language support
