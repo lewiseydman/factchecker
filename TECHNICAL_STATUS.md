@@ -3,7 +3,7 @@
 ## Deployment Status: LIVE & OPERATIONAL ✅
 
 **Repository**: `https://github.com/lewiseydman/factchecker.git`  
-**License**: MIT License  
+**License**: AGPL-3.0 License  
 **Last Updated**: June 5, 2025  
 **Status**: Production Ready
 
@@ -161,7 +161,7 @@ SENDGRID_API_KEY - Email service for contact form
 - Graceful service degradation
 - Database migration system
 - Professional documentation
-- MIT license for adoption
+- AGPL-3.0 license ensuring source code transparency
 
 ## Development Workflow
 

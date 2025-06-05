@@ -10,7 +10,7 @@
 - ✅ PostgreSQL database with Drizzle ORM and comprehensive schema
 - ✅ Subscription management system with tier-based usage limits
 - ✅ Responsive UI with light/dark themes and professional design
-- ✅ GitHub repository deployment with MIT license
+- ✅ GitHub repository deployment with AGPL-3.0 license
 
 ### NEW: Context-Aware Features ✅
 - ✅ Speaker credibility tracking system with historical accuracy scoring
@@ -69,7 +69,7 @@
 - ✅ Real-time alert system with configurable refresh intervals
 - ✅ Featured navigation with "NEW" badge and gradient styling
 - ✅ GitHub repository deployment with comprehensive documentation
-- ✅ MIT license for maximum adoption potential
+- ✅ AGPL-3.0 license for transparency and source code sharing requirements
 
 ## Unique Value Proposition
 
