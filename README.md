@@ -206,9 +206,9 @@ Environment variables must be configured on your deployment platform.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-The MIT License allows for maximum adoption and integration of this fact-checking technology across platforms and organizations while requiring only attribution.
+The AGPL-3.0 ensures that this fact-checking technology remains free and open source. If you modify and deploy this software on a server that users interact with, you must make the source code available to those users.
 
 ## 🆘 Support
 
