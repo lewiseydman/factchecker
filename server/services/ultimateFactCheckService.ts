@@ -3,7 +3,7 @@ import { questionTransformService } from './questionTransformService';
 import { domainDetectionService } from './domainDetectionService';
 import { enhancedPerplexityService } from './enhancedPerplexityService';
 import { claudeService } from './claudeService';
-import { openAIService } from './openaiService';
+import { openAIService } from './openAIService';
 import { geminiService } from './geminiService';
 import { mistralService } from './mistralService';
 import { cohereService } from './cohereService';
