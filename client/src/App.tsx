@@ -17,17 +17,26 @@ import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Contact from "@/pages/Contact";
 import ContextAware from "@/pages/ContextAware";
+import HoldingPage from "@/pages/HoldingPage";
 import { useAuth } from "@/hooks/useAuth";
+import { useDevAuth } from "@/hooks/useDevAuth";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
+  const { isDevAuthenticated, isLoading: isDevLoading, authenticate } = useDevAuth();
   
-  if (isLoading) {
+  // Show loading while checking authentication states
+  if (isLoading || isDevLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
+  }
+
+  // Show holding page if not dev authenticated
+  if (!isDevAuthenticated) {
+    return <HoldingPage onAuthenticated={authenticate} />;
   }
 
   return (
